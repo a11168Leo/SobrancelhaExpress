@@ -10,6 +10,10 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use("/api/services", require("./routes/service.routes"));
+app.use("/api/clients", require("./routes/client.routes"));
+app.use("/api/appointments", require("./routes/appointment.routes"));
+app.use("/api/finance", require("./routes/finance.routes"));
 
 app.get("/", (req, res) => {
   res.send("API Sobrancelha Express rodando 🚀");

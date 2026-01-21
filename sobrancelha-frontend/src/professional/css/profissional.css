@@ -7,11 +7,14 @@
   flex-direction: column;
 }
 
-.logo {
-  color: #fff;
+.logo-container {
+  display: flex;
+  justify-content: center;
   margin-bottom: 40px;
-  font-size: 22px;
-  text-align: center;
+}
+
+.logo-img {
+  max-width: 120px;
 }
 
 .menu {
