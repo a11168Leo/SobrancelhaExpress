@@ -1,220 +1,200 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+/* Definições de cores solicitadas */
+:root {
+  --main-pink-bg: rgba(255, 164, 213, 0.72); /* #FFA4D5 com 72% de transparência */
+  --image-overlay-tint: rgba(255, 213, 236, 0.40); /* #FFD5EC com 40% de transparência */
+  --gold-button: #e6d5a7;
+}
 
-/* Reset básico para garantir que as medidas fiquem exatas */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
 }
 
 .auth-body {
-    /* IMAGEM 1: FUNDO GERAL 
-       Cor #FFA4D5 com 72% de opacidade = rgba(255, 164, 213, 0.72) */
-    background: linear-gradient(rgba(255, 164, 213, 0.72), rgba(255, 164, 213, 0.72)), 
-                url('../assets/WhatsApp\ Image\ 2025-11-06\ at\ 11.20.35\ \(1\).jpeg'); 
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    font-family: 'Poppins', sans-serif;
+  /* Fundo da página com a cor rosa transparente por cima */
+  background: linear-gradient(var(--main-pink-bg), var(--main-pink-bg)), 
+              url('https://www.transparenttextures.com/patterns/clean-gray-paper.png');
+  background-color: #FFA4D5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: 'Montserrat', sans-serif;
 }
 
 .container {
-    /* MEDIDA SOLICITADA: 1065.91px x 716.85px */
-    width: 1065.91px;
-    height: 716.85px;
-    /* COR DO CONTAINER: #FFD5EC com 52% de opacidade = rgba(255, 213, 236, 0.52) */
-    background-color: rgba(255, 213, 236, 0.52); 
-    border-radius: 30px;
-    box-shadow: 0 14px 28px rgba(0,0,0,0.25);
-    position: relative;
-    overflow: hidden;
-    max-width: 98vw;
-    backdrop-filter: blur(8px); /* Efeito de vidro para a transparência de 52% */
+  background-color: #fff;
+  border-radius: 25px;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.1);
+  position: relative;
+  overflow: hidden;
+  width: 900px;
+  max-width: 100%;
+  min-height: 550px;
 }
 
-/* --- FORMULÁRIOS (Login e Registro) --- */
 .form-container {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    transition: all 0.6s ease-in-out;
-    /* Largura calculada: Total (1065.91) - Overlay (563.54) = 502.37px */
-    width: 502.37px;
+  position: absolute;
+  top: 0;
+  height: 100%;
+  transition: all 0.6s ease-in-out;
 }
 
+/* Painéis de formulário */
 .sign-in-container {
-    left: 0;
-    z-index: 2;
+  left: 0;
+  width: 50%;
+  z-index: 2;
 }
 
 .sign-up-container {
-    left: 0;
-    opacity: 0;
-    z-index: 1;
+  left: 0;
+  width: 50%;
+  opacity: 0;
+  z-index: 1;
 }
 
-/* Animação quando o painel direito está ativo */
+/* Movimento de Slide */
 .container.right-panel-active .sign-in-container {
-    transform: translateX(563.54px);
-    opacity: 0;
+  transform: translateX(100%);
 }
 
 .container.right-panel-active .sign-up-container {
-    transform: translateX(563.54px);
-    opacity: 1;
-    z-index: 5;
-    animation: show 0.6s;
+  transform: translateX(100%);
+  opacity: 1;
+  z-index: 5;
+  animation: show 0.6s;
 }
 
 @keyframes show {
-    0%, 49.99% { opacity: 0; z-index: 1; }
-    50%, 100% { opacity: 1; z-index: 5; }
+  0%, 49.99% { opacity: 0; z-index: 1; }
+  50%, 100% { opacity: 1; z-index: 5; }
 }
 
+/* Estilo interno do formulário */
 form {
-    background-color: transparent; /* Para mostrar o rosa do container */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 0 50px;
-    height: 100%;
-    text-align: center;
-}
-
-h1 {
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #333;
+  background-color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 0 50px;
+  height: 100%;
+  text-align: center;
 }
 
 input, select {
-    background-color: rgba(255, 255, 255, 0.7);
-    border: 1px solid rgba(255, 164, 213, 0.3);
-    padding: 15px;
-    margin: 8px 0;
-    width: 100%;
-    border-radius: 12px;
-    font-family: 'Poppins', sans-serif;
+  background-color: #f3f3f3;
+  border: none;
+  padding: 12px 15px;
+  margin: 8px 0;
+  width: 100%;
+  border-radius: 5px;
 }
 
-.btn-primary {
-    border-radius: 25px;
-    border: none;
-    background-color: #FFA4D5; /* Rosa sólido para destaque */
-    color: #FFFFFF;
-    font-size: 14px;
-    font-weight: bold;
-    padding: 15px 50px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    margin-top: 15px;
-    transition: transform 80ms ease-in, background 0.3s;
-    box-shadow: 0 4px 10px rgba(255, 164, 213, 0.3);
+.btn-auth {
+  border-radius: 8px;
+  border: none;
+  background-color: var(--gold-button);
+  color: #fff;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 12px 45px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 15px;
 }
 
-.btn-primary:hover {
-    background-color: #ff8bc8;
+.forgot-password {
+  font-size: 12px;
+  color: #666;
+  margin: 10px 0;
+  cursor: pointer;
 }
 
-.btn-primary:active {
-    transform: scale(0.95);
-}
-
-/* --- OVERLAY (Painel que desliza) --- */
+/* Container do Overlay (Lado da Imagem) */
 .overlay-container {
-    position: absolute;
-    top: 0;
-    left: 502.37px;
-    /* MEDIDA SOLICITADA: 563.54px x 716.85px */
-    width: 563.54px;
-    height: 716.85px;
-    overflow: hidden;
-    transition: transform 0.6s ease-in-out;
-    z-index: 100;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  overflow: hidden;
+  transition: transform 0.6s ease-in-out;
+  z-index: 100;
 }
 
 .container.right-panel-active .overlay-container {
-    transform: translateX(-502.37px);
+  transform: translateX(-100%);
 }
 
 .overlay {
-    /* IMAGEM 2: FILTRO ROSA #FFA4D5 com 72% de opacidade */
-    background: linear-gradient(rgba(255, 164, 213, 0.72), rgba(255, 164, 213, 0.72)), 
-                url('../assets/WhatsApp\ Image\ 2025-11-06\ at\ 11.20.35\ \(2\).jpeg'); 
-    background-repeat: no-repeat;
-    background-size: cover;
-    background-position: center;
-    color: #FFFFFF;
-    position: relative;
-    left: -100%;
-    height: 100%;
-    width: 200%;
-    transform: translateX(0);
-    transition: transform 0.6s ease-in-out;
+  background: #FFA4D5;
+  color: #FFFFFF;
+  position: relative;
+  left: -100%;
+  height: 100%;
+  width: 200%;
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
 }
 
 .container.right-panel-active .overlay {
-    transform: translateX(50%);
+  transform: translateX(50%);
 }
 
 .overlay-panel {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    padding: 0 40px;
-    text-align: center;
-    top: 0;
-    height: 100%;
-    width: 50%;
-    transform: translateX(0);
-    transition: transform 0.6s ease-in-out;
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.6s ease-in-out;
 }
 
-/* Deslocamento de 20px solicitado para os textos no overlay */
-.overlay-panel h1, 
-.overlay-panel p, 
-.overlay-panel .ghost {
-    transform: translateX(20px);
+/* Camada Rosa FFD5EC 40% por cima da foto */
+.overlay-tint {
+  background-color: var(--image-overlay-tint);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 0 40px;
 }
 
 .overlay-left {
-    transform: translateX(-20%);
+  transform: translateX(-20%);
 }
 
 .container.right-panel-active .overlay-left {
-    transform: translateX(0);
+  transform: translateX(0);
 }
 
 .overlay-right {
-    right: 0;
-    transform: translateX(0);
+  right: 0;
+  transform: translateX(0);
 }
 
 .container.right-panel-active .overlay-right {
-    transform: translateX(20%);
+  transform: translateX(20%);
 }
 
 .ghost {
-    background-color: transparent;
-    border: 2px solid #FFFFFF;
-    margin-top: 20px;
-}
-
-/* LOGO: MEDIDA SOLICITADA 204.41px x 143.17px */
-.floating-logo {
-    position: absolute;
-    top: 40px;
-    left: 40px;
-    width: 204.41px;
-    height: 143.17px;
-    object-fit: contain;
-    z-index: 10;
+  background-color: transparent;
+  border: 2px solid #FFFFFF;
+  color: #fff;
+  padding: 8px 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
 }
