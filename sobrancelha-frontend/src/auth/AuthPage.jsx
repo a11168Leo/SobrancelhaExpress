@@ -2,10 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { login, register } from "./authService";
 import "./AuthPage.css";
-
-// IMPORTAÇÃO DAS IMAGENS (Isso resolve o problema do caminho e caracteres especiais)
-import fotoLogin from "../assets/WhatsApp Image 2025-11-06 at 11.20.35 (1).jpeg";
-import fotoRegistro from "../assets/WhatsApp Image 2025-11-06 at 11.20.35 (2).jpeg";
+import fotoLogin from "../assets/interior1.jpeg";
+import fotoRegistro from "../assets/interior2.jpeg";
 
 export default function AuthPage() {
   const [isRightPanelActive, setIsRightPanelActive] = useState(false);

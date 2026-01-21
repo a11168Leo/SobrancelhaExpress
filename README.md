@@ -41,7 +41,7 @@ backend/
 ├── .env
 └── package.json
 
-frontend/
+sobrancelha-frontend/
 ├── src/
 │   ├── auth/
 │   │   ├── Login.jsx
@@ -55,6 +55,10 @@ frontend/
 │   │   │   ├── DashboardCards.jsx
 │   │   │   └── Calendar.jsx
 │   │   │
+            css/
+            profissional.css
+            calendar.css
+            
 │   │   ├── pages/
 │   │   │   ├── Dashboard.jsx
 │   │   │   ├── Services.jsx
