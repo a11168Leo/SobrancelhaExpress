@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
-import "../css/profissional.css";
-import logo from "../assets/Logo2.svg"; // coloque seu logo nesta pasta
+import "./css/profissional.css";
+import logo from '../../assets/Logo2.svg'; // Logo
 
 export default function Aside() {
   return (

@@ -4,6 +4,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import api from "../../services/api";
+import { getProfessionalId } from "../../services/authGuard";
 
 export default function Appointments() {
   const [events, setEvents] = useState([]);
@@ -11,11 +12,12 @@ export default function Appointments() {
   useEffect(() => {
     const fetchAppointments = async () => {
       try {
-        const res = await api.get("/professional/appointments");
+        const professionalId = getProfessionalId();
+        const res = await api.get(`/appointments/${professionalId}`);
         const formatted = res.data.map((appt) => ({
           id: appt._id,
-          title: `${appt.clientName} - ${appt.serviceName}`,
-          start: appt.date,
+          title: `${appt.client.name} - ${appt.service.name}`,
+          start: appt.start
         }));
         setEvents(formatted);
       } catch (err) {
@@ -30,12 +32,8 @@ export default function Appointments() {
     const clientName = prompt("Nome do Cliente:");
     const serviceName = prompt("Serviço:");
     if (clientName && serviceName) {
-      const newEvent = {
-        title: `${clientName} - ${serviceName}`,
-        start: info.dateStr,
-      };
+      const newEvent = { title: `${clientName} - ${serviceName}`, start: info.dateStr };
       setEvents([...events, newEvent]);
-      // Aqui você pode chamar a API para salvar no backend
     }
   };
 
@@ -45,11 +43,7 @@ export default function Appointments() {
       <FullCalendar
         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
-        headerToolbar={{
-          left: "prev,next today",
-          center: "title",
-          right: "dayGridMonth,timeGridWeek,timeGridDay",
-        }}
+        headerToolbar={{ left: "prev,next today", center: "title", right: "dayGridMonth,timeGridWeek,timeGridDay" }}
         events={events}
         dateClick={handleDateClick}
       />

@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import Aside from "./components/Aside";
 import Navbar from "./components/Navbar";
-import "../css/profissional.css";
+import "./css/profissional.css";
 
 export default function ProfessionalLayout() {
   return (

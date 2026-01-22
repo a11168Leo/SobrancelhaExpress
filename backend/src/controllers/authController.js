@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Professional = require("../models/Professional");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -20,7 +21,17 @@ exports.register = async (req, res) => {
       role
     });
 
-    res.status(201).json({ message: "Usuário criado com sucesso" });
+    // Se for profissional, cria Professional
+    let professional = null;
+    if (role === "professional") {
+      professional = await Professional.create({ user: user._id });
+    }
+
+    res.status(201).json({
+      message: "Usuário criado com sucesso",
+      userId: user._id,
+      professionalId: professional?._id || null
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -44,10 +55,13 @@ exports.login = async (req, res) => {
       { expiresIn: "1d" }
     );
 
+    const professional = await Professional.findOne({ user: user._id });
+
     res.json({
       token,
       role: user.role,
-      name: user.name
+      name: user.name,
+      professionalId: professional?._id || null
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

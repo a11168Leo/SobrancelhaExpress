@@ -1,5 +1,5 @@
 import { Bell } from "lucide-react";
-import "../css/profissional.css";
+import "./css/profissional.css";
 import { getCurrentUser, logout } from "../../services/authGuard";
 import { useNavigate } from "react-router-dom";
 
