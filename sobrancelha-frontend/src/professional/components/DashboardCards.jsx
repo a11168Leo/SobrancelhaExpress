@@ -1,11 +1,18 @@
-export default function DashboardCard({ icon: Icon, title, value, color }) {
+import React from 'react';
+
+function DashboardCard({ title, value, trend, icon: Icon, trendColor }) {
   return (
-    <div className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-      <div className={`p-2 w-fit rounded-lg bg-gray-50 mb-3 ${color}`}>
-        <Icon size={24} />
+    <div className="stat-card">
+      <div className="stat-icon-area">
+        {Icon && <Icon size={28} />}
       </div>
-      <p className="text-gray-500 text-sm font-medium">{title}</p>
-      <h3 className="text-2xl font-bold mt-1">{value}</h3>
+      <div className="stat-info">
+        <h4>{title}</h4>
+        <p className="value">{value}</p>
+        {trend && <span style={{ color: trendColor }}>{trend}</span>}
+      </div>
     </div>
   );
 }
+
+export default DashboardCard;
