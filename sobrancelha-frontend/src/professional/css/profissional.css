@@ -453,6 +453,166 @@
   transition: background 0.2s ease;
 }
 
+/* ==========================================================================
+   SEÇÃO CLIENTES (PREFIXO cli-)
+   ========================================================================== */
+
+.cli-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.cli-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.cli-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.cli-search-box {
+  background: white;
+  border: 1px solid #eee;
+  padding: 8px 15px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #888;
+  width: 250px;
+}
+
+.cli-search-box input {
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.cli-filter-btn {
+  background: white;
+  border: 1px solid #eee;
+  padding: 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  color: #555;
+  transition: 0.2s;
+}
+
+.cli-card-table {
+  background: white;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+}
+
+.cli-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.cli-table th {
+  padding: 20px;
+  background: #fafafa;
+  color: #888;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.cli-row {
+  border-bottom: 1px solid #f8f8f8;
+  transition: 0.2s;
+}
+
+.cli-row:hover {
+  background: #fffcfd;
+}
+
+.cli-table td {
+  padding: 16px 20px;
+  vertical-align: middle;
+}
+
+.cli-user-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cli-avatar-mini {
+  width: 35px;
+  height: 35px;
+  background: #f0f0f0;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: #D988B3;
+}
+
+.cli-name {
+  font-weight: 700;
+  color: #333;
+}
+
+.cli-phone, .cli-date {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.cli-service-tag {
+  background: rgba(217, 136, 179, 0.1);
+  color: #D988B3;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-right: 5px;
+}
+
+.cli-status-badge {
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.cli-status-badge.ativo { background: #e6fcf5; color: #0ca678; }
+.cli-status-badge.inativo { background: #fff5f5; color: #f03e3e; }
+
+.cli-more-btn {
+  background: none;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.cli-more-btn:hover { color: #D988B3; }
+
+.cli-loading, .cli-empty {
+  padding: 40px;
+  text-align: center;
+  color: #888;
+}
+
+
 
 
 
