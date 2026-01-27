@@ -1,0 +1,120 @@
+/* Container Geral */
+.calendar-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 20px;
+}
+
+.calendar-subtitle {
+  color: #888;
+  margin-top: -15px;
+  font-size: 0.9rem;
+}
+
+/* Card do Calendário */
+.calendar-card {
+  background: white;
+  padding: 20px;
+  border-radius: 24px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+}
+
+/* Customização do FullCalendar */
+.fc {
+  --fc-border-color: #f0f0f0;
+  --fc-button-bg-color: #333;
+  --fc-button-border-color: #333;
+  --fc-button-hover-bg-color: #000;
+  --fc-button-active-bg-color: #D988B3;
+  --fc-button-active-border-color: #D988B3;
+  --fc-event-bg-color: #D988B3;
+  --fc-event-border-color: #D988B3;
+  --fc-today-bg-color: #fff6fb;
+  font-family: 'Inter', sans-serif;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #333;
+}
+
+.fc .fc-button {
+  border-radius: 10px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.fc .fc-event {
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.fc .fc-event:hover {
+  transform: scale(1.02);
+  filter: brightness(0.9);
+}
+
+/* Modal Estilizado */
+.cal-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.cal-modal-content {
+  background: white;
+  width: 90%;
+  max-width: 400px;
+  padding: 30px;
+  border-radius: 24px;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+}
+
+.cal-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.cal-modal-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: #D988B3;
+  font-weight: 800;
+}
+
+.close-icon {
+  cursor: pointer;
+  color: #ccc;
+  transition: 0.2s;
+}
+
+.close-icon:hover { color: #333; }
+
+.cal-form label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: #555;
+}
