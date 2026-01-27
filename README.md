@@ -55,10 +55,9 @@ sobrancelha-frontend/
 │   │   │   ├── DashboardCards.jsx
 │   │   │   └── Calendar.jsx
 │   │   │
-            css/
-            profissional.css
-            calendar.css
-            
+|   |   |   css/
+|   |   |--profissional.css
+|   |   |--calendar.css 
 │   │   ├── pages/
 │   │   │   ├── Dashboard.jsx
 │   │   │   ├── Services.jsx
