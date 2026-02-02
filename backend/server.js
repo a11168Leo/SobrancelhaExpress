@@ -1,44 +1,36 @@
-// Importação de bibliotecas
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const connectDB = require('./src/config/db'); // Verifique se o caminho do seu DB está correto
 
-// Importação das nossas configurações internas
-const connectDB = require('./src/config/db');
-const corsOptions = require('./src/config/cors');
-// ... (outras importações)
-const authRoutes = require('./src/routes/authRoutes');
-const categoryRoutes = require('./src/routes/categoryRoutes');
-
-// ... (depois dos middlewares app.use(express.json()))
-
-// Definição das Rotas
-app.use('/api/auth', authRoutes);
-app.use('/api/categories', categoryRoutes);
-
-// ...
-// 1. Carregar variáveis de ambiente do ficheiro .env
+// 1. Carregar variáveis de ambiente
 dotenv.config();
 
-// 2. Conectar ao Banco de Dados MongoDB
+// 2. Conectar ao Banco de Dados
 connectDB();
 
-// 3. Inicializar o aplicativo Express
+// 3. INICIALIZAR o app (Isso deve vir ANTES das rotas)
 const app = express();
 
-// 4. Middlewares Globais
-app.use(cors(corsOptions)); // Aplica a segurança para os seus dois sites
-app.use(express.json());    // Permite que o servidor entenda JSON (dados enviados pelo site)
+// 4. Middlewares globais
+app.use(cors());
+app.use(express.json());
+app.use('/uploads', express.static('uploads'));
 
-// 5. Rota de Teste (Para verificar se o servidor está online)
-app.get('/', (req, res) => {
-  res.send('🚀 API do SobrancelhaExpress está online!');
-});
+// 5. Importar as Rotas
+const authRoutes = require('./src/routes/authRoutes');
+const categoryRoutes = require('./src/routes/categoryRoutes');
+const serviceRoutes = require('./src/routes/serviceRoutes');
+const appointmentRoutes = require('./src/routes/appointmentRoutes');
+const staffRoutes = require('./src/routes/staffRoutes');
 
-// 6. Configuração da Porta
+// 6. Usar as Rotas (Agora o 'app' já existe, então não dará erro)
+app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/services', serviceRoutes);
+app.use('/api/appointments', appointmentRoutes);
+app.use('/api/staff', staffRoutes);
+
+// 7. Porta e Listen
 const PORT = process.env.PORT || 5000;
-
-// 7. Iniciar o Servidor
-app.listen(PORT, () => {
-  console.log(`📡 Servidor rodando em modo ${process.env.NODE_ENV} na porta ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
