@@ -6,7 +6,17 @@ const cors = require('cors');
 // Importação das nossas configurações internas
 const connectDB = require('./src/config/db');
 const corsOptions = require('./src/config/cors');
+// ... (outras importações)
+const authRoutes = require('./src/routes/authRoutes');
+const categoryRoutes = require('./src/routes/categoryRoutes');
 
+// ... (depois dos middlewares app.use(express.json()))
+
+// Definição das Rotas
+app.use('/api/auth', authRoutes);
+app.use('/api/categories', categoryRoutes);
+
+// ...
 // 1. Carregar variáveis de ambiente do ficheiro .env
 dotenv.config();
 
