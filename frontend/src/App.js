@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-import Login from './pages/auth/Login';
+import Login from './pages/auth/authPage.jsx';
 import Dashboard from './pages/admin/Dashboard';
 import ProfessionalLayout from './layouts/ProfessionalLayout';
 
