@@ -1,11 +1,14 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3333/api'
+  baseURL: 'http://localhost:5000/api',  // Seu backend
+  headers: {
+    'Content-Type': 'application/json'
+  }
 });
 
-// Interceptor para enviar token automaticamente
-api.interceptors.request.use(config => {
+// Interceptor para adicionar token automaticamente
+api.interceptors.request.use((config) => {
   const token = localStorage.getItem('@SobrancelhaExpress:token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

@@ -1,39 +1,25 @@
 const Appointment = require('../models/Appointment');
-const Service = require('../models/Service');
 
-class AppointmentService {
-  async createAppointment(data) {
-    const service = await Service.findById(data.serviceId);
-    if (!service) {
-      throw new Error('Serviço não encontrado');
-    }
-
-    const start = new Date(data.start);
-    const end = new Date(start.getTime() + service.durationMinutes * 60000);
-
-    return Appointment.create({
-      clientId: data.clientId,
-      professionalId: data.professionalId,
-      serviceId: data.serviceId,
-      start,
-      end
+/**
+ * Verifica se o profissional está disponível no intervalo desejado
+ * @returns {Promise<boolean>} true = disponível
+ */
+const checkAvailability = async (professionalId, startDateTime, endDateTime) => {
+  try {
+    const conflicting = await Appointment.find({
+      professionalId,
+      status: { $ne: 'cancelado' },
+      $or: [
+        // Novo agendamento começa durante um existente
+        { start: { $lt: endDateTime }, end: { $gt: startDateTime } },
+      ]
     });
-  }
 
-  async getCalendar(professionalId) {
-    return Appointment.find({ professionalId })
-      .populate('serviceId', 'name')
-      .populate('clientId', 'name')
-      .lean();
+    return conflicting.length === 0;
+  } catch (err) {
+    console.error('Erro ao verificar disponibilidade:', err);
+    return false;
   }
+};
 
-  async updateStatus(id, status) {
-    return Appointment.findByIdAndUpdate(
-      id,
-      { status },
-      { new: true }
-    );
-  }
-}
-
-module.exports = new AppointmentService();
+module.exports = { checkAvailability };

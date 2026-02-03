@@ -15,16 +15,33 @@ const userSchema = new mongoose.Schema({
   specialties: [String] 
 }, { timestamps: true });
 
-// Middleware: Criptografa a senha automaticamente antes de salvar
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')) return next();
+// Middleware de hash da senha – usando callbacks para máxima compatibilidade
+userSchema.pre('save', function(next) {
+  // Se a senha não foi modificada, pula o hash
+  if (!this.isModified('password')) {
+    return next();
+  }
 
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+  // Gera salt
+  bcrypt.genSalt(10, function(err, salt) {
+    if (err) {
+      return next(err); // passa erro para Mongoose
+    }
+
+    // Hash da senha com o salt
+    bcrypt.hash(this.password, salt, function(err, hash) {
+      if (err) {
+        return next(err); // passa erro para Mongoose
+      }
+
+      // Substitui a senha plain-text pelo hash
+      this.password = hash;
+      next(); // sucesso → continua o save
+    });
+  });
 });
 
-// Método para comparar senhas (usado no login)
+// Método para comparar senhas no login
 userSchema.methods.matchPassword = async function(enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
