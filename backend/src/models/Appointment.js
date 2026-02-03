@@ -1,49 +1,44 @@
 const mongoose = require('mongoose');
 
-const appointmentSchema = new mongoose.Schema({
-  // Relacionamentos
-  clienteId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true 
-  },
-  profissionalId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
-    required: true 
-  },
-  servicoId: { 
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: 'Service', 
-    required: true 
-  },
+const appointmentSchema = new mongoose.Schema(
+  {
+    clientId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    professionalId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
+    },
+    serviceId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Service',
+      required: true
+    },
 
-  // Dados do Horário
-  start: { 
-    type: Date, 
-    required: true 
-  }, // 'start' é o padrão do FullCalendar
-  end: { 
-    type: Date, 
-    required: true 
-  },   // 'end' é calculado somando a duração do serviço
+    start: {
+      type: Date,
+      required: true
+    },
+    end: {
+      type: Date,
+      required: true
+    },
 
-  status: { 
-    type: String, 
-    enum: ['pendente', 'confirmado', 'concluido', 'cancelado'], 
-    default: 'pendente' 
-  },
+    status: {
+      type: String,
+      enum: ['pendente', 'confirmado', 'concluido', 'cancelado'],
+      default: 'confirmado'
+    },
 
-  // Notas e Ficha Técnica
-  observacoes: { 
-    type: String 
+    color: {
+      type: String,
+      default: '#D988B3'
+    }
   },
-  
-  // Para o FullCalendar colorir no mapa visual
-  color: { 
-    type: String, 
-    default: '#3788d8' 
-  }
-}, { timestamps: true });
+  { timestamps: true }
+);
 
 module.exports = mongoose.model('Appointment', appointmentSchema);

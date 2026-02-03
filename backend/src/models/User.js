@@ -11,20 +11,22 @@ const userSchema = new mongoose.Schema({
     enum: ['admin', 'professional', 'client'], 
     default: 'client' 
   },
-  // Campo de foto: Opcional para Admin/Profissional, irrelevante para Cliente
-  profileImage: { 
-    type: String, 
-    default: null 
-  },
+  profileImage: { type: String, default: null },
   specialties: [String] 
 }, { timestamps: true });
 
-userSchema.pre('save', async function() {
-  if (!this.isModified('password')) {
-    return;
-  }
+// Middleware: Criptografa a senha automaticamente antes de salvar
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next();
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
+  next();
 });
+
+// Método para comparar senhas (usado no login)
+userSchema.methods.matchPassword = async function(enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
 module.exports = mongoose.model('User', userSchema);

@@ -1,8 +1,31 @@
-const User = require('../models/User');
+class AuthService {
+  async login(email, password) {
+    if (!email || !password) {
+      throw new Error('Email e senha são obrigatórios');
+    }
 
-// Centraliza a busca de usuário para evitar repetição nos controllers
-const findUserByEmail = async (email) => {
-  return await User.findOne({ email });
-};
+    // Simulação temporária
+    return {
+      message: 'Login realizado com sucesso',
+      user: {
+        email
+      },
+      token: 'fake-jwt-token'
+    };
+  }
 
-module.exports = { findUserByEmail };
+  async register(data) {
+    if (!data.email || !data.password) {
+      throw new Error('Dados inválidos');
+    }
+
+    return {
+      message: 'Usuário registrado com sucesso',
+      user: {
+        email: data.email
+      }
+    };
+  }
+}
+
+module.exports = new AuthService();

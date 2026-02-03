@@ -1,16 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const { register, login } = require('../controllers/authController');
-const { protect } = require('../middlewares/authMiddleware');
-const { authorize } = require('../middlewares/roleMiddleware');
 
-// Rota para Clientes (Site A - Público)
-router.post('/register-client', register);
+const authController = require('../controllers/authController');
 
-// Rota para o Admin criar Profissionais ou outros Admins (Site B - Protegido)
-router.post('/register-staff', protect, authorize('admin'), register);
+// Login
+router.post('/login', authController.login);
 
-// Login unificado (Para todos)
-router.post('/login', login);
+// Registro
+router.post('/register', authController.register);
 
 module.exports = router;
