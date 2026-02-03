@@ -29,7 +29,7 @@ export default function Aside() {
       {/* Perfil no topo */}
       <div className="aside-profile">
         <img
-          src={user?.photo || "https://via.placeholder.com/80?text=👤"}
+          src={user?.profileImage || "https://via.placeholder.com/80?text=👤"}
           alt="Perfil"
           className="profile-img"
         />
