@@ -24,3 +24,8 @@ export const updateUserById = (id, data) => {
 export const listUsers = (filters = {}) => {
   return User.find(filters).select('-password').sort({ name: 1 });
 };
+
+// Remove usuario
+export const deleteUserById = (id) => {
+  return User.findByIdAndDelete(id);
+};

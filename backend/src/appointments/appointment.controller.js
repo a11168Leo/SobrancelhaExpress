@@ -4,7 +4,10 @@ import {
   listAppointmentsByProfessional,
   listAppointmentsByClient,
   findAppointmentById,
-  updateAppointmentStatus
+  listAllAppointments,
+  updateAppointmentStatus,
+  findConflictingAppointmentExcluding,
+  updateAppointment
 } from './appointment.service.js';
 import { findServiceById } from '../services/service.service.js';
 import { createFinancial, findFinancialByAppointment } from '../financial/financial.service.js';
@@ -88,6 +91,7 @@ export const create = async (req, res) => {
     const appointment = await createAppointment({
       client: resolvedClientId,
       professional: professionalId,
+      service: serviceId || null,
       startTime: start,
       endTime: end,
       notes
@@ -179,5 +183,67 @@ export const updateStatus = async (req, res) => {
     res.json({ appointment });
   } catch (error) {
     res.status(500).json({ message: 'Erro ao atualizar status' });
+  }
+};
+
+// Lista todos os agendamentos (admin)
+export const listAll = async (_req, res) => {
+  try {
+    const appointments = await listAllAppointments();
+    res.json({ appointments });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao listar agendamentos' });
+  }
+};
+
+// Atualiza dados do agendamento (admin)
+export const update = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { professionalId, clientId, serviceId, startTime } = req.body;
+
+    const existing = await findAppointmentById(id);
+    if (!existing) {
+      return res.status(404).json({ message: 'Agendamento não encontrado' });
+    }
+
+    if (!professionalId || !clientId || !serviceId || !startTime) {
+      return res.status(400).json({ message: 'Preencha todos os campos' });
+    }
+
+    const start = new Date(startTime);
+    if (Number.isNaN(start.getTime())) {
+      return res.status(400).json({ message: 'startTime inválido' });
+    }
+
+    const service = await findServiceById(serviceId);
+    if (!service || !service.durationMinutes) {
+      return res.status(400).json({ message: 'Serviço sem duração válida' });
+    }
+
+    const durationToUse = service.maxDurationMinutes || service.durationMinutes;
+    const end = new Date(start.getTime() + durationToUse * 60 * 1000);
+
+    const conflict = await findConflictingAppointmentExcluding(
+      id,
+      professionalId,
+      start,
+      end
+    );
+    if (conflict) {
+      return res.status(409).json({ message: 'Horário em conflito' });
+    }
+
+    const updated = await updateAppointment(id, {
+      professional: professionalId,
+      client: clientId,
+      service: serviceId,
+      startTime: start,
+      endTime: end
+    });
+
+    res.json({ appointment: updated });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao atualizar agendamento' });
   }
 };

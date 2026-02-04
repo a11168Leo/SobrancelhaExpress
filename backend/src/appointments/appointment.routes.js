@@ -5,7 +5,9 @@ import {
   create,
   listByProfessional,
   listByClient,
-  updateStatus
+  updateStatus,
+  listAll,
+  update
 } from './appointment.controller.js';
 
 const router = Router();
@@ -19,9 +21,13 @@ router.get(
   allowRoles('admin', 'profissional'),
   listByProfessional
 );
+// Admin vê todos os agendamentos
+router.get('/all', authMiddleware, allowRoles('admin'), listAll);
 // Admin vê qualquer cliente; cliente vê apenas o próprio
 router.get('/client/:clientId', authMiddleware, allowRoles('admin', 'cliente'), listByClient);
 // Admin ou profissional (dono do atendimento) atualiza status
 router.patch('/:id/status', authMiddleware, allowRoles('admin', 'profissional'), updateStatus);
+// Admin atualiza agendamento
+router.patch('/:id', authMiddleware, allowRoles('admin'), update);
 
 export default router;

@@ -1,5 +1,15 @@
 import { Router } from 'express';
-import { register, login, me, adminOnly, updateAvatar } from './user.controller.js';
+import {
+  register,
+  login,
+  me,
+  adminOnly,
+  updateAvatar,
+  adminCreateUser,
+  adminDeleteUser,
+  updateMe,
+  updatePassword
+} from './user.controller.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { allowRoles } from '../middlewares/role.middleware.js';
 import { uploadProfessionalAvatar } from '../middlewares/upload.middleware.js';
@@ -15,5 +25,11 @@ router.get('/me', authMiddleware, me);
 router.patch('/me/avatar', authMiddleware, uploadProfessionalAvatar, updateAvatar);
 // Teste de rota admin
 router.get('/admin', authMiddleware, allowRoles('admin'), adminOnly);
+// Admin: criar e remover usuários
+router.post('/users', authMiddleware, allowRoles('admin'), adminCreateUser);
+router.delete('/users/:id', authMiddleware, allowRoles('admin'), adminDeleteUser);
+// Atualizações da conta
+router.patch('/me', authMiddleware, updateMe);
+router.patch('/me/password', authMiddleware, updatePassword);
 
 export default router;
