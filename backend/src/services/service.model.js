@@ -17,6 +17,11 @@ const ServiceSchema = new mongoose.Schema(
       type: Number,
       required: true
     },
+    // Duracao maxima (opcional, usada quando ha intervalo)
+    maxDurationMinutes: {
+      type: Number,
+      default: null
+    },
     // Categoria principal (level 0)
     category: {
       type: mongoose.Schema.Types.ObjectId,

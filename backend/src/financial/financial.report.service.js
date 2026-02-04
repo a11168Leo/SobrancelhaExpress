@@ -12,3 +12,26 @@ export const reportByPeriod = async (startDate, endDate, professionalId) => {
 
   return { items, total };
 };
+
+// Compara dois periodos (admin)
+export const compareByPeriod = async (
+  startA,
+  endA,
+  startB,
+  endB,
+  professionalId
+) => {
+  const reportA = await reportByPeriod(startA, endA, professionalId);
+  const reportB = await reportByPeriod(startB, endB, professionalId);
+
+  const difference = reportA.total - reportB.total;
+  const percent =
+    reportB.total === 0 ? null : Number(((difference / reportB.total) * 100).toFixed(2));
+
+  return {
+    periodA: reportA,
+    periodB: reportB,
+    difference,
+    percent
+  };
+};

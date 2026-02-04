@@ -18,7 +18,15 @@ const parseDate = (value) => {
 // Cria agendamento (cliente cria para si; admin pode criar para qualquer cliente)
 export const create = async (req, res) => {
   try {
-    const { professionalId, startTime, endTime, durationMinutes, notes, clientId } = req.body;
+    const {
+      professionalId,
+      startTime,
+      endTime,
+      durationMinutes,
+      notes,
+      clientId,
+      serviceId
+    } = req.body;
 
     if (!professionalId || !startTime) {
       return res.status(400).json({ message: 'professionalId e startTime são obrigatórios' });
@@ -41,6 +49,16 @@ export const create = async (req, res) => {
         return res.status(400).json({ message: 'durationMinutes inválido' });
       }
       end = new Date(start.getTime() + minutes * 60 * 1000);
+    } else if (serviceId) {
+      const service = await findServiceById(serviceId);
+      if (!service) {
+        return res.status(404).json({ message: 'Serviço não encontrado' });
+      }
+      if (!service.durationMinutes || service.durationMinutes <= 0) {
+        return res.status(400).json({ message: 'Serviço sem duração válida' });
+      }
+      const durationToUse = service.maxDurationMinutes || service.durationMinutes;
+      end = new Date(start.getTime() + durationToUse * 60 * 1000);
     } else {
       return res
         .status(400)

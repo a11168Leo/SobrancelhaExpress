@@ -5,7 +5,7 @@ import {
   listFinancials,
   updateFinancialStatus
 } from './financial.service.js';
-import { reportByPeriod } from './financial.report.service.js';
+import { reportByPeriod, compareByPeriod } from './financial.report.service.js';
 import { findAppointmentById } from '../appointments/appointment.service.js';
 
 // Cria lançamento financeiro manual (admin)
@@ -99,5 +99,35 @@ export const report = async (req, res) => {
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao gerar relatorio' });
+  }
+};
+
+// Relatorio comparativo entre dois periodos (admin)
+export const reportCompare = async (req, res) => {
+  try {
+    const { startA, endA, startB, endB, professionalId } = req.query;
+
+    if (!startA || !endA || !startB || !endB) {
+      return res.status(400).json({ message: 'startA, endA, startB e endB sao obrigatorios' });
+    }
+
+    const aStart = new Date(startA);
+    const aEnd = new Date(endA);
+    const bStart = new Date(startB);
+    const bEnd = new Date(endB);
+
+    if (
+      Number.isNaN(aStart.getTime()) ||
+      Number.isNaN(aEnd.getTime()) ||
+      Number.isNaN(bStart.getTime()) ||
+      Number.isNaN(bEnd.getTime())
+    ) {
+      return res.status(400).json({ message: 'Datas invalidas' });
+    }
+
+    const data = await compareByPeriod(aStart, aEnd, bStart, bEnd, professionalId);
+    res.json(data);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao gerar relatorio comparativo' });
   }
 };
