@@ -1,4 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import '../css/admin.css'
 import { useEffect, useState } from 'react'
 import {
   FiBell,

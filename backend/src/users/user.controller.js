@@ -1,4 +1,6 @@
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 import { generateToken } from '../auth/jwt.js';
 import {
   findUserByEmail,
@@ -7,11 +9,12 @@ import {
   updateUserById,
   deleteUserById
 } from './user.service.js';
+import User from './user.model.js';
 
 // Cadastro de usuario
 export const register = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, email, password, phone } = req.body;
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Nome, email e senha sao obrigatorios' });
@@ -27,7 +30,8 @@ export const register = async (req, res) => {
     const user = await createUser({
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      phone: phone || ''
     });
 
     const token = generateToken({
@@ -214,5 +218,78 @@ export const updatePassword = async (req, res) => {
     res.json({ message: 'Senha atualizada com sucesso' });
   } catch (error) {
     res.status(500).json({ message: 'Erro ao atualizar senha' });
+  }
+};
+
+// Solicita reset de senha via email
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ message: 'Email é obrigatório' });
+    }
+
+    const user = await findUserByEmail(email);
+    if (!user) {
+      return res.status(200).json({ message: 'Se existir, enviaremos o email.' });
+    }
+
+    const token = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+
+    user.resetPasswordToken = tokenHash;
+    user.resetPasswordExpires = new Date(Date.now() + 1000 * 60 * 30);
+    await user.save();
+
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS
+      }
+    });
+
+    const resetUrl = `${process.env.APP_BASE_URL}/resetar-senha?token=${token}`;
+
+    await transporter.sendMail({
+      from: process.env.SMTP_FROM || process.env.SMTP_USER,
+      to: email,
+      subject: 'Redefinição de senha',
+      text: `Para redefinir sua senha, acesse: ${resetUrl}`
+    });
+
+    res.json({ message: 'Email de recuperação enviado.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao enviar email de recuperação' });
+  }
+};
+
+// Redefine senha com token
+export const resetPassword = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+    if (!token || !newPassword) {
+      return res.status(400).json({ message: 'Token e nova senha são obrigatórios' });
+    }
+
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const user = await User.findOne({
+      resetPasswordToken: tokenHash,
+      resetPasswordExpires: { $gt: new Date() }
+    }).select('+password');
+
+    if (!user) {
+      return res.status(400).json({ message: 'Token inválido ou expirado' });
+    }
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ message: 'Senha redefinida com sucesso' });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao redefinir senha' });
   }
 };

@@ -7,17 +7,18 @@
     "start": "node src/server.js"
   },
   "dependencies": {
-    "express": "^4.19.2",
-    "mongoose": "^9.1.5",
-    "dotenv": "^17.2.3",
-    "cors": "^2.8.6",
     "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dayjs": "^1.11.19",
+    "dotenv": "^17.2.3",
+    "express": "^4.19.2",
     "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.5",
     "multer": "^2.0.2",
-    "dayjs": "^1.11.19"
+    "nodemailer": "^6.10.1"
   },
   "devDependencies": {
-    "nodemon": "^3.1.11",
-    "eslint": "^9.39.2"
+    "eslint": "^9.39.2",
+    "nodemon": "^3.1.11"
   }
 }

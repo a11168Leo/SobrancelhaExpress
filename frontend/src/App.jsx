@@ -1,5 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
-import './App.css'
+import './css/App.css'
 import AdminLayout from './layouts/AdminLayout.jsx'
 import AdminDashboard from './pages/admin/AdminDashboard.jsx'
 import AdminAgendamentos from './pages/admin/AdminAgendamentos.jsx'
@@ -14,6 +14,8 @@ import AdminEquipe from './pages/admin/AdminEquipe.jsx'
 import RequireAuth from './components/RequireAuth.jsx'
 import RequireRole from './components/RequireRole.jsx'
 import Login from './pages/Login.jsx'
+import ForgotPassword from './pages/ForgotPassword.jsx'
+import ResetPassword from './pages/ResetPassword.jsx'
 import ProfessionalLayout from './layouts/ProfessionalLayout.jsx'
 import ProfessionalDashboard from './pages/professional/ProfessionalDashboard.jsx'
 import ProfessionalAgendamentos from './pages/professional/ProfessionalAgendamentos.jsx'
@@ -26,6 +28,8 @@ function App() {
     <Routes>
       <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/esqueceu-senha" element={<ForgotPassword />} />
+      <Route path="/resetar-senha" element={<ResetPassword />} />
       <Route
         path="/admin"
         element={

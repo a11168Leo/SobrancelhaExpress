@@ -27,6 +27,9 @@ const UserSchema = new mongoose.Schema(
       default: 'cliente'
     },
     avatar: String
+    ,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
   },
   { timestamps: true }
 );

@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom'
+import '../css/professional.css'
 import { useEffect, useState } from 'react'
 import {
   FiCalendar,

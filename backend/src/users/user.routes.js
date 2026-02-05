@@ -8,7 +8,9 @@ import {
   adminCreateUser,
   adminDeleteUser,
   updateMe,
-  updatePassword
+  updatePassword,
+  forgotPassword,
+  resetPassword
 } from './user.controller.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { allowRoles } from '../middlewares/role.middleware.js';
@@ -19,6 +21,8 @@ const router = Router();
 // Auth
 router.post('/register', register);
 router.post('/login', login);
+router.post('/forgot-password', forgotPassword);
+router.post('/reset-password', resetPassword);
 // Perfil do usuario autenticado
 router.get('/me', authMiddleware, me);
 // Upload de avatar
