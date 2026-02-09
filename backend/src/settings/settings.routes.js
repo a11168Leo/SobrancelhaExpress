@@ -5,7 +5,7 @@ import { getBusinessHours, updateBusinessHours } from './settings.controller.js'
 
 const router = Router();
 
-router.get('/business-hours', authMiddleware, allowRoles('admin'), getBusinessHours);
-router.put('/business-hours', authMiddleware, allowRoles('admin'), updateBusinessHours);
+router.get('/business-hours', authMiddleware, allowRoles('admin', 'profissional'), getBusinessHours);
+router.put('/business-hours', authMiddleware, allowRoles('admin', 'profissional'), updateBusinessHours);
 
 export default router;

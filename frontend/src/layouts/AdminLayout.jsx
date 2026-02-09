@@ -42,7 +42,10 @@ function AdminLayout() {
   const [adminName, setAdminName] = useState('Admin')
   const [isHidden, setIsHidden] = useState(false)
   const [notifications, setNotifications] = useState([])
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(() => {
+    const saved = localStorage.getItem('adminSidebarCollapsed')
+    return saved ? saved === 'true' : false
+  })
   const [adminAvatar, setAdminAvatar] = useState('')
   const navigate = useNavigate()
 
@@ -83,7 +86,7 @@ function AdminLayout() {
   }, [])
 
   return (
-    <div className="app-shell">
+    <div className={`app-shell${collapsed ? ' is-collapsed' : ''}`}>
       <aside className={`sidebar${collapsed ? ' collapsed' : ''}`}>
         <div className="brand">
           <div className="brand-row">
@@ -97,7 +100,13 @@ function AdminLayout() {
             <button
               className="collapse-button"
               type="button"
-              onClick={() => setCollapsed((prev) => !prev)}
+              onClick={() =>
+                setCollapsed((prev) => {
+                  const next = !prev
+                  localStorage.setItem('adminSidebarCollapsed', String(next))
+                  return next
+                })
+              }
               aria-label="Recolher menu"
             >
               {collapsed ? <FiChevronRight /> : <FiChevronLeft />}

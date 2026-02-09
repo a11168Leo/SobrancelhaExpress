@@ -12,8 +12,8 @@ import {
 
 const router = Router();
 
-// Cliente cria para si; admin cria para qualquer cliente
-router.post('/', authMiddleware, allowRoles('admin', 'cliente'), create);
+// Cliente cria para si; admin/profissional criam conforme permissao
+router.post('/', authMiddleware, allowRoles('admin', 'cliente', 'profissional'), create);
 // Admin vê qualquer agenda; profissional vê apenas a sua
 router.get(
   '/professional/:professionalId',

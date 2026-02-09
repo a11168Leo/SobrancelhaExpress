@@ -43,11 +43,11 @@
     transition: transform 0.9s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.6s ease;
 }
 
-.sign-in { left: 0; width: 50%; z-index: 2; }
+.sign-in { left: 0; width: 50%; z-index: 2; pointer-events: auto; }
 .login-shell.active .sign-in { transform: translateX(100%); opacity: 0; }
 
-.sign-up { left: 0; width: 50%; opacity: 0; z-index: 1; }
-.login-shell.active .sign-up { transform: translateX(100%); opacity: 1; z-index: 5; }
+.sign-up { left: 0; width: 50%; opacity: 0; z-index: 1; pointer-events: none; }
+.login-shell.active .sign-up { transform: translateX(100%); opacity: 1; z-index: 5; pointer-events: auto; }
 
 form {
     background-color: #fff;

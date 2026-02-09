@@ -43,8 +43,13 @@ function Login() {
       if (role === 'admin') navigate('/admin/dashboard')
       else if (role === 'profissional') navigate('/profissional/dashboard')
       else navigate('/login')
-    } catch {
-      setError(isRegister ? 'Não foi possível cadastrar.' : 'Credenciais inválidas.')
+    } catch (err) {
+      const serverMessage = err?.response?.data?.message
+      if (serverMessage) {
+        setError(serverMessage)
+      } else {
+        setError(isRegister ? 'Não foi possível cadastrar.' : 'Credenciais inválidas.')
+      }
     }
   }
 
@@ -167,8 +172,10 @@ function Login() {
               <div className="inner-overlay" />
               <div className="toggle-content">
                 <h3>Bem-vinda de volta</h3>
-                <p>Acesse sua conta e continue sua gestão com elegância.</p>
-                <button className="ghost-btn" onClick={() => setIsRegister(true)}>Criar conta</button>
+                <p>Acesse sua conta e continue.</p>
+                <button type="button" className="ghost-btn" onClick={() => setIsRegister(false)}>
+                  Já tenho conta
+                </button>
               </div>
             </div>
             <div className="toggle-panel toggle-right" style={{ backgroundImage: `url(${bgRight})` }}>
@@ -176,7 +183,9 @@ function Login() {
               <div className="toggle-content">
                 <h3>É nova por aqui?</h3>
                 <p>Crie sua conta e comece agora mesmo.</p>
-                <button className="ghost-btn" onClick={() => setIsRegister(false)}>Já tenho conta</button>
+                <button type="button" className="ghost-btn" onClick={() => setIsRegister(true)}>
+                  Criar conta
+                </button>
               </div>
             </div>
           </div>

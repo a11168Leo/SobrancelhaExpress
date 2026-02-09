@@ -12,8 +12,8 @@ router.get('/', authMiddleware, allowRoles('admin', 'profissional'), list);
 // Admin altera status
 router.patch('/:id/status', authMiddleware, allowRoles('admin'), updateStatus);
 // Relatorio por periodo (admin)
-router.get('/report', authMiddleware, allowRoles('admin'), report);
+router.get('/report', authMiddleware, allowRoles('admin', 'profissional'), report);
 // Relatorio comparativo (admin)
-router.get('/report/compare', authMiddleware, allowRoles('admin'), reportCompare);
+router.get('/report/compare', authMiddleware, allowRoles('admin', 'profissional'), reportCompare);
 
 export default router;

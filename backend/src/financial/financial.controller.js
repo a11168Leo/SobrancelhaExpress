@@ -95,7 +95,10 @@ export const report = async (req, res) => {
       return res.status(400).json({ message: 'Datas invalidas' });
     }
 
-    const data = await reportByPeriod(startDate, endDate, professionalId);
+    const scopedProfessionalId =
+      req.user.role === 'profissional' ? req.user.id : professionalId;
+
+    const data = await reportByPeriod(startDate, endDate, scopedProfessionalId);
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao gerar relatorio' });
@@ -125,7 +128,10 @@ export const reportCompare = async (req, res) => {
       return res.status(400).json({ message: 'Datas invalidas' });
     }
 
-    const data = await compareByPeriod(aStart, aEnd, bStart, bEnd, professionalId);
+    const scopedProfessionalId =
+      req.user.role === 'profissional' ? req.user.id : professionalId;
+
+    const data = await compareByPeriod(aStart, aEnd, bStart, bEnd, scopedProfessionalId);
     res.json(data);
   } catch (error) {
     res.status(500).json({ message: 'Erro ao gerar relatorio comparativo' });

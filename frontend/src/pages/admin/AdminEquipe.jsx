@@ -86,7 +86,7 @@ function AdminEquipe() {
 
       <div className="card">
         <h3>Profissionais cadastrados</h3>
-        <table className="table">
+        <table className="table table-compact">
           <thead>
             <tr>
               <th>Nome</th>
@@ -99,7 +99,7 @@ function AdminEquipe() {
             {profissionais.map((item) => (
               <tr key={item._id || item.id}>
                 <td>{item.name}</td>
-                <td>{item.email}</td>
+                <td title={item.email}>{item.email}</td>
                 <td>{item.phone || '-'}</td>
                 <td>
                   <button className="btn" type="button" onClick={() => removeProfissional(item._id || item.id)}>

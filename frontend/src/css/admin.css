@@ -14,6 +14,8 @@
   --radius-lg: 22px;
   --radius-md: 16px;
   --radius-sm: 12px;
+  --sidebar-width: 280px;
+  --transition-speed: 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 * {
@@ -29,6 +31,7 @@ body {
     radial-gradient(circle at 90% 0%, rgba(217, 136, 179, 0.15), transparent 42%),
     linear-gradient(160deg, var(--bg), var(--bg-deep));
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 a {
@@ -39,13 +42,21 @@ a {
 #root {
   min-height: 100vh;
   width: 100%;
+  overflow-x: hidden;
 }
 
 .app-shell {
-  display: flex;
+  display: grid;
+  grid-template-columns: [sidebar] var(--sidebar-width) [content] minmax(0, 1fr);
   min-height: 100vh;
   align-items: stretch;
   overflow-x: hidden;
+  width: 100%;
+  transition: grid-template-columns var(--transition-speed);
+}
+
+.app-shell.is-collapsed {
+  --sidebar-width: 110px;
 }
 
 .sidebar {
@@ -58,11 +69,14 @@ a {
   top: 0;
   min-height: 100vh;
   align-self: stretch;
-  width: 280px;
-  max-width: 280px;
-  flex: 0 0 280px;
+  width: var(--sidebar-width);
+  inline-size: var(--sidebar-width);
+  max-inline-size: var(--sidebar-width);
+  grid-column: sidebar;
   box-shadow: 12px 0 40px rgba(217, 136, 179, 0.25);
-  transition: width 220ms ease;
+  transition: width var(--transition-speed);
+  overflow: hidden;
+  contain: layout size paint;
 }
 
 .profile-mini {
@@ -83,9 +97,6 @@ a {
 }
 
 .sidebar.collapsed {
-  width: 110px;
-  max-width: 110px;
-  flex: 0 0 110px;
   padding: 2rem 1rem;
 }
 
@@ -175,6 +186,13 @@ a {
   transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
 }
 
+.sidebar-link span,
+.brand-title {
+  white-space: nowrap;
+  opacity: 1;
+  transition: opacity 150ms ease;
+}
+
 .sidebar-link:hover {
   transform: scale(1.05);
   background: rgba(255, 255, 255, 0.14);
@@ -202,8 +220,50 @@ a {
 .main {
   padding: 2.5rem 3rem 3.5rem;
   min-width: 0;
-  overflow-x: auto;
+  overflow-x: hidden;
   flex: 1 1 auto;
+  max-width: 100%;
+  grid-column: content;
+}
+
+.page,
+.card {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.table {
+  width: 100%;
+  max-width: 100%;
+}
+
+.fc,
+.fc-view-harness,
+.fc-scrollgrid,
+.fc-scrollgrid-section,
+.fc-scrollgrid-sync-table {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.fc {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.fc .fc-scrollgrid,
+.fc .fc-scrollgrid table,
+.fc .fc-scrollgrid-section table {
+  width: 100% !important;
+  max-width: 100% !important;
+  table-layout: fixed;
+}
+
+canvas {
+  display: block;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
 }
 
 .topbar {
@@ -370,6 +430,26 @@ a {
   border-bottom: 1px solid var(--stroke);
 }
 
+.table-compact th,
+.table-compact td {
+  padding: 0.55rem 0.7rem;
+  font-size: 0.92rem;
+}
+
+.table-compact th:nth-child(2),
+.table-compact td:nth-child(2) {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-compact th:nth-child(3),
+.table-compact td:nth-child(3) {
+  max-width: 140px;
+  white-space: nowrap;
+}
+
 .table th {
   font-size: 0.85rem;
   text-transform: uppercase;
@@ -400,13 +480,15 @@ a {
 
 @media (max-width: 960px) {
   .app-shell {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
 
   .sidebar {
     position: relative;
     width: 100%;
     max-width: 100%;
+    min-width: 100%;
+    inline-size: 100%;
     flex: 0 0 auto;
     min-height: auto;
     border-bottom: 1px solid rgba(255, 247, 238, 0.08);
@@ -415,6 +497,8 @@ a {
   .sidebar.collapsed {
     width: 100%;
     max-width: 100%;
+    min-width: 100%;
+    inline-size: 100%;
     padding: 1.5rem;
   }
 

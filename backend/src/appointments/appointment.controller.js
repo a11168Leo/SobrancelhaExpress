@@ -8,17 +8,17 @@ import {
   updateAppointmentStatus,
   findConflictingAppointmentExcluding,
   updateAppointment
-} from './appointment.service.js';
-import { findServiceById } from '../services/service.service.js';
-import { createFinancial, findFinancialByAppointment } from '../financial/financial.service.js';
+} from './appointment.service.js'
+import { findServiceById } from '../services/service.service.js'
+import { createFinancial, findFinancialByAppointment } from '../financial/financial.service.js'
 
-// Converte string/data em Date válido
+// Converte string/data em Date valido
 const parseDate = (value) => {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? null : date;
-};
+  const date = new Date(value)
+  return Number.isNaN(date.getTime()) ? null : date
+}
 
-// Cria agendamento (cliente cria para si; admin pode criar para qualquer cliente)
+// Cria agendamento (cliente cria para si; admin/profissional conforme permissao)
 export const create = async (req, res) => {
   try {
     const {
@@ -29,63 +29,63 @@ export const create = async (req, res) => {
       notes,
       clientId,
       serviceId
-    } = req.body;
+    } = req.body
 
     if (!professionalId || !startTime) {
-      return res.status(400).json({ message: 'professionalId e startTime são obrigatórios' });
+      return res.status(400).json({ message: 'professionalId e startTime sao obrigatorios' })
     }
 
-    const start = parseDate(startTime);
+    const start = parseDate(startTime)
     if (!start) {
-      return res.status(400).json({ message: 'startTime inválido' });
+      return res.status(400).json({ message: 'startTime invalido' })
     }
 
-    let end = null;
+    let end = null
     if (endTime) {
-      end = parseDate(endTime);
+      end = parseDate(endTime)
       if (!end) {
-        return res.status(400).json({ message: 'endTime inválido' });
+        return res.status(400).json({ message: 'endTime invalido' })
       }
     } else if (durationMinutes) {
-      const minutes = Number(durationMinutes);
+      const minutes = Number(durationMinutes)
       if (!Number.isFinite(minutes) || minutes <= 0) {
-        return res.status(400).json({ message: 'durationMinutes inválido' });
+        return res.status(400).json({ message: 'durationMinutes invalido' })
       }
-      end = new Date(start.getTime() + minutes * 60 * 1000);
+      end = new Date(start.getTime() + minutes * 60 * 1000)
     } else if (serviceId) {
-      const service = await findServiceById(serviceId);
+      const service = await findServiceById(serviceId)
       if (!service) {
-        return res.status(404).json({ message: 'Serviço não encontrado' });
+        return res.status(404).json({ message: 'Servico nao encontrado' })
       }
       if (!service.durationMinutes || service.durationMinutes <= 0) {
-        return res.status(400).json({ message: 'Serviço sem duração válida' });
+        return res.status(400).json({ message: 'Servico sem duracao valida' })
       }
-      const durationToUse = service.maxDurationMinutes || service.durationMinutes;
-      end = new Date(start.getTime() + durationToUse * 60 * 1000);
+      const durationToUse = service.maxDurationMinutes || service.durationMinutes
+      end = new Date(start.getTime() + durationToUse * 60 * 1000)
     } else {
       return res
         .status(400)
-        .json({ message: 'endTime ou durationMinutes é obrigatório' });
+        .json({ message: 'endTime ou durationMinutes e obrigatorio' })
     }
 
     if (start >= end) {
-      return res.status(400).json({ message: 'startTime deve ser menor que endTime' });
+      return res.status(400).json({ message: 'startTime deve ser menor que endTime' })
     }
 
-    if (req.user.role === 'profissional') {
-      return res.status(403).json({ message: 'Profissional não pode criar agendamentos' });
+    if (req.user.role === 'profissional' && professionalId !== req.user.id) {
+      return res.status(403).json({ message: 'Profissional nao pode criar para outra agenda' })
     }
 
-    const conflict = await findConflictingAppointment(professionalId, start, end);
+    const conflict = await findConflictingAppointment(professionalId, start, end)
     if (conflict) {
-      return res.status(409).json({ message: 'Horário em conflito' });
+      return res.status(409).json({ message: 'Horario em conflito' })
     }
 
     const resolvedClientId =
-      req.user.role === 'cliente' ? req.user.id : clientId;
+      req.user.role === 'cliente' ? req.user.id : clientId
 
     if (!resolvedClientId) {
-      return res.status(400).json({ message: 'clientId é obrigatório para admin' });
+      return res.status(400).json({ message: 'clientId e obrigatorio para admin/profissional' })
     }
 
     const appointment = await createAppointment({
@@ -95,79 +95,79 @@ export const create = async (req, res) => {
       startTime: start,
       endTime: end,
       notes
-    });
+    })
 
-    res.status(201).json({ appointment });
+    res.status(201).json({ appointment })
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao criar agendamento' });
+    res.status(500).json({ message: 'Erro ao criar agendamento' })
   }
-};
+}
 
-// Lista agenda por profissional (profissional só vê a sua; admin vê qualquer)
+// Lista agenda por profissional (profissional so ve a sua; admin ve qualquer)
 export const listByProfessional = async (req, res) => {
   try {
-    const { professionalId } = req.params;
+    const { professionalId } = req.params
 
     if (req.user.role === 'profissional' && professionalId !== req.user.id) {
-      return res.status(403).json({ message: 'Sem permissão para ver outra agenda' });
+      return res.status(403).json({ message: 'Sem permissao para ver outra agenda' })
     }
 
-    const appointments = await listAppointmentsByProfessional(professionalId);
-    res.json({ appointments });
+    const appointments = await listAppointmentsByProfessional(professionalId)
+    res.json({ appointments })
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao listar agendamentos' });
+    res.status(500).json({ message: 'Erro ao listar agendamentos' })
   }
-};
+}
 
-// Lista agenda por cliente (cliente só vê o seu; admin vê qualquer)
+// Lista agenda por cliente (cliente so ve o seu; admin ve qualquer)
 export const listByClient = async (req, res) => {
   try {
-    const { clientId } = req.params;
+    const { clientId } = req.params
 
     if (req.user.role === 'cliente' && clientId !== req.user.id) {
-      return res.status(403).json({ message: 'Sem permissão para ver outro cliente' });
+      return res.status(403).json({ message: 'Sem permissao para ver outro cliente' })
     }
 
-    const appointments = await listAppointmentsByClient(clientId);
-    res.json({ appointments });
+    const appointments = await listAppointmentsByClient(clientId)
+    res.json({ appointments })
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao listar agendamentos' });
+    res.status(500).json({ message: 'Erro ao listar agendamentos' })
   }
-};
+}
 
 // Atualiza status (admin ou profissional dono do atendimento)
 export const updateStatus = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status, serviceId } = req.body;
+    const { id } = req.params
+    const { status, serviceId } = req.body
 
     if (!['scheduled', 'completed', 'cancelled'].includes(status)) {
-      return res.status(400).json({ message: 'Status inválido' });
+      return res.status(400).json({ message: 'Status invalido' })
     }
 
-    const existing = await findAppointmentById(id);
+    const existing = await findAppointmentById(id)
     if (!existing) {
-      return res.status(404).json({ message: 'Agendamento não encontrado' });
+      return res.status(404).json({ message: 'Agendamento nao encontrado' })
     }
 
     if (req.user.role === 'profissional' && String(existing.professional) !== req.user.id) {
-      return res.status(403).json({ message: 'Sem permissão para este agendamento' });
+      return res.status(403).json({ message: 'Sem permissao para este agendamento' })
     }
 
-    const appointment = await updateAppointmentStatus(id, status);
+    const appointment = await updateAppointmentStatus(id, status)
     if (!appointment) {
-      return res.status(404).json({ message: 'Agendamento não encontrado' });
+      return res.status(404).json({ message: 'Agendamento nao encontrado' })
     }
 
-    // Se finalizou o serviço, cria lançamento financeiro (uma única vez)
+    // Se finalizou o servico, cria lancamento financeiro (uma unica vez)
     if (status === 'completed') {
-      const existingFinancial = await findFinancialByAppointment(id);
+      const existingFinancial = await findFinancialByAppointment(id)
       if (!existingFinancial) {
-        let amount = 0;
+        let amount = 0
         if (serviceId) {
-          const service = await findServiceById(serviceId);
+          const service = await findServiceById(serviceId)
           if (service) {
-            amount = service.price;
+            amount = service.price
           }
         }
 
@@ -175,63 +175,63 @@ export const updateStatus = async (req, res) => {
           appointment: id,
           professional: appointment.professional,
           amount,
-          notes: serviceId ? 'Auto gerado pelo fechamento' : 'Auto gerado (sem serviço)'
-        });
+          notes: serviceId ? 'Auto gerado pelo fechamento' : 'Auto gerado (sem servico)'
+        })
       }
     }
 
-    res.json({ appointment });
+    res.json({ appointment })
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao atualizar status' });
+    res.status(500).json({ message: 'Erro ao atualizar status' })
   }
-};
+}
 
 // Lista todos os agendamentos (admin)
 export const listAll = async (_req, res) => {
   try {
-    const appointments = await listAllAppointments();
-    res.json({ appointments });
+    const appointments = await listAllAppointments()
+    res.json({ appointments })
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao listar agendamentos' });
+    res.status(500).json({ message: 'Erro ao listar agendamentos' })
   }
-};
+}
 
 // Atualiza dados do agendamento (admin)
 export const update = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { professionalId, clientId, serviceId, startTime } = req.body;
+    const { id } = req.params
+    const { professionalId, clientId, serviceId, startTime } = req.body
 
-    const existing = await findAppointmentById(id);
+    const existing = await findAppointmentById(id)
     if (!existing) {
-      return res.status(404).json({ message: 'Agendamento não encontrado' });
+      return res.status(404).json({ message: 'Agendamento nao encontrado' })
     }
 
     if (!professionalId || !clientId || !serviceId || !startTime) {
-      return res.status(400).json({ message: 'Preencha todos os campos' });
+      return res.status(400).json({ message: 'Preencha todos os campos' })
     }
 
-    const start = new Date(startTime);
+    const start = new Date(startTime)
     if (Number.isNaN(start.getTime())) {
-      return res.status(400).json({ message: 'startTime inválido' });
+      return res.status(400).json({ message: 'startTime invalido' })
     }
 
-    const service = await findServiceById(serviceId);
+    const service = await findServiceById(serviceId)
     if (!service || !service.durationMinutes) {
-      return res.status(400).json({ message: 'Serviço sem duração válida' });
+      return res.status(400).json({ message: 'Servico sem duracao valida' })
     }
 
-    const durationToUse = service.maxDurationMinutes || service.durationMinutes;
-    const end = new Date(start.getTime() + durationToUse * 60 * 1000);
+    const durationToUse = service.maxDurationMinutes || service.durationMinutes
+    const end = new Date(start.getTime() + durationToUse * 60 * 1000)
 
     const conflict = await findConflictingAppointmentExcluding(
       id,
       professionalId,
       start,
       end
-    );
+    )
     if (conflict) {
-      return res.status(409).json({ message: 'Horário em conflito' });
+      return res.status(409).json({ message: 'Horario em conflito' })
     }
 
     const updated = await updateAppointment(id, {
@@ -240,10 +240,10 @@ export const update = async (req, res) => {
       service: serviceId,
       startTime: start,
       endTime: end
-    });
+    })
 
-    res.json({ appointment: updated });
+    res.json({ appointment: updated })
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao atualizar agendamento' });
+    res.status(500).json({ message: 'Erro ao atualizar agendamento' })
   }
-};
+}

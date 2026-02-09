@@ -7,7 +7,7 @@ const router = Router();
 
 // Rotas de equipe (admin)
 router.get('/professionals', authMiddleware, allowRoles('admin'), listProfessionals);
-router.get('/clients', authMiddleware, allowRoles('admin'), listClients);
+router.get('/clients', authMiddleware, allowRoles('admin', 'profissional'), listClients);
 router.get('/role/:role', authMiddleware, allowRoles('admin'), listByRole);
 
 export default router;

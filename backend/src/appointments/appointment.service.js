@@ -35,7 +35,7 @@ export const findConflictingAppointmentExcluding = (
 export const listAppointmentsByProfessional = (professionalId) => {
   return Appointment.find({ professional: professionalId })
     .sort({ startTime: 1 })
-    .populate('client', 'name email')
+    .populate('client', 'name email phone avatar')
     .populate('service', 'name');
 };
 
@@ -51,7 +51,7 @@ export const listAppointmentsByClient = (clientId) => {
 export const listAllAppointments = () => {
   return Appointment.find({})
     .sort({ startTime: 1 })
-    .populate('client', 'name email')
+    .populate('client', 'name email phone avatar')
     .populate('professional', 'name email')
     .populate('service', 'name durationMinutes maxDurationMinutes');
 };

@@ -9,18 +9,32 @@ function ResetPassword() {
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const submit = async (e) => {
     e.preventDefault()
     setMessage('')
     if (password !== confirm) {
-      setMessage('As senhas não coincidem.')
+      setMessage('As senhas nao coincidem.')
       return
     }
+
     const token = params.get('token')
-    await api.post('/auth/reset-password', { token, newPassword: password })
-    setMessage('Senha alterada com sucesso.')
-    setTimeout(() => navigate('/login'), 1200)
+    if (!token) {
+      setMessage('Token ausente. Refaça o pedido de recuperacao.')
+      return
+    }
+
+    setLoading(true)
+    try {
+      const res = await api.post('/auth/reset-password', { token, newPassword: password })
+      setMessage(res.data?.message || 'Senha alterada com sucesso.')
+      setTimeout(() => navigate('/login'), 1200)
+    } catch (err) {
+      setMessage(err?.response?.data?.message || 'Erro ao redefinir a senha.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -47,7 +61,9 @@ function ResetPassword() {
               onChange={(e) => setConfirm(e.target.value)}
               required
             />
-            <button className="btn" type="submit">Salvar</button>
+            <button className="btn" type="submit" disabled={loading}>
+              {loading ? 'Salvando...' : 'Salvar'}
+            </button>
             {message && <p className="login-error">{message}</p>}
           </form>
         </div>

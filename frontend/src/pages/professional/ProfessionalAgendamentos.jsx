@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import dayjs from 'dayjs'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
@@ -7,6 +8,7 @@ import interactionPlugin from '@fullcalendar/interaction'
 import api from '../../api/api.js'
 
 function ProfessionalAgendamentos() {
+  const [searchParams] = useSearchParams()
   const [appointments, setAppointments] = useState([])
   const [events, setEvents] = useState([])
   const [businessHours, setBusinessHours] = useState({
@@ -15,16 +17,31 @@ function ProfessionalAgendamentos() {
   })
   const [toast, setToast] = useState(null)
   const [selected, setSelected] = useState(null)
+  const [clients, setClients] = useState([])
+  const [services, setServices] = useState([])
+  const [isNewOpen, setIsNewOpen] = useState(false)
+  const [newAppointment, setNewAppointment] = useState({
+    clientId: '',
+    serviceId: '',
+    startTime: '',
+    notes: '',
+  })
+  const [professionalId, setProfessionalId] = useState('')
 
   useEffect(() => {
     const load = async () => {
       const me = await api.get('/auth/me')
-      const [res, settingsRes] = await Promise.all([
+      setProfessionalId(me.data.user.id)
+      const [res, settingsRes, clientsRes, servicesRes] = await Promise.all([
         api.get(`/appointments/professional/${me.data.user.id}`),
         api.get('/settings/business-hours'),
+        api.get('/team/clients'),
+        api.get(`/services?professionalId=${me.data.user.id}`),
       ])
       setAppointments(res.data.appointments || [])
       setBusinessHours(settingsRes.data)
+      setClients(clientsRes.data.users || [])
+      setServices(servicesRes.data.services || [])
       setEvents(
         (res.data.appointments || []).map((item) => ({
           id: item._id,
@@ -35,7 +52,6 @@ function ProfessionalAgendamentos() {
             status: item.status,
             clientName: item.client?.name || 'Cliente',
             serviceName: item.service?.name || 'Serviço',
-            clientId: item.client?._id || item.client,
           },
         }))
       )
@@ -43,9 +59,15 @@ function ProfessionalAgendamentos() {
     load().catch(() => {})
   }, [])
 
+  useEffect(() => {
+    if (searchParams.get('novo') === '1') {
+      setIsNewOpen(true)
+    }
+  }, [searchParams])
+
   const refresh = async () => {
-    const me = await api.get('/auth/me')
-    const res = await api.get(`/appointments/professional/${me.data.user.id}`)
+    if (!professionalId) return
+    const res = await api.get(`/appointments/professional/${professionalId}`)
     setAppointments(res.data.appointments || [])
     setEvents(
       (res.data.appointments || []).map((item) => ({
@@ -57,7 +79,6 @@ function ProfessionalAgendamentos() {
           status: item.status,
           clientName: item.client?.name || 'Cliente',
           serviceName: item.service?.name || 'Serviço',
-          clientId: item.client?._id || item.client,
         },
       }))
     )
@@ -70,16 +91,50 @@ function ProfessionalAgendamentos() {
     ).length
   }, [appointments])
 
+  const monthCount = useMemo(() => {
+    const month = dayjs().format('YYYY-MM')
+    return appointments.filter(
+      (item) => dayjs(item.startTime).format('YYYY-MM') === month
+    ).length
+  }, [appointments])
+
   const showToast = (message) => {
     setToast(message)
     setTimeout(() => setToast(null), 2500)
   }
 
+  const createAppointment = async () => {
+    if (!newAppointment.clientId || !newAppointment.serviceId || !newAppointment.startTime) {
+      showToast('Preencha cliente, serviço e horário.')
+      return
+    }
+    try {
+      await api.post('/appointments', {
+        professionalId,
+        clientId: newAppointment.clientId,
+        serviceId: newAppointment.serviceId,
+        startTime: newAppointment.startTime,
+        notes: newAppointment.notes,
+      })
+      setIsNewOpen(false)
+      setNewAppointment({ clientId: '', serviceId: '', startTime: '', notes: '' })
+      showToast('Agendamento criado com sucesso.')
+      refresh()
+    } catch {
+      showToast('Não foi possível criar o agendamento.')
+    }
+  }
+
   return (
     <section className="page">
-      <div>
-        <h1>Agendamentos</h1>
-        <p className="page-subtitle">Sua agenda completa.</p>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div>
+          <h1>Agendamentos</h1>
+          <p className="page-subtitle">Sua agenda completa.</p>
+        </div>
+        <button className="btn" type="button" onClick={() => setIsNewOpen(true)}>
+          Novo agendamento
+        </button>
       </div>
 
       <div className="stats-grid">
@@ -87,6 +142,11 @@ function ProfessionalAgendamentos() {
           <h3>Agendamentos hoje</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{todayCount}</div>
           <p>Total do dia</p>
+        </article>
+        <article className="card">
+          <h3>Agendamentos no mês</h3>
+          <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{monthCount}</div>
+          <p>Total do mês</p>
         </article>
       </div>
 
@@ -251,6 +311,74 @@ function ProfessionalAgendamentos() {
                   }}
                 >
                   Notificar cliente
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isNewOpen && (
+        <div className="modal-backdrop" onClick={() => setIsNewOpen(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Novo agendamento</h3>
+              <button className="btn" type="button" onClick={() => setIsNewOpen(false)}>
+                Fechar
+              </button>
+            </div>
+            <div style={{ display: 'grid', gap: '0.8rem' }}>
+              <select
+                className="search"
+                value={newAppointment.clientId}
+                onChange={(e) =>
+                  setNewAppointment((prev) => ({ ...prev, clientId: e.target.value }))
+                }
+              >
+                <option value="">Selecione o cliente</option>
+                {clients.map((client) => (
+                  <option key={client._id} value={client._id}>
+                    {client.name}
+                  </option>
+                ))}
+              </select>
+              <select
+                className="search"
+                value={newAppointment.serviceId}
+                onChange={(e) =>
+                  setNewAppointment((prev) => ({ ...prev, serviceId: e.target.value }))
+                }
+              >
+                <option value="">Selecione o serviço</option>
+                {services.map((service) => (
+                  <option key={service._id} value={service._id}>
+                    {service.name}
+                  </option>
+                ))}
+              </select>
+              <input
+                className="search"
+                type="datetime-local"
+                value={newAppointment.startTime}
+                onChange={(e) =>
+                  setNewAppointment((prev) => ({ ...prev, startTime: e.target.value }))
+                }
+              />
+              <textarea
+                className="search"
+                rows={3}
+                placeholder="Observações"
+                value={newAppointment.notes}
+                onChange={(e) =>
+                  setNewAppointment((prev) => ({ ...prev, notes: e.target.value }))
+                }
+              />
+              <div style={{ display: 'flex', gap: '0.6rem' }}>
+                <button className="btn" type="button" onClick={createAppointment}>
+                  Salvar
+                </button>
+                <button className="btn" type="button" onClick={() => setIsNewOpen(false)}>
+                  Cancelar
                 </button>
               </div>
             </div>

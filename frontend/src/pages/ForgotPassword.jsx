@@ -5,12 +5,20 @@ import '../css/login.css'
 function ForgotPassword() {
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const submit = async (e) => {
     e.preventDefault()
     setMessage('')
-    await api.post('/auth/forgot-password', { email })
-    setMessage('Se o email existir, enviaremos as instruções.')
+    setLoading(true)
+    try {
+      const res = await api.post('/auth/forgot-password', { email })
+      setMessage(res.data?.message || 'Se o email existir, enviaremos as instrucoes.')
+    } catch (err) {
+      setMessage(err?.response?.data?.message || 'Erro ao enviar o email.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -29,7 +37,9 @@ function ForgotPassword() {
               onChange={(e) => setEmail(e.target.value)}
               required
             />
-            <button className="btn" type="submit">Enviar</button>
+            <button className="btn" type="submit" disabled={loading}>
+              {loading ? 'Enviando...' : 'Enviar'}
+            </button>
             {message && <p className="login-error">{message}</p>}
           </form>
         </div>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
-import api from '../../api/api.js'
+import api, { API_BASE_URL } from '../../api/api.js'
 
 const getTodayRange = () => {
   const start = dayjs().startOf('day')
@@ -22,7 +22,12 @@ function AdminDashboard() {
     clients: 0,
     services: 0,
   })
-  const [agenda, setAgenda] = useState([])
+  const [todayClients, setTodayClients] = useState([])
+  const [statusFilter, setStatusFilter] = useState('all')
+  const [goal, setGoal] = useState(() => {
+    const saved = localStorage.getItem('adminGoal')
+    return saved ? Number(saved) : 1000
+  })
 
   const range = useMemo(() => {
     return filter === 'today' ? getTodayRange() : getWeekRange()
@@ -41,14 +46,24 @@ function AdminDashboard() {
       ])
 
       const appointments = appointmentsRes.data.appointments || []
-      const agendaItems = appointments.slice(0, 5).map((item) => ({
+      const todayKey = dayjs().format('YYYY-MM-DD')
+      const todayAppointments = appointments.filter(
+        (item) => dayjs(item.startTime).format('YYYY-MM-DD') === todayKey
+      )
+      const filteredToday = statusFilter === 'all'
+        ? todayAppointments
+        : todayAppointments.filter((item) => item.status === statusFilter)
+
+      const agendaItems = filteredToday.slice(0, 6).map((item) => ({
         time: dayjs(item.startTime).format('HH:mm'),
         client: item.client?.name || 'Cliente',
+        phone: item.client?.phone || '-',
         service: item.service?.name || 'Serviço',
         status: item.status || 'scheduled',
+        avatar: item.client?.avatar || '',
       }))
 
-      setAgenda(agendaItems)
+      setTodayClients(agendaItems)
       setStats({
         appointments: appointments.length,
         revenue: reportRes.data.total || 0,
@@ -58,7 +73,7 @@ function AdminDashboard() {
     }
 
     load().catch(() => {})
-  }, [range])
+  }, [range, statusFilter])
 
   return (
     <section className="page">
@@ -110,27 +125,79 @@ function AdminDashboard() {
 
       <div className="stats-grid">
         <div className="card">
-          <h3>Agenda de hoje</h3>
+          <h3>Clientes agendados hoje</h3>
+          <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '0.8rem' }}>
+            <select
+              className="search"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="all">Todos os status</option>
+              <option value="scheduled">Agendado</option>
+              <option value="completed">Finalizado</option>
+              <option value="cancelled">Cancelado</option>
+            </select>
+          </div>
           <table className="table">
             <thead>
               <tr>
                 <th>Horário</th>
                 <th>Cliente</th>
+                <th>Telefone</th>
                 <th>Serviço</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody>
-              {agenda.slice(0, 3).map((item) => (
+              {todayClients.map((item) => (
                 <tr key={`${item.time}-${item.client}`}>
                   <td>{item.time}</td>
-                  <td>{item.client}</td>
+                  <td>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                      {item.avatar ? (
+                        <img
+                          src={item.avatar.startsWith('http') ? item.avatar : `${API_BASE_URL}${item.avatar}`}
+                          alt={item.client}
+                          style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            width: '28px',
+                            height: '28px',
+                            borderRadius: '50%',
+                            background: 'rgba(217, 136, 179, 0.2)',
+                            display: 'grid',
+                            placeItems: 'center',
+                            fontSize: '0.8rem',
+                            fontWeight: 600,
+                            color: 'var(--accent-strong)',
+                          }}
+                        >
+                          {item.client?.[0] || 'C'}
+                        </div>
+                      )}
+                      <span>{item.client}</span>
+                    </div>
+                  </td>
+                  <td>{item.phone}</td>
                   <td>{item.service}</td>
                   <td>
-                    <span className="pill">{item.status}</span>
+                    <span className="pill">
+                      {item.status === 'completed'
+                        ? 'Finalizado'
+                        : item.status === 'cancelled'
+                          ? 'Cancelado'
+                          : 'Agendado'}
+                    </span>
                   </td>
                 </tr>
               ))}
+              {todayClients.length === 0 && (
+                <tr>
+                  <td colSpan={5}>Sem agendamentos para hoje.</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
@@ -144,13 +211,15 @@ function AdminDashboard() {
               min="0"
               max="5000"
               step="50"
-              value={stats.goal || 1000}
-              onChange={(e) =>
-                setStats((prev) => ({ ...prev, goal: Number(e.target.value) }))
-              }
+              value={goal}
+              onChange={(e) => {
+                const value = Number(e.target.value)
+                setGoal(value)
+                localStorage.setItem('adminGoal', String(value))
+              }}
             />
             <div style={{ fontWeight: 600 }}>
-              Meta: EUR {(stats.goal || 1000).toFixed(2)}
+              Meta: EUR {goal.toFixed(2)}
             </div>
             <div style={{ fontSize: '0.95rem', color: 'var(--muted)' }}>
               Atual: EUR {Number(stats.revenue).toFixed(2)}
@@ -165,20 +234,14 @@ function AdminDashboard() {
             >
               <div
                 style={{
-                  width: `${Math.min(
-                    100,
-                    ((stats.revenue || 0) / (stats.goal || 1000)) * 100
-                  )}%`,
+                  width: `${Math.min(100, ((stats.revenue || 0) / goal) * 100)}%`,
                   height: '100%',
                   background: 'var(--accent)',
                 }}
               />
             </div>
             <div style={{ fontSize: '0.9rem' }}>
-              {Math.min(
-                100,
-                ((stats.revenue || 0) / (stats.goal || 1000)) * 100
-              ).toFixed(1)}
+              {Math.min(100, ((stats.revenue || 0) / goal) * 100).toFixed(1)}
               % atingido
             </div>
           </div>

@@ -22,6 +22,10 @@ import ProfessionalAgendamentos from './pages/professional/ProfessionalAgendamen
 import ProfessionalServicos from './pages/professional/ProfessionalServicos.jsx'
 import ProfessionalFinanceiro from './pages/professional/ProfessionalFinanceiro.jsx'
 import ProfessionalPerfil from './pages/professional/ProfessionalPerfil.jsx'
+import ProfessionalClientes from './pages/professional/ProfessionalClientes.jsx'
+import ProfessionalRelatorio from './pages/professional/ProfessionalRelatorio.jsx'
+import ProfessionalNotificacoes from './pages/professional/ProfessionalNotificacoes.jsx'
+import ProfessionalConfiguracoes from './pages/professional/ProfessionalConfiguracoes.jsx'
 
 function App() {
   return (
@@ -59,9 +63,13 @@ function App() {
       >
         <Route path="dashboard" element={<ProfessionalDashboard />} />
         <Route path="agendamentos" element={<ProfessionalAgendamentos />} />
+        <Route path="clientes" element={<ProfessionalClientes />} />
         <Route path="servicos" element={<ProfessionalServicos />} />
         <Route path="financeiro" element={<ProfessionalFinanceiro />} />
+        <Route path="relatorio" element={<ProfessionalRelatorio />} />
         <Route path="perfil" element={<ProfessionalPerfil />} />
+        <Route path="notificacoes" element={<ProfessionalNotificacoes />} />
+        <Route path="configuracoes" element={<ProfessionalConfiguracoes />} />
       </Route>
       <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
     </Routes>
