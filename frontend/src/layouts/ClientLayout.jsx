@@ -2,11 +2,14 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import { useEffect, useMemo, useState } from 'react'
 import {
   FiChevronDown,
+  FiFacebook,
   FiHome,
   FiInfo,
+  FiInstagram,
   FiMapPin,
   FiPhone,
 } from 'react-icons/fi'
+import { FaWhatsapp } from 'react-icons/fa'
 import api from '../api/api.js'
 import '../css/client.css'
 import logo from '../assets/Logo2.svg'
@@ -19,9 +22,8 @@ const heroImages = Object.values(
 )
 
 const salonUnits = [
-  { name: 'Sobrancelha Express Centro', phone: '+351 910 000 111' },
-  { name: 'Sobrancelha Express Norte', phone: '+351 910 000 222' },
-  { name: 'Sobrancelha Express Sul', phone: '+351 910 000 333' },
+  { name: 'Sobrancelhas Express Almada', phone: '+351 964 045 871' },
+  { name: 'Sobrancelhas Express Cascais', phone: '+351 938 332 778' },
 ]
 
 function ClientLayout() {
@@ -29,6 +31,7 @@ function ClientLayout() {
   const [slideIndex, setSlideIndex] = useState(0)
   const [serviceCategories, setServiceCategories] = useState([])
   const [isServicesOpen, setIsServicesOpen] = useState(false)
+  const [isLocationOpen, setIsLocationOpen] = useState(false)
   const [isContactOpen, setIsContactOpen] = useState(false)
   const [now, setNow] = useState(() => new Date())
   const token = localStorage.getItem('token') || sessionStorage.getItem('token')
@@ -146,14 +149,41 @@ function ClientLayout() {
                 Sobre nos
               </button>
 
-              <button
-                type="button"
-                className="client-menu-link"
-                onClick={() => navigate('/cliente/servicos#localizacao')}
-              >
-                <FiMapPin size={16} />
-                Localizacao
-              </button>
+              <div className="client-menu-dropdown">
+                <button
+                  type="button"
+                  className="client-menu-link"
+                  onClick={() => setIsLocationOpen((prev) => !prev)}
+                >
+                  <FiMapPin size={16} />
+                  Localizacao
+                  <FiChevronDown className={`client-chevron${isLocationOpen ? ' is-open' : ''}`} size={16} />
+                </button>
+                {isLocationOpen && (
+                  <div className="client-dropdown-panel">
+                    <button
+                      type="button"
+                      className="client-dropdown-item"
+                      onClick={() => {
+                        setIsLocationOpen(false)
+                        navigate('/cliente/servicos#localizacao-almada')
+                      }}
+                    >
+                      Almada
+                    </button>
+                    <button
+                      type="button"
+                      className="client-dropdown-item"
+                      onClick={() => {
+                        setIsLocationOpen(false)
+                        navigate('/cliente/servicos#localizacao-cascais')
+                      }}
+                    >
+                      Cascais
+                    </button>
+                  </div>
+                )}
+              </div>
 
               <div className="client-menu-dropdown">
                 <button
@@ -204,8 +234,37 @@ function ClientLayout() {
       </main>
 
       <footer className="client-footer">
-        <p>Sobrancelha Express</p>
-        <span>Atendimento de segunda a sabado</span>
+        <div className="client-footer-socials" aria-label="Redes sociais do salao">
+          <a
+            className="social-instagram"
+            href="https://www.instagram.com/sobrancelhasexpress/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram do salao"
+          >
+            <FiInstagram size={20} />
+          </a>
+          <a
+            className="social-facebook"
+            href="https://www.facebook.com/SobrancelhasExpresspt/?locale=pt_PT"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Facebook do salao"
+          >
+            <FiFacebook size={20} />
+          </a>
+          <a
+            className="social-whatsapp"
+            href="https://wa.me/351938332778"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="WhatsApp do salao"
+          >
+            <FaWhatsapp size={20} />
+          </a>
+        </div>
+        <p>Sobrancelhas Express</p>
+        <span>Atendimento de segunda a sabado | WhatsApp: +351 938 332 778</span>
       </footer>
     </div>
   )

@@ -1,23 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { FiMapPin, FiPhone } from 'react-icons/fi'
 import api, { API_BASE_URL } from '../../api/api.js'
 
-const salons = [
-  {
-    name: 'Sobrancelha Express Centro',
-    address: 'Rua Principal, 150 - Centro',
-    phone: '+351 910 000 111',
-  },
-  {
-    name: 'Sobrancelha Express Norte',
-    address: 'Avenida Norte, 88 - Porto',
-    phone: '+351 910 000 222',
-  },
-  {
-    name: 'Sobrancelha Express Sul',
-    address: 'Praca do Sul, 45 - Lisboa',
-    phone: '+351 910 000 333',
-  },
+const cascaisMapsLink =
+  'https://www.google.com/maps/search/?api=1&query=R.%20do%20Mercado%2051%20loja%202%2C%202785-630%20Sao%20Domingos%20de%20Rana'
+const almadaMapsLink =
+  'https://www.google.com/maps/search/?api=1&query=Avenida%20da%20Fundacao%2008%20Loja7%2C%202805-180%20Almada'
+const weeklyHours = [
+  ['Segunda-feira', '09h - 18h'],
+  ['Terca-feira', '09h - 18h'],
+  ['Quarta-feira', '09h - 18h'],
+  ['Quinta-feira', '09h - 18h'],
+  ['Sexta-feira', '09h - 18h'],
+  ['Sabado', '09h - 18h'],
+  ['Domingo', 'Fechado'],
 ]
 
 function ClientServicos() {
@@ -278,27 +275,95 @@ function ClientServicos() {
         </div>
       </div>
 
-      <div className="card client-section" id="localizacao">
+      <div className="client-section" id="localizacao">
         <h3>Localizacao</h3>
-        <div className="client-location-grid">
-          {salons.map((salon) => (
-            <article key={salon.name} className="client-service-card">
-              <h3>{salon.name}</h3>
-              <p style={{ margin: 0, color: 'var(--client-muted)' }}>{salon.address}</p>
-            </article>
-          ))}
-        </div>
-      </div>
+        <div className="client-location-units">
+          <article id="localizacao-almada" className="client-location-unit client-location-unit-card">
+            <h4>Sobrancelhas Express Almada</h4>
+            <p className="client-location-address-line">
+              <FiMapPin size={16} />
+              <a
+                href={almadaMapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="client-location-link"
+              >
+                Avenida da Fundacao 08 Loja7, 2805-180 Almada
+              </a>
+            </p>
+            <p className="client-location-address-line">
+              <FiPhone size={16} />
+              <a href="tel:+351964045871" className="client-location-link">
+                +351 964 045 871
+              </a>
+            </p>
+            <div className="client-location-split">
+              <div className="client-location-info">
+                <h5>Horarios</h5>
+                <div className="client-hours-list" aria-label="Horarios de funcionamento de Almada">
+                  {weeklyHours.map(([day, hours]) => (
+                    <div key={`almada-${day}`} className="client-hours-row">
+                      <span>{day}</span>
+                      <span>{hours}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="client-location-map-wrap">
+                <iframe
+                  title="Mapa da unidade de Almada"
+                  className="client-location-map"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src="https://www.google.com/maps?q=Avenida%20da%20Fundacao%2008%20Loja7%2C%202805-180%20Almada&output=embed"
+                />
+              </div>
+            </div>
+          </article>
 
-      <div className="card client-section" id="contato">
-        <h3>Contato</h3>
-        <div className="client-contact-grid">
-          {salons.map((salon) => (
-            <article key={salon.name} className="client-service-card">
-              <h3>{salon.name}</h3>
-              <p style={{ margin: 0, color: 'var(--client-muted)' }}>{salon.phone}</p>
-            </article>
-          ))}
+          <article id="localizacao-cascais" className="client-location-unit client-location-unit-card">
+            <h4>Sobrancelhas Express Cascais</h4>
+            <p className="client-location-address-line">
+              <FiMapPin size={16} />
+              <a
+                href={cascaisMapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="client-location-link"
+              >
+                R. do Mercado 51 loja 2, 2785-630 Sao Domingos de Rana
+              </a>
+            </p>
+            <p className="client-location-address-line">
+              <FiPhone size={16} />
+              <a href="tel:+351938332778" className="client-location-link">
+                +351 938 332 778
+              </a>
+            </p>
+            <div className="client-location-split">
+              <div className="client-location-map-wrap">
+                <iframe
+                  title="Mapa da unidade de Cascais"
+                  className="client-location-map"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  src="https://www.google.com/maps?q=R.%20do%20Mercado%2051%20loja%202%2C%202785-630%20Sao%20Domingos%20de%20Rana&output=embed"
+                />
+              </div>
+
+              <div className="client-location-info">
+                <h5>Horarios</h5>
+                <div className="client-hours-list" aria-label="Horarios de funcionamento de Cascais">
+                  {weeklyHours.map(([day, hours]) => (
+                    <div key={`cascais-${day}`} className="client-hours-row">
+                      <span>{day}</span>
+                      <span>{hours}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </article>
         </div>
       </div>
     </section>
