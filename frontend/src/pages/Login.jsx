@@ -42,7 +42,7 @@ function Login() {
 
       if (role === 'admin') navigate('/admin/dashboard')
       else if (role === 'profissional') navigate('/profissional/dashboard')
-      else navigate('/login')
+      else navigate('/cliente/dashboard')
     } catch (err) {
       const serverMessage = err?.response?.data?.message
       if (serverMessage) {

@@ -1,11 +1,9 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import '../css/admin.css'
 import { useEffect, useState } from 'react'
 import {
   FiBell,
   FiCalendar,
-  FiChevronLeft,
-  FiChevronRight,
   FiDollarSign,
   FiGrid,
   FiLogOut,
@@ -16,6 +14,7 @@ import {
   FiUsers,
   FiBarChart2,
 } from 'react-icons/fi'
+import { Offcanvas, Toast } from 'bootstrap'
 import api, { API_BASE_URL } from '../api/api.js'
 import logo from '../assets/Logo2.svg'
 
@@ -40,14 +39,15 @@ const menuConta = [
 
 function AdminLayout() {
   const [adminName, setAdminName] = useState('Admin')
-  const [isHidden, setIsHidden] = useState(false)
   const [notifications, setNotifications] = useState([])
-  const [collapsed, setCollapsed] = useState(() => {
-    const saved = localStorage.getItem('adminSidebarCollapsed')
-    return saved ? saved === 'true' : false
-  })
   const [adminAvatar, setAdminAvatar] = useState('')
+  const [toastData, setToastData] = useState({
+    title: 'Notificações',
+    time: 'Agora',
+    message: 'Sem notificações.',
+  })
   const navigate = useNavigate()
+  const location = useLocation()
 
   useEffect(() => {
     const load = async () => {
@@ -57,7 +57,7 @@ function AdminLayout() {
       setAdminAvatar(avatar)
     }
 
-    load().catch(() => {})
+    load().catch(() => { })
   }, [])
 
   useEffect(() => {
@@ -66,176 +66,208 @@ function AdminLayout() {
       setNotifications(res.data.notifications || [])
     }
 
-    loadNotifications().catch(() => {})
+    loadNotifications().catch(() => { })
   }, [])
 
-  useEffect(() => {
-    let lastScroll = window.scrollY
-    const onScroll = () => {
-      const current = window.scrollY
-      if (current > lastScroll && current > 40) {
-        setIsHidden(true)
-      } else {
-        setIsHidden(false)
-      }
-      lastScroll = current
+  const showNotificationToast = () => {
+    const latest = notifications[0]
+    if (latest) {
+      setToastData({
+        title: latest.title || 'Notificação',
+        time: 'Agora',
+        message: latest.message || '',
+      })
+    } else {
+      setToastData({
+        title: 'Notificções',
+        time: 'Agora',
+        message: 'Sem notificações.',
+      })
     }
+    const el = document.getElementById('notifyToast')
+    if (el) {
+      const toast = Toast.getOrCreateInstance(el)
+      toast.show()
+    }
+  }
 
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+  const closeOffcanvas = () => {
+    const el = document.getElementById('adminOffcanvas')
+    if (!el) return
+    const instance = Offcanvas.getInstance(el)
+    if (instance) instance.hide()
+  }
 
   return (
-    <div className={`app-shell${collapsed ? ' is-collapsed' : ''}`}>
-      <aside className={`sidebar${collapsed ? ' collapsed' : ''}`}>
-        <div className="brand">
-          <div className="brand-row">
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <img
-                src={logo}
-                alt="Logo do salão"
-                className="brand-logo"
-              />
-            </div>
+    <div className="app-shell salon-shell">
+      <header className="salon-header">
+        <nav className="navbar salon-navbar navbar-expand-lg">
+          <div className="container-fluid">
             <button
-              className="collapse-button"
+              className="navbar-brand salon-brand"
               type="button"
-              onClick={() =>
-                setCollapsed((prev) => {
-                  const next = !prev
-                  localStorage.setItem('adminSidebarCollapsed', String(next))
-                  return next
-                })
-              }
-              aria-label="Recolher menu"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#adminOffcanvas"
+              aria-controls="adminOffcanvas"
             >
-              {collapsed ? <FiChevronRight /> : <FiChevronLeft />}
+              <img src={logo} alt="Logo do salão" className="brand-logo" />
+              <div className="salon-brand-text">
+                <span className="salon-brand-title">Painel Admin</span>
+                <span className="salon-greeting">Olá, {adminName}</span>
+              </div>
             </button>
-          </div>
-          <div className="brand-subtitle">Painel administrativo</div>
-        </div>
-        {adminAvatar && (
-          <div className="profile-mini">
-            <img
-              src={adminAvatar.startsWith('http') ? adminAvatar : `${API_BASE_URL}${adminAvatar}`}
-              alt="Avatar"
-            />
-            <div>
-              <div style={{ fontWeight: 600 }}>{adminName}</div>
-              <div style={{ fontSize: '0.8rem', opacity: 0.85 }}>Admin</div>
-            </div>
-          </div>
-        )}
-
-        <div className="sidebar-section">
-          <h4>Menu Principal</h4>
-          <nav className="sidebar-nav">
-            {menuPrincipal.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `sidebar-link${isActive ? ' active' : ''}`
-                }
+            {/* Form corrigido: classes atualizadas para matching com CSS */}
+            <form className="salon-search" role="search">
+              <input
+                className="salon-input"
+                type="search"
+                placeholder="Pesquisar cliente, serviço, profissional"
+              />
+              <button className="salon-btn-outline" type="submit">
+                Buscar
+              </button>
+            </form>
+            <div className="salon-actions">
+              <button
+                className="btn salon-btn-icon"
+                type="button"
+                onClick={showNotificationToast}
+                aria-label="Notificações"
               >
-                <item.icon size={18} />
-                <span>{item.label}</span>
-              </NavLink>
-            ))}
-          </nav>
-        </div>
-
-        <div className="sidebar-section">
-          <h4>Gestao</h4>
-          <nav className="sidebar-nav">
-            {menuGestao.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `sidebar-link${isActive ? ' active' : ''}`
-                }
-              >
-                <item.icon size={18} />
-                <span>{item.label}</span>
-              </NavLink>
-            ))}
-          </nav>
-        </div>
-
-        <div className="sidebar-section">
-          <h4>Conta</h4>
-          <nav className="sidebar-nav">
-            {menuConta.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                className={({ isActive }) =>
-                  `sidebar-link${isActive ? ' active' : ''}`
-                }
-              >
-                <item.icon size={18} />
-                <span>{item.label}</span>
-              </NavLink>
-            ))}
-          </nav>
-        </div>
-
-        <div className="sidebar-exit">
-          <button
-            className="sidebar-link"
-            type="button"
-            onClick={() => {
-              localStorage.removeItem('token')
-              sessionStorage.removeItem('token')
-              navigate('/login')
-            }}
-          >
-            <FiLogOut size={18} />
-            <span>Sair</span>
-          </button>
-        </div>
-      </aside>
-
-      <main className="main">
-        <div className={`topbar${isHidden ? ' hidden' : ''}`}>
-          <div>
-            <h2>Olá, {adminName}</h2>
-            <p>Resumo rápido do salão e atividades do dia.</p>
-          </div>
-          <div className="topbar-actions">
-            <input className="search" placeholder="Pesquisar cliente, serviço, profissional" />
-            <div className="notify">
-              <button className="notify-button" type="button" aria-label="Notificações">
                 <FiBell size={18} />
               </button>
-              <div className="notify-panel">
-                {notifications.length === 0 && (
-                  <div className="notify-item">
-                    <h5>Sem notificações</h5>
-                    <p>Você está em dia.</p>
-                  </div>
-                )}
-                {notifications.slice(0, 4).map((item) => (
-                  <div className="notify-item" key={item._id}>
-                    <h5>{item.title}</h5>
-                    <p>{item.message}</p>
-                  </div>
-                ))}
+              <button
+                className="btn salon-btn"
+                type="button"
+                onClick={() => navigate('/admin/agendamentos?novo=1')}
+              >
+                <FiPlus size={18} />
+                Novo agendamento
+              </button>
+            </div>
+          </div>
+        </nav>
+      </header>
+
+      <div
+        className="offcanvas offcanvas-start salon-offcanvas"
+        data-bs-scroll="true"
+        tabIndex="-1"
+        id="adminOffcanvas"
+        aria-labelledby="adminOffcanvasLabel"
+      >
+        <div className="offcanvas-header">
+          <h5 className="offcanvas-title" id="adminOffcanvasLabel">Menu Administrativo</h5>
+          <button type="button" className="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div className="offcanvas-body">
+          {adminAvatar && (
+            <div className="profile-mini">
+              <img
+                src={adminAvatar.startsWith('http') ? adminAvatar : `${API_BASE_URL}${adminAvatar}`}
+                alt="Avatar"
+              />
+              <div>
+                <div style={{ fontWeight: 600 }}>{adminName}</div>
+                <div style={{ fontSize: '0.8rem', opacity: 0.85 }}>Admin</div>
               </div>
             </div>
+          )}
+
+          <div className="offcanvas-section">
+            <h6>Menu Principal</h6>
+            <nav className="offcanvas-nav">
+              {menuPrincipal.map((item) => (
+                <button
+                  key={item.to}
+                  type="button"
+                  className={`offcanvas-link${location.pathname === item.to ? ' active' : ''}`}
+                  onClick={() => {
+                    navigate(item.to)
+                    closeOffcanvas()
+                  }}
+                >
+                  <item.icon size={18} />
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          <div className="offcanvas-section">
+            <h6>Gestão</h6>
+            <nav className="offcanvas-nav">
+              {menuGestao.map((item) => (
+                <button
+                  key={item.to}
+                  type="button"
+                  className={`offcanvas-link${location.pathname === item.to ? ' active' : ''}`}
+                  onClick={() => {
+                    navigate(item.to)
+                    closeOffcanvas()
+                  }}
+                >
+                  <item.icon size={18} />
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          <div className="offcanvas-section">
+            <h6>Conta</h6>
+            <nav className="offcanvas-nav">
+              {menuConta.map((item) => (
+                <button
+                  key={item.to}
+                  type="button"
+                  className={`offcanvas-link${location.pathname === item.to ? ' active' : ''}`}
+                  onClick={() => {
+                    navigate(item.to)
+                    closeOffcanvas()
+                  }}
+                >
+                  <item.icon size={18} />
+                  <span>{item.label}</span>
+                </button>
+              ))}
+            </nav>
+          </div>
+
+          <div className="offcanvas-exit">
             <button
-              className="btn btn-icon"
+              className="btn salon-btn-outline w-100"
               type="button"
-              onClick={() => navigate('/admin/agendamentos?novo=1')}
+              onClick={() => {
+                localStorage.removeItem('token')
+                sessionStorage.removeItem('token')
+                navigate('/login')
+              }}
             >
-              <FiPlus size={18} />
-              Novo agendamento
+              <FiLogOut size={18} />
+              Sair
             </button>
           </div>
         </div>
+      </div>
+
+      <main className="main">
         <Outlet />
       </main>
+
+      <div className="toast-container position-fixed top-0 end-0 p-3">
+        <div className="toast salon-toast" role="alert" aria-live="assertive" aria-atomic="true" id="notifyToast">
+          <div className="toast-header">
+            <img src={logo} className="rounded me-2 toast-logo" alt="Logo" />
+            <strong className="me-auto">{toastData.title}</strong>
+            <small>{toastData.time}</small>
+            <button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+          </div>
+          <div className="toast-body">
+            {toastData.message}
+          </div>
+        </div>
+      </div>
     </div>
   )
 }

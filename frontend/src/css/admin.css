@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
+/* ===================== Theme Variables ===================== */
 :root {
   --bg: #fff6fb;
   --bg-deep: #fdfdfd;
@@ -18,6 +19,7 @@
   --transition-speed: 250ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+/* ===================== Base Reset ===================== */
 * {
   box-sizing: border-box;
 }
@@ -45,6 +47,7 @@ a {
   overflow-x: hidden;
 }
 
+/* ===================== App Layout (Sidebar + Content) ===================== */
 .app-shell {
   display: grid;
   grid-template-columns: [sidebar] var(--sidebar-width) [content] minmax(0, 1fr);
@@ -59,6 +62,7 @@ a {
   --sidebar-width: 110px;
 }
 
+/* ===================== Sidebar ===================== */
 .sidebar {
   background: var(--accent);
   color: #ffffff;
@@ -217,6 +221,7 @@ a {
   background: rgba(255, 255, 255, 0.22);
 }
 
+/* ===================== Main Content Area ===================== */
 .main {
   padding: 2.5rem 3rem 3.5rem;
   min-width: 0;
@@ -266,6 +271,7 @@ canvas {
   height: auto !important;
 }
 
+/* ===================== Legacy Topbar ===================== */
 .topbar {
   display: flex;
   justify-content: space-between;
@@ -364,6 +370,7 @@ canvas {
   font-size: 0.85rem;
 }
 
+/* ===================== Generic Form/Button Helpers ===================== */
 .search {
   background: #fff;
   border: 1px solid var(--stroke);
@@ -467,6 +474,7 @@ canvas {
   font-size: 0.8rem;
 }
 
+/* ===================== Animations ===================== */
 @keyframes fadeUp {
   from {
     opacity: 0;
@@ -478,6 +486,7 @@ canvas {
   }
 }
 
+/* ===================== Responsive (Legacy Layout) ===================== */
 @media (max-width: 960px) {
   .app-shell {
     grid-template-columns: 1fr;
@@ -521,6 +530,8 @@ canvas {
     width: 100%;
   }
 }
+
+/* ===================== Utility Controls ===================== */
 .collapse-button {
   border: none;
   background: rgba(255, 255, 255, 0.2);
@@ -539,6 +550,7 @@ canvas {
   gap: 0.5rem;
 }
 
+/* ===================== Modal ===================== */
 .modal-backdrop {
   position: fixed;
   inset: 0;
@@ -580,4 +592,451 @@ canvas {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
+}
+
+/* ===================== New Header/Navbar (Admin + Professional) ===================== */
+.salon-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.salon-shell {
+  display: inline-block;
+}
+
+.salon-shell .main {
+  grid-column: auto;
+  padding-top: 2rem;
+}
+
+.salon-navbar {
+  background: var(--accent);
+  color: #ffffff;
+  box-shadow: 0 18px 40px rgba(31, 26, 35, 0.18);
+}
+
+.salon-navbar .container-fluid {
+  display: grid;
+  grid-template-columns: auto minmax(320px, 560px) auto;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.salon-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  font-weight: 600;
+  min-width: 0;
+  margin-right: 0.25rem;
+}
+
+.salon-brand span {
+  color: #ffffff;
+}
+
+.salon-brand-text {
+  display: grid;
+  gap: 0.15rem;
+  text-align: left;
+  min-width: 0;
+}
+
+.salon-brand-title {
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+}
+
+.salon-greeting {
+  font-size: 0.85rem;
+  opacity: 0.9;
+}
+
+/* ===================== Navbar Search ===================== */
+/* Container do Formulário */
+.salon-search {
+  display: flex;             /* Alinha input e botão em linha */
+  align-items: center;       /* Centraliza verticalmente */
+  gap: 0.5rem;               /* Espaçamento entre input e botão */
+  width: 100%;               /* Ocupa o espaço disponível */
+  max-width: 600px;          /* Aumentado para se sentir mais "barra real" */
+  margin: 0 auto;            /* Centraliza no meio da navbar */
+  flex-wrap: nowrap;         /* Impede quebra de linha, mantém botão ao lado */
+}
+
+/* O Campo de Texto (Input) */
+.salon-input {
+  flex: 1;                   /* Faz o input crescer para ocupar o espaço */
+  height: 42px;              /* Altura fixa para alinhar com o botão */
+  border-radius: 999px 0 0 999px; /* Arredondado só à esquerda para integrar com botão */
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 0 1.2rem;
+  background-color: rgba(255, 255, 255, 0.1); /* Removido branco: agora transparente com tom claro */
+  color: #ffffff;            /* Texto branco para visibilidade na navbar rosa */
+  outline: none;
+  font-size: 0.9rem;
+  transition: box-shadow 0.3s ease; /* Para neon smooth */
+}
+
+/* Neon rosa em hover/focus para input */
+.salon-input:hover,
+.salon-input:focus {
+  box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent-strong); /* Glow neon rosa */
+  border-color: var(--accent-strong);
+}
+
+/* O Botão de Buscar */
+.salon-btn-outline {
+  height: 42px;              /* Mesma altura do input */
+  padding: 0 1.5rem;         /* Espaço interno lateral */
+  border-radius: 0 999px 999px 0; /* Arredondado só à direita para integrar com input */
+  border: 1px solid #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;       
+  flex-shrink: 0;            /* Impede o botão de "esmagar" */
+  transition: all 0.3s ease; /* Para neon smooth */
+}
+
+/* Neon rosa em hover para botão */
+.salon-btn-outline:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  box-shadow: 0 0 10px var(--accent), 0 0 20px var(--accent-strong); /* Glow neon rosa */
+  border-color: var(--accent-strong);
+}
+
+/* Ajustes para placeholder e consistência */
+.salon-input::placeholder {
+  color: rgba(255, 255, 255, 0.7); /* Placeholder branco suave, combinando com tema */
+  opacity: 1;
+}
+
+/* Ajustes para mobile: mantém lado a lado, reduz tamanhos */
+@media (max-width: 768px) {
+  .salon-search {
+    gap: 0.3rem; /* Reduz gap em mobile */
+    max-width: 100%; /* Full width em mobile, mas ainda centralizado */
+  }
+  
+  .salon-input {
+    padding: 0 1rem; /* Reduz padding interno */
+    border-radius: 999px; /* Volta a full arredondado se precisar em mobile */
+  }
+  
+  .salon-btn-outline {
+    padding: 0 1rem; /* Reduz para caber */
+    font-size: 0.85rem;
+    border-radius: 999px; /* Ajuste se quiser full arredondado em mobile */
+  }
+}
+
+/* ===================== Navbar Actions ===================== */
+.salon-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-self: end;
+}
+
+.salon-btn {
+  background: var(--accent-strong);
+  color: #ffffff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.salon-btn:hover {
+  background: #b75b8d;
+  color: #ffffff;
+}
+
+.salon-btn-outline {
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  color: #ffffff;
+  border-radius: 999px;
+  padding: 0 1.2rem;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(10px);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 250ms ease;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.salon-search .salon-btn-outline {
+  flex: 0 0 auto;
+}
+
+.salon-btn-outline:hover {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  border-color: rgba(255, 255, 255, 1);
+  color: #ffffff;
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.salon-btn-icon {
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  padding: 0.6rem 0.9rem;
+}
+
+/* ===================== Offcanvas ===================== */
+.salon-offcanvas {
+  background: var(--accent) !important;
+  color: #ffffff;
+}
+
+.salon-offcanvas .offcanvas-header,
+.salon-offcanvas .offcanvas-body {
+  color: #ffffff;
+  background: var(--accent) !important;
+}
+
+.salon-offcanvas .btn-close {
+  filter: invert(1);
+}
+
+.salon-offcanvas .offcanvas-title,
+.salon-offcanvas h6 {
+  color: #ffffff;
+}
+
+.offcanvas-section {
+  margin-bottom: 1.2rem;
+}
+
+.offcanvas-nav {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.offcanvas-link {
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1rem;
+  border-radius: 999px;
+  color: #ffffff;
+  transition: transform 180ms ease, background 180ms ease;
+}
+
+.offcanvas-link:hover {
+  background: rgba(255, 255, 255, 0.16);
+  transform: translateX(4px);
+  color: #ffffff;
+}
+
+.offcanvas-link.active {
+  background: rgba(255, 255, 255, 0.22);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+}
+
+.offcanvas-exit {
+  margin-top: 1rem;
+}
+
+/* ===================== Toast ===================== */
+.salon-toast .toast-header {
+  background: var(--accent);
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.salon-toast .toast-body {
+  background: #ffffff;
+  color: var(--ink);
+}
+
+.toast-logo {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+/* ===================== Clientes Page ===================== */
+.clientes-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.clientes-header-badge {
+  background: rgba(217, 136, 179, 0.16);
+  color: var(--accent-strong);
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  padding: 0.5rem 0.9rem;
+  font-weight: 600;
+  font-size: 0.88rem;
+}
+
+.clientes-stat-value {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.clientes-card {
+  margin-top: 1.2rem;
+}
+
+.clientes-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.clientes-search {
+  min-width: 280px;
+  flex: 1 1 320px;
+}
+
+.clientes-filter {
+  min-width: 180px;
+}
+
+.clientes-feedback {
+  margin: 0;
+  color: var(--muted);
+  font-weight: 500;
+}
+
+.clientes-feedback.error {
+  color: #b12a5b;
+}
+
+.clientes-table-wrapper {
+  overflow-x: auto;
+}
+
+.clientes-user {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.clientes-user strong {
+  display: block;
+}
+
+.clientes-user p {
+  margin: 0.15rem 0 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.clientes-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(217, 136, 179, 0.25);
+}
+
+.clientes-avatar-fallback {
+  display: grid;
+  place-items: center;
+  background: rgba(217, 136, 179, 0.2);
+  color: var(--accent-strong);
+  font-weight: 700;
+  font-size: 0.88rem;
+}
+
+.clientes-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 86px;
+  border-radius: 999px;
+  padding: 0.28rem 0.62rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.clientes-status.active {
+  color: #1f6b4e;
+  background: rgba(95, 167, 125, 0.2);
+}
+
+.clientes-status.inactive {
+  color: #a55a26;
+  background: rgba(239, 170, 103, 0.2);
+}
+
+.clientes-status.empty {
+  color: #6f6272;
+  background: rgba(111, 98, 114, 0.14);
+}
+
+/* ===================== Responsive (Navbar) ===================== */
+@media (max-width: 768px) {
+  .salon-navbar .container-fluid {
+    display: flex;
+    align-items: stretch;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+  }
+
+  .salon-brand {
+    width: 100%;
+    justify-content: flex-start;
+    margin-right: 0;
+  }
+
+  .salon-search {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    margin: 0;
+    order: 2;
+    justify-self: auto;
+  }
+
+  .salon-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    justify-self: auto;
+    order: 3;
+  }
+
+  .clientes-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .clientes-search,
+  .clientes-filter {
+    width: 100%;
+    min-width: 0;
+  }
 }

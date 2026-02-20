@@ -1,4 +1,4 @@
-import { Router } from 'express';
+﻿import { Router } from 'express';
 import {
   register,
   login,
@@ -10,7 +10,9 @@ import {
   updateMe,
   updatePassword,
   forgotPassword,
-  resetPassword
+  resetPassword,
+  listProfessionalsPublic,
+  updateProfessionalAbout
 } from './user.controller.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { allowRoles } from '../middlewares/role.middleware.js';
@@ -25,15 +27,24 @@ router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 // Perfil do usuario autenticado
 router.get('/me', authMiddleware, me);
+// Listagem publica de profissionais (site cliente)
+router.get('/professionals', listProfessionalsPublic);
 // Upload de avatar
 router.patch('/me/avatar', authMiddleware, uploadProfessionalAvatar, updateAvatar);
 // Teste de rota admin
 router.get('/admin', authMiddleware, allowRoles('admin'), adminOnly);
-// Admin: criar e remover usuários
+// Admin: criar e remover usuarios
 router.post('/users', authMiddleware, allowRoles('admin'), adminCreateUser);
 router.delete('/users/:id', authMiddleware, allowRoles('admin'), adminDeleteUser);
-// Atualizações da conta
+// Atualizacoes da conta
 router.patch('/me', authMiddleware, updateMe);
 router.patch('/me/password', authMiddleware, updatePassword);
+// Sobre da profissional (admin ou a propria profissional)
+router.patch(
+  '/professionals/:id/about',
+  authMiddleware,
+  allowRoles('admin', 'profissional'),
+  updateProfessionalAbout
+);
 
 export default router;

@@ -181,14 +181,65 @@ export const adminDeleteUser = async (req, res) => {
 // Atualiza dados do usuario autenticado
 export const updateMe = async (req, res) => {
   try {
-    const { name, phone } = req.body
-    const updated = await updateUserById(req.user.id, {
+    const { name, phone, about } = req.body
+    const updates = {
       ...(name ? { name } : {}),
       ...(phone !== undefined ? { phone } : {})
-    })
+    }
+
+    if (about !== undefined) {
+      if (!['admin', 'profissional'].includes(req.user.role)) {
+        return res.status(403).json({ message: 'Somente admin ou profissional pode editar o sobre' })
+      }
+      updates.about = about
+    }
+
+    const updated = await updateUserById(req.user.id, updates)
     res.json({ user: updated })
   } catch (error) {
     res.status(500).json({ message: 'Erro ao atualizar perfil' })
+  }
+}
+
+// Lista profissionais para exibicao publica no site cliente
+export const listProfessionalsPublic = async (_req, res) => {
+  try {
+    const users = await User.find({ role: 'profissional' })
+      .select('name avatar about phone')
+      .sort({ name: 1 })
+    res.json({ users })
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao listar profissionais' })
+  }
+}
+
+// Atualiza o "sobre" de um profissional (admin ou a propria profissional)
+export const updateProfessionalAbout = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { about } = req.body
+
+    if (about === undefined) {
+      return res.status(400).json({ message: 'Campo about e obrigatorio' })
+    }
+
+    if (req.user.role === 'profissional' && id !== req.user.id) {
+      return res.status(403).json({ message: 'Profissional so pode editar o proprio sobre' })
+    }
+
+    const existing = await findUserById(id)
+    if (!existing) {
+      return res.status(404).json({ message: 'Usuario nao encontrado' })
+    }
+
+    if (existing.role !== 'profissional') {
+      return res.status(400).json({ message: 'Apenas perfis profissionais podem receber sobre' })
+    }
+
+    const updated = await updateUserById(id, { about })
+    res.json({ user: updated })
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao atualizar sobre da profissional' })
   }
 }
 

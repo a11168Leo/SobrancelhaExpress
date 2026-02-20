@@ -28,6 +28,10 @@ const UserSchema = new mongoose.Schema(
     },
     avatar: String
     ,
+    about: {
+      type: String,
+      default: ''
+    },
     resetPasswordToken: String,
     resetPasswordExpires: Date
   },

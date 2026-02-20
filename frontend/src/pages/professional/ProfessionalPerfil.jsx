@@ -3,7 +3,7 @@ import api, { API_BASE_URL } from '../../api/api.js'
 
 function ProfessionalPerfil() {
   const [user, setUser] = useState(null)
-  const [form, setForm] = useState({ name: '', phone: '' })
+  const [form, setForm] = useState({ name: '', phone: '', about: '' })
   const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '' })
   const [message, setMessage] = useState('')
   const [avatarFile, setAvatarFile] = useState(null)
@@ -15,7 +15,11 @@ function ProfessionalPerfil() {
     const load = async () => {
       const res = await api.get('/auth/me')
       setUser(res.data.user)
-      setForm({ name: res.data.user?.name || '', phone: res.data.user?.phone || '' })
+      setForm({
+        name: res.data.user?.name || '',
+        phone: res.data.user?.phone || '',
+        about: res.data.user?.about || '',
+      })
       if (res.data.user?.avatar) {
         const avatarUrl = res.data.user.avatar.startsWith('http')
           ? res.data.user.avatar
@@ -171,6 +175,13 @@ function ProfessionalPerfil() {
           placeholder="Telefone"
           value={form.phone}
           onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
+        />
+        <textarea
+          className="search"
+          placeholder="Sobre a profissional"
+          rows={4}
+          value={form.about}
+          onChange={(e) => setForm((prev) => ({ ...prev, about: e.target.value }))}
         />
         <button className="btn" type="button" onClick={saveProfile}>
           Salvar perfil

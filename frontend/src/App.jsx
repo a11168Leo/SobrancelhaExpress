@@ -11,7 +11,6 @@ import AdminPerfil from './pages/admin/AdminPerfil.jsx'
 import AdminNotificacoes from './pages/admin/AdminNotificacoes.jsx'
 import AdminConfiguracoes from './pages/admin/AdminConfiguracoes.jsx'
 import AdminEquipe from './pages/admin/AdminEquipe.jsx'
-import RequireAuth from './components/RequireAuth.jsx'
 import RequireRole from './components/RequireRole.jsx'
 import Login from './pages/Login.jsx'
 import ForgotPassword from './pages/ForgotPassword.jsx'
@@ -26,11 +25,18 @@ import ProfessionalClientes from './pages/professional/ProfessionalClientes.jsx'
 import ProfessionalRelatorio from './pages/professional/ProfessionalRelatorio.jsx'
 import ProfessionalNotificacoes from './pages/professional/ProfessionalNotificacoes.jsx'
 import ProfessionalConfiguracoes from './pages/professional/ProfessionalConfiguracoes.jsx'
+import ClientLayout from './layouts/ClientLayout.jsx'
+import ClientDashboard from './pages/client/ClientDashboard.jsx'
+import ClientAgendamentos from './pages/client/ClientAgendamentos.jsx'
+import ClientServicos from './pages/client/ClientServicos.jsx'
+import ClientPerfil from './pages/client/ClientPerfil.jsx'
+import ClientNotificacoes from './pages/client/ClientNotificacoes.jsx'
+import ClientConfiguracoes from './pages/client/ClientConfiguracoes.jsx'
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Navigate to="/admin/dashboard" replace />} />
+      <Route path="/" element={<Navigate to="/cliente/servicos" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/esqueceu-senha" element={<ForgotPassword />} />
       <Route path="/resetar-senha" element={<ResetPassword />} />
@@ -71,7 +77,50 @@ function App() {
         <Route path="notificacoes" element={<ProfessionalNotificacoes />} />
         <Route path="configuracoes" element={<ProfessionalConfiguracoes />} />
       </Route>
-      <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
+      <Route path="/cliente" element={<ClientLayout />}>
+        <Route path="servicos" element={<ClientServicos />} />
+        <Route
+          path="dashboard"
+          element={
+            <RequireRole role="cliente">
+              <ClientDashboard />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="agendamentos"
+          element={
+            <RequireRole role="cliente">
+              <ClientAgendamentos />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="perfil"
+          element={
+            <RequireRole role="cliente">
+              <ClientPerfil />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="notificacoes"
+          element={
+            <RequireRole role="cliente">
+              <ClientNotificacoes />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="configuracoes"
+          element={
+            <RequireRole role="cliente">
+              <ClientConfiguracoes />
+            </RequireRole>
+          }
+        />
+      </Route>
+      <Route path="*" element={<Navigate to="/cliente/servicos" replace />} />
     </Routes>
   )
 }
