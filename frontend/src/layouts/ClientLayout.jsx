@@ -115,7 +115,7 @@ function ClientLayout() {
                   className="client-menu-link"
                   onClick={() => setIsServicesOpen((prev) => !prev)}
                 >
-                  Servicos
+                  Serviços
                   <FiChevronDown className={`client-chevron${isServicesOpen ? ' is-open' : ''}`} size={16} />
                 </button>
                 {isServicesOpen && (
@@ -146,7 +146,7 @@ function ClientLayout() {
                 onClick={() => navigate('/cliente/servicos#sobre')}
               >
                 <FiInfo size={16} />
-                Sobre nos
+                Sobre nós
               </button>
 
               <div className="client-menu-dropdown">
@@ -156,7 +156,7 @@ function ClientLayout() {
                   onClick={() => setIsLocationOpen((prev) => !prev)}
                 >
                   <FiMapPin size={16} />
-                  Localizacao
+                  Localização
                   <FiChevronDown className={`client-chevron${isLocationOpen ? ' is-open' : ''}`} size={16} />
                 </button>
                 {isLocationOpen && (

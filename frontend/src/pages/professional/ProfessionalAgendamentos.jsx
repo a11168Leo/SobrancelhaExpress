@@ -241,9 +241,9 @@ function ProfessionalAgendamentos() {
       )}
 
       {selected && (
-        <div className="modal-backdrop" onClick={() => setSelected(null)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
+        <div className="salon-modal-backdrop" onClick={() => setSelected(null)}>
+          <div className="salon-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="salon-modal-header">
               <h3>Atendimento</h3>
               <button className="btn" type="button" onClick={() => setSelected(null)}>
                 Fechar
@@ -319,9 +319,9 @@ function ProfessionalAgendamentos() {
       )}
 
       {isNewOpen && (
-        <div className="modal-backdrop" onClick={() => setIsNewOpen(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
+        <div className="salon-modal-backdrop" onClick={() => setIsNewOpen(false)}>
+          <div className="salon-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="salon-modal-header">
               <h3>Novo agendamento</h3>
               <button className="btn" type="button" onClick={() => setIsNewOpen(false)}>
                 Fechar

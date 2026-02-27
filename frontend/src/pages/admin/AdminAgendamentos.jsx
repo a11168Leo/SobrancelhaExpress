@@ -373,9 +373,9 @@ function AdminAgendamentos() {
       </div>
 
       {isModalOpen && (
-        <div className="modal-backdrop" onClick={() => setIsModalOpen(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
+        <div className="salon-modal-backdrop" onClick={() => setIsModalOpen(false)}>
+          <div className="salon-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="salon-modal-header">
               <h3>Novo agendamento</h3>
               <button className="btn" type="button" onClick={() => setIsModalOpen(false)}>
                 Fechar
@@ -507,9 +507,9 @@ function AdminAgendamentos() {
       )}
 
       {editModalOpen && editForm && (
-        <div className="modal-backdrop" onClick={() => setEditModalOpen(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
+        <div className="salon-modal-backdrop" onClick={() => setEditModalOpen(false)}>
+          <div className="salon-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="salon-modal-header">
               <h3>Editar agendamento</h3>
               <button className="btn" type="button" onClick={() => setEditModalOpen(false)}>
                 Fechar
