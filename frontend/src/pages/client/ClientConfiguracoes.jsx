@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useState } from 'react'
 
 function ClientConfiguracoes() {
@@ -68,4 +75,7 @@ function ClientConfiguracoes() {
 }
 
 export default ClientConfiguracoes
+
+
+
 

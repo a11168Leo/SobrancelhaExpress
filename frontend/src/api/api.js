@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import axios from 'axios'
 
 export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3333'
@@ -15,3 +22,6 @@ api.interceptors.request.use((config) => {
 })
 
 export default api
+
+
+

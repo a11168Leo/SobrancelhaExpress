@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useState } from 'react'
 import api, { API_BASE_URL } from '../../api/api.js'
 
@@ -78,7 +85,7 @@ function ProfessionalPerfil() {
   const uploadAvatar = async () => {
     if (!avatarFile) return
     if (avatarFile.size > 2 * 1024 * 1024) {
-      setAvatarError('A imagem deve ter no máximo 2MB.')
+      setAvatarError('A imagem deve ter no mÃ¡ximo 2MB.')
       return
     }
 
@@ -99,7 +106,7 @@ function ProfessionalPerfil() {
       setTimeout(() => setMessage(''), 2500)
       setUploadProgress(0)
     } catch {
-      setAvatarError('Não foi possível enviar a imagem.')
+      setAvatarError('NÃ£o foi possÃ­vel enviar a imagem.')
     }
   }
 
@@ -107,17 +114,17 @@ function ProfessionalPerfil() {
     <section className="page">
       <div>
         <h1>Perfil</h1>
-        <p className="page-subtitle">Seus dados e preferências.</p>
+        <p className="page-subtitle">Seus dados e preferÃªncias.</p>
       </div>
 
       <div className="card" style={{ display: 'grid', gap: '1rem' }}>
-        <h3>Informações principais</h3>
+        <h3>InformaÃ§Ãµes principais</h3>
         <div style={{ display: 'grid', gap: '0.6rem' }}>
           <label>Foto do perfil</label>
           {avatarPreview && (
             <img
               src={avatarPreview}
-              alt="Prévia"
+              alt="PrÃ©via"
               style={{ width: '96px', height: '96px', borderRadius: '50%', objectFit: 'cover' }}
             />
           )}
@@ -160,7 +167,7 @@ function ProfessionalPerfil() {
               </span>
             </div>
           )}
-          <button className="btn" type="button" onClick={uploadAvatar}>
+          <button className="btn btn-profissional-perfil" type="button" onClick={uploadAvatar}>
             Atualizar avatar
           </button>
         </div>
@@ -183,7 +190,7 @@ function ProfessionalPerfil() {
           value={form.about}
           onChange={(e) => setForm((prev) => ({ ...prev, about: e.target.value }))}
         />
-        <button className="btn" type="button" onClick={saveProfile}>
+        <button className="btn btn-profissional-perfil" type="button" onClick={saveProfile}>
           Salvar perfil
         </button>
       </div>
@@ -204,7 +211,7 @@ function ProfessionalPerfil() {
           value={passwords.newPassword}
           onChange={(e) => setPasswords((prev) => ({ ...prev, newPassword: e.target.value }))}
         />
-        <button className="btn" type="button" onClick={changePassword}>
+        <button className="btn btn-profissional-perfil" type="button" onClick={changePassword}>
           Atualizar senha
         </button>
       </div>
@@ -216,3 +223,8 @@ function ProfessionalPerfil() {
 }
 
 export default ProfessionalPerfil
+
+
+
+
+

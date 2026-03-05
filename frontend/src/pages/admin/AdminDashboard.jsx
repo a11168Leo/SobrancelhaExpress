@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
 import api, { API_BASE_URL } from '../../api/api.js'
@@ -58,7 +65,7 @@ function AdminDashboard() {
         time: dayjs(item.startTime).format('HH:mm'),
         client: item.client?.name || 'Cliente',
         phone: item.client?.phone || '-',
-        service: item.service?.name || 'Serviço',
+        service: item.service?.name || 'ServiÃ§o',
         status: item.status || 'scheduled',
         avatar: item.client?.avatar || '',
       }))
@@ -83,14 +90,14 @@ function AdminDashboard() {
         <div style={{ marginTop: '0.9rem', display: 'flex', gap: '0.6rem' }}>
           <button
             type="button"
-            className="btn"
+            className="btn btn-admin-dashboard"
             onClick={() => setFilter('today')}
           >
             Hoje
           </button>
           <button
             type="button"
-            className="btn"
+            className="btn btn-admin-dashboard"
             onClick={() => setFilter('week')}
           >
             Semana
@@ -102,14 +109,14 @@ function AdminDashboard() {
         <article className="card">
           <h3>Agendamentos</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{stats.appointments}</div>
-          <p>Total no período</p>
+          <p>Total no perÃ­odo</p>
         </article>
         <article className="card">
           <h3>Faturamento</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>
             EUR {Number(stats.revenue).toFixed(2)}
           </div>
-          <p>Período selecionado</p>
+          <p>PerÃ­odo selecionado</p>
         </article>
         <article className="card">
           <h3>Clientes</h3>
@@ -117,9 +124,9 @@ function AdminDashboard() {
           <p>Base total</p>
         </article>
         <article className="card">
-          <h3>Serviços</h3>
+          <h3>ServiÃ§os</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{stats.services}</div>
-          <p>Catálogo ativo</p>
+          <p>CatÃ¡logo ativo</p>
         </article>
       </div>
 
@@ -141,10 +148,10 @@ function AdminDashboard() {
           <table className="table">
             <thead>
               <tr>
-                <th>Horário</th>
+                <th>HorÃ¡rio</th>
                 <th>Cliente</th>
                 <th>Telefone</th>
-                <th>Serviço</th>
+                <th>ServiÃ§o</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -252,3 +259,7 @@ function AdminDashboard() {
 }
 
 export default AdminDashboard
+
+
+
+

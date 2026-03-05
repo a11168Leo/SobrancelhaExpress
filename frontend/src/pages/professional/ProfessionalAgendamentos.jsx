@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import dayjs from 'dayjs'
@@ -45,13 +52,13 @@ function ProfessionalAgendamentos() {
       setEvents(
         (res.data.appointments || []).map((item) => ({
           id: item._id,
-          title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'Serviço'}`,
+          title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'ServiÃ§o'}`,
           start: item.startTime,
           end: item.endTime,
           extendedProps: {
             status: item.status,
             clientName: item.client?.name || 'Cliente',
-            serviceName: item.service?.name || 'Serviço',
+            serviceName: item.service?.name || 'ServiÃ§o',
           },
         }))
       )
@@ -72,13 +79,13 @@ function ProfessionalAgendamentos() {
     setEvents(
       (res.data.appointments || []).map((item) => ({
         id: item._id,
-        title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'Serviço'}`,
+        title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'ServiÃ§o'}`,
         start: item.startTime,
         end: item.endTime,
         extendedProps: {
           status: item.status,
           clientName: item.client?.name || 'Cliente',
-          serviceName: item.service?.name || 'Serviço',
+          serviceName: item.service?.name || 'ServiÃ§o',
         },
       }))
     )
@@ -105,7 +112,7 @@ function ProfessionalAgendamentos() {
 
   const createAppointment = async () => {
     if (!newAppointment.clientId || !newAppointment.serviceId || !newAppointment.startTime) {
-      showToast('Preencha cliente, serviço e horário.')
+      showToast('Preencha cliente, serviÃ§o e horÃ¡rio.')
       return
     }
     try {
@@ -121,7 +128,7 @@ function ProfessionalAgendamentos() {
       showToast('Agendamento criado com sucesso.')
       refresh()
     } catch {
-      showToast('Não foi possível criar o agendamento.')
+      showToast('NÃ£o foi possÃ­vel criar o agendamento.')
     }
   }
 
@@ -132,7 +139,7 @@ function ProfessionalAgendamentos() {
           <h1>Agendamentos</h1>
           <p className="page-subtitle">Sua agenda completa.</p>
         </div>
-        <button className="btn" type="button" onClick={() => setIsNewOpen(true)}>
+        <button className="btn btn-profissional-agendamentos" type="button" onClick={() => setIsNewOpen(true)}>
           Novo agendamento
         </button>
       </div>
@@ -144,14 +151,14 @@ function ProfessionalAgendamentos() {
           <p>Total do dia</p>
         </article>
         <article className="card">
-          <h3>Agendamentos no mês</h3>
+          <h3>Agendamentos no mÃªs</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{monthCount}</div>
-          <p>Total do mês</p>
+          <p>Total do mÃªs</p>
         </article>
       </div>
 
       <div className="card">
-        <h3>Calendário</h3>
+        <h3>CalendÃ¡rio</h3>
         <div style={{ marginTop: '1rem' }}>
           <FullCalendar
             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
@@ -201,13 +208,13 @@ function ProfessionalAgendamentos() {
       </div>
 
       <div className="card">
-        <h3>Próximos atendimentos</h3>
+        <h3>PrÃ³ximos atendimentos</h3>
         <table className="table">
           <thead>
             <tr>
-              <th>Horário</th>
+              <th>HorÃ¡rio</th>
               <th>Cliente</th>
-              <th>Serviço</th>
+              <th>ServiÃ§o</th>
             </tr>
           </thead>
           <tbody>
@@ -215,7 +222,7 @@ function ProfessionalAgendamentos() {
               <tr key={item._id}>
                 <td>{dayjs(item.startTime).format('DD/MM HH:mm')}</td>
                 <td>{item.client?.name || 'Cliente'}</td>
-                <td>{item.service?.name || 'Serviço'}</td>
+                <td>{item.service?.name || 'ServiÃ§o'}</td>
               </tr>
             ))}
           </tbody>
@@ -245,17 +252,17 @@ function ProfessionalAgendamentos() {
           <div className="salon-modal" onClick={(e) => e.stopPropagation()}>
             <div className="salon-modal-header">
               <h3>Atendimento</h3>
-              <button className="btn" type="button" onClick={() => setSelected(null)}>
+              <button className="btn btn-profissional-agendamentos" type="button" onClick={() => setSelected(null)}>
                 Fechar
               </button>
             </div>
             <div style={{ display: 'grid', gap: '0.6rem' }}>
               <p><strong>Cliente:</strong> {selected.clientName}</p>
-              <p><strong>Serviço:</strong> {selected.serviceName}</p>
+              <p><strong>ServiÃ§o:</strong> {selected.serviceName}</p>
               <p><strong>Status:</strong> {selected.status}</p>
               <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
                 <button
-                  className="btn"
+                  className="btn btn-profissional-agendamentos"
                   type="button"
                   onClick={async () => {
                     try {
@@ -264,14 +271,14 @@ function ProfessionalAgendamentos() {
                       setSelected(null)
                       refresh()
                     } catch {
-                      showToast('Não foi possível iniciar.')
+                      showToast('NÃ£o foi possÃ­vel iniciar.')
                     }
                   }}
                 >
                   Iniciar
                 </button>
                 <button
-                  className="btn"
+                  className="btn btn-profissional-agendamentos"
                   type="button"
                   onClick={async () => {
                     try {
@@ -280,14 +287,14 @@ function ProfessionalAgendamentos() {
                       setSelected(null)
                       refresh()
                     } catch {
-                      showToast('Não foi possível finalizar.')
+                      showToast('NÃ£o foi possÃ­vel finalizar.')
                     }
                   }}
                 >
                   Finalizar
                 </button>
                 <button
-                  className="btn"
+                  className="btn btn-profissional-agendamentos"
                   type="button"
                   onClick={async () => {
                     try {
@@ -296,14 +303,14 @@ function ProfessionalAgendamentos() {
                       setSelected(null)
                       refresh()
                     } catch {
-                      showToast('Não foi possível cancelar.')
+                      showToast('NÃ£o foi possÃ­vel cancelar.')
                     }
                   }}
                 >
                   Cancelar
                 </button>
                 <button
-                  className="btn"
+                  className="btn btn-profissional-agendamentos"
                   type="button"
                   onClick={() => {
                     showToast('Cliente notificado.')
@@ -323,7 +330,7 @@ function ProfessionalAgendamentos() {
           <div className="salon-modal" onClick={(e) => e.stopPropagation()}>
             <div className="salon-modal-header">
               <h3>Novo agendamento</h3>
-              <button className="btn" type="button" onClick={() => setIsNewOpen(false)}>
+              <button className="btn btn-profissional-agendamentos" type="button" onClick={() => setIsNewOpen(false)}>
                 Fechar
               </button>
             </div>
@@ -349,7 +356,7 @@ function ProfessionalAgendamentos() {
                   setNewAppointment((prev) => ({ ...prev, serviceId: e.target.value }))
                 }
               >
-                <option value="">Selecione o serviço</option>
+                <option value="">Selecione o serviÃ§o</option>
                 {services.map((service) => (
                   <option key={service._id} value={service._id}>
                     {service.name}
@@ -367,17 +374,17 @@ function ProfessionalAgendamentos() {
               <textarea
                 className="search"
                 rows={3}
-                placeholder="Observações"
+                placeholder="ObservaÃ§Ãµes"
                 value={newAppointment.notes}
                 onChange={(e) =>
                   setNewAppointment((prev) => ({ ...prev, notes: e.target.value }))
                 }
               />
               <div style={{ display: 'flex', gap: '0.6rem' }}>
-                <button className="btn" type="button" onClick={createAppointment}>
+                <button className="btn btn-profissional-agendamentos" type="button" onClick={createAppointment}>
                   Salvar
                 </button>
-                <button className="btn" type="button" onClick={() => setIsNewOpen(false)}>
+                <button className="btn btn-profissional-agendamentos" type="button" onClick={() => setIsNewOpen(false)}>
                   Cancelar
                 </button>
               </div>
@@ -390,3 +397,8 @@ function ProfessionalAgendamentos() {
 }
 
 export default ProfessionalAgendamentos
+
+
+
+
+

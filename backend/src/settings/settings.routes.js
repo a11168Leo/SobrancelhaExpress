@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { allowRoles } from '../middlewares/role.middleware.js';
@@ -9,3 +16,6 @@ router.get('/business-hours', authMiddleware, allowRoles('admin', 'profissional'
 router.put('/business-hours', authMiddleware, allowRoles('admin', 'profissional'), updateBusinessHours);
 
 export default router;
+
+
+

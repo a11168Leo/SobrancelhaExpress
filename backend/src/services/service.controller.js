@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import {
   createService,
   findServiceById,
@@ -7,7 +14,9 @@ import {
 } from './service.service.js';
 import { findCategoryById } from '../categories/category.service.js';
 
-// Valida se o nivel da categoria esta correto
+
+
+
 const validateCategoryLevel = async (categoryId, expectedLevel) => {
   if (!categoryId && categoryId !== null) {
     return null;
@@ -25,7 +34,9 @@ const validateCategoryLevel = async (categoryId, expectedLevel) => {
   return { category };
 };
 
-// Cria servico (admin ou profissional)
+
+
+
 export const create = async (req, res) => {
   try {
     const {
@@ -85,7 +96,9 @@ export const create = async (req, res) => {
   }
 };
 
-// Lista servicos com filtros
+
+
+
 export const list = async (req, res) => {
   try {
     const { category, subcategory, subcategory2, subcategory3, professionalId } = req.query;
@@ -104,7 +117,9 @@ export const list = async (req, res) => {
   }
 };
 
-// Atualiza servico
+
+
+
 export const update = async (req, res) => {
   try {
     const { id } = req.params;
@@ -133,7 +148,9 @@ export const update = async (req, res) => {
   }
 };
 
-// Atualiza imagem do servico
+
+
+
 export const updateImage = async (req, res) => {
   try {
     const { id } = req.params;
@@ -160,7 +177,9 @@ export const updateImage = async (req, res) => {
   }
 };
 
-// Remove servico
+
+
+
 export const remove = async (req, res) => {
   try {
     const { id } = req.params;
@@ -180,3 +199,8 @@ export const remove = async (req, res) => {
     res.status(500).json({ message: 'Erro ao remover servico' });
   }
 };
+
+
+
+
+

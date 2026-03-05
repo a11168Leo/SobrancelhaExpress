@@ -1,6 +1,15 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import mongoose from 'mongoose';
 
-// Configurações gerais do sistema
+
+
+
 const SettingsSchema = new mongoose.Schema(
   {
     key: {
@@ -17,3 +26,8 @@ const SettingsSchema = new mongoose.Schema(
 );
 
 export default mongoose.model('Settings', SettingsSchema);
+
+
+
+
+

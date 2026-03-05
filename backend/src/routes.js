@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { Router } from 'express';
 import userRoutes from './users/user.routes.js';
 import appointmentRoutes from './appointments/appointment.routes.js';
@@ -20,3 +27,6 @@ routes.use('/team', teamRoutes);
 routes.use('/settings', settingsRoutes);
 
 export default routes;
+
+
+

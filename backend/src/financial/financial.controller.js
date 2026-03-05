@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import {
   createFinancial,
   findFinancialById,
@@ -8,7 +15,9 @@ import {
 import { reportByPeriod, compareByPeriod } from './financial.report.service.js';
 import { findAppointmentById } from '../appointments/appointment.service.js';
 
-// Cria lançamento financeiro manual (admin)
+
+
+
 export const create = async (req, res) => {
   try {
     const { appointmentId, professionalId, amount, notes } = req.body;
@@ -16,17 +25,17 @@ export const create = async (req, res) => {
     if (!appointmentId || !professionalId || amount === undefined) {
       return res
         .status(400)
-        .json({ message: 'appointmentId, professionalId e amount são obrigatórios' });
+        .json({ message: 'appointmentId, professionalId e amount sÃ£o obrigatÃ³rios' });
     }
 
     const appointment = await findAppointmentById(appointmentId);
     if (!appointment) {
-      return res.status(404).json({ message: 'Agendamento não encontrado' });
+      return res.status(404).json({ message: 'Agendamento nÃ£o encontrado' });
     }
 
     const existing = await findFinancialByAppointment(appointmentId);
     if (existing) {
-      return res.status(409).json({ message: 'Financeiro já existe para este agendamento' });
+      return res.status(409).json({ message: 'Financeiro jÃ¡ existe para este agendamento' });
     }
 
     const financial = await createFinancial({
@@ -42,7 +51,9 @@ export const create = async (req, res) => {
   }
 };
 
-// Lista financeiro (admin vê tudo, profissional vê apenas o seu)
+
+
+
 export const list = async (req, res) => {
   try {
     const filters = {};
@@ -58,19 +69,21 @@ export const list = async (req, res) => {
   }
 };
 
-// Atualiza status do lançamento (admin)
+
+
+
 export const updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
 
     if (!['open', 'paid', 'cancelled'].includes(status)) {
-      return res.status(400).json({ message: 'Status inválido' });
+      return res.status(400).json({ message: 'Status invÃ¡lido' });
     }
 
     const existing = await findFinancialById(id);
     if (!existing) {
-      return res.status(404).json({ message: 'Lançamento não encontrado' });
+      return res.status(404).json({ message: 'LanÃ§amento nÃ£o encontrado' });
     }
 
     const updated = await updateFinancialStatus(id, status);
@@ -80,7 +93,9 @@ export const updateStatus = async (req, res) => {
   }
 };
 
-// Relatorio financeiro por periodo (admin)
+
+
+
 export const report = async (req, res) => {
   try {
     const { start, end, professionalId } = req.query;
@@ -105,7 +120,9 @@ export const report = async (req, res) => {
   }
 };
 
-// Relatorio comparativo entre dois periodos (admin)
+
+
+
 export const reportCompare = async (req, res) => {
   try {
     const { startA, endA, startB, endB, professionalId } = req.query;
@@ -137,3 +154,8 @@ export const reportCompare = async (req, res) => {
     res.status(500).json({ message: 'Erro ao gerar relatorio comparativo' });
   }
 };
+
+
+
+
+

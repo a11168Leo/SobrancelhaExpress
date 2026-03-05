@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useState } from 'react'
 import api from '../../api/api.js'
 
@@ -19,19 +26,19 @@ function AdminConfiguracoes() {
   const save = async () => {
     if (!settings.startTime || !settings.endTime) return
     if (settings.startTime >= settings.endTime) {
-      setMessage('O horário inicial deve ser menor que o final.')
+      setMessage('O horÃ¡rio inicial deve ser menor que o final.')
       return
     }
     await api.put('/settings/business-hours', settings)
-    setMessage('Configurações salvas com sucesso.')
+    setMessage('ConfiguraÃ§Ãµes salvas com sucesso.')
     setTimeout(() => setMessage(''), 2500)
   }
 
   return (
     <section className="page">
       <div>
-        <h1>Configurações</h1>
-        <p className="page-subtitle">Preferências do painel administrativo.</p>
+        <h1>ConfiguraÃ§Ãµes</h1>
+        <p className="page-subtitle">PreferÃªncias do painel administrativo.</p>
       </div>
 
       <div className="card" style={{ display: 'grid', gap: '1rem' }}>
@@ -49,7 +56,7 @@ function AdminConfiguracoes() {
             value={settings.endTime}
             onChange={(e) => setSettings((prev) => ({ ...prev, endTime: e.target.value }))}
           />
-          <button className="btn" type="button" onClick={save}>
+          <button className="btn btn-admin-configuracoes" type="button" onClick={save}>
             Salvar
           </button>
         </div>
@@ -60,3 +67,7 @@ function AdminConfiguracoes() {
 }
 
 export default AdminConfiguracoes
+
+
+
+

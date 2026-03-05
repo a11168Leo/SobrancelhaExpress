@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import jwt from 'jsonwebtoken';
 
 export const generateToken = (payload) => {
@@ -5,3 +12,6 @@ export const generateToken = (payload) => {
     expiresIn: '7d'
   });
 };
+
+
+

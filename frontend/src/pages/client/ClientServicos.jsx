@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { FiMapPin, FiPhone } from 'react-icons/fi'
@@ -371,3 +378,6 @@ function ClientServicos() {
 }
 
 export default ClientServicos
+
+
+

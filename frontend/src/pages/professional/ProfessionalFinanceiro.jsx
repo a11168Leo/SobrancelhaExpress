@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useState } from 'react'
 import dayjs from 'dayjs'
 import api from '../../api/api.js'
@@ -25,7 +32,7 @@ function ProfessionalFinanceiro() {
           <thead>
             <tr>
               <th>Data</th>
-              <th>Descrição</th>
+              <th>DescriÃ§Ã£o</th>
               <th>Valor</th>
               <th>Status</th>
             </tr>
@@ -47,3 +54,6 @@ function ProfessionalFinanceiro() {
 }
 
 export default ProfessionalFinanceiro
+
+
+

@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -14,7 +21,7 @@ const seedAdmin = async () => {
 
   const existing = await User.findOne({ email: ADMIN_EMAIL });
   if (existing) {
-    console.log('Admin já existe:', ADMIN_EMAIL);
+    console.log('Admin jÃ¡ existe:', ADMIN_EMAIL);
     await mongoose.disconnect();
     return;
   }
@@ -37,3 +44,6 @@ seedAdmin().catch((error) => {
   mongoose.disconnect();
   process.exit(1);
 });
+
+
+

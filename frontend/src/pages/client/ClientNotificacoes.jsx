@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useState } from 'react'
 import api from '../../api/api.js'
 
@@ -65,4 +72,7 @@ function ClientNotificacoes() {
 }
 
 export default ClientNotificacoes
+
+
+
 

@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useState } from 'react'
 import api from '../../api/api.js'
 
@@ -16,8 +23,8 @@ function AdminNotificacoes() {
   return (
     <section className="page">
       <div>
-        <h1>Notificações</h1>
-        <p className="page-subtitle">Atualizações importantes do dia.</p>
+        <h1>NotificaÃ§Ãµes</h1>
+        <p className="page-subtitle">AtualizaÃ§Ãµes importantes do dia.</p>
       </div>
 
       <div className="stats-grid">
@@ -27,7 +34,7 @@ function AdminNotificacoes() {
             <p>{item.message}</p>
             <div style={{ display: 'flex', gap: '0.6rem' }}>
               <button
-                className="btn"
+                className="btn btn-admin-notificacoes"
                 type="button"
                 onClick={async () => {
                   await api.patch(`/notifications/${item._id}/read`)
@@ -39,7 +46,7 @@ function AdminNotificacoes() {
                 Marcar como lida
               </button>
               <button
-                className="btn"
+                className="btn btn-admin-notificacoes"
                 type="button"
                 onClick={async () => {
                   await api.delete(`/notifications/${item._id}`)
@@ -57,3 +64,7 @@ function AdminNotificacoes() {
 }
 
 export default AdminNotificacoes
+
+
+
+

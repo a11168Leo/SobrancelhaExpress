@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import {
   createAppointment,
   findConflictingAppointment,
@@ -12,13 +19,17 @@ import {
 import { findServiceById } from '../services/service.service.js'
 import { createFinancial, findFinancialByAppointment } from '../financial/financial.service.js'
 
-// Converte string/data em Date valido
+
+
+
 const parseDate = (value) => {
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? null : date
 }
 
-// Cria agendamento (cliente cria para si; admin/profissional conforme permissao)
+
+
+
 export const create = async (req, res) => {
   try {
     const {
@@ -103,7 +114,9 @@ export const create = async (req, res) => {
   }
 }
 
-// Lista agenda por profissional (profissional so ve a sua; admin ve qualquer)
+
+
+
 export const listByProfessional = async (req, res) => {
   try {
     const { professionalId } = req.params
@@ -119,7 +132,9 @@ export const listByProfessional = async (req, res) => {
   }
 }
 
-// Lista agenda por cliente (cliente so ve o seu; admin ve qualquer)
+
+
+
 export const listByClient = async (req, res) => {
   try {
     const { clientId } = req.params
@@ -135,7 +150,9 @@ export const listByClient = async (req, res) => {
   }
 }
 
-// Atualiza status (admin ou profissional dono do atendimento)
+
+
+
 export const updateStatus = async (req, res) => {
   try {
     const { id } = req.params
@@ -159,7 +176,9 @@ export const updateStatus = async (req, res) => {
       return res.status(404).json({ message: 'Agendamento nao encontrado' })
     }
 
-    // Se finalizou o servico, cria lancamento financeiro (uma unica vez)
+
+
+
     if (status === 'completed') {
       const existingFinancial = await findFinancialByAppointment(id)
       if (!existingFinancial) {
@@ -186,7 +205,9 @@ export const updateStatus = async (req, res) => {
   }
 }
 
-// Lista todos os agendamentos (admin)
+
+
+
 export const listAll = async (_req, res) => {
   try {
     const appointments = await listAllAppointments()
@@ -196,7 +217,9 @@ export const listAll = async (_req, res) => {
   }
 }
 
-// Atualiza dados do agendamento (admin)
+
+
+
 export const update = async (req, res) => {
   try {
     const { id } = req.params
@@ -247,3 +270,8 @@ export const update = async (req, res) => {
     res.status(500).json({ message: 'Erro ao atualizar agendamento' })
   }
 }
+
+
+
+
+

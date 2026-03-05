@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
 import api from '../../api/api.js'
@@ -33,23 +40,23 @@ function AdminFinanceiro() {
     <section className="page">
       <div>
         <h1>Financeiro</h1>
-        <p className="page-subtitle">Lançamentos e status de pagamentos.</p>
+        <p className="page-subtitle">LanÃ§amentos e status de pagamentos.</p>
       </div>
 
       <div className="stats-grid">
         <article className="card">
-          <h3>Faturamento do mês</h3>
+          <h3>Faturamento do mÃªs</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>
             EUR {Number(total).toFixed(2)}
           </div>
-          <p>Período atual</p>
+          <p>PerÃ­odo atual</p>
         </article>
         <article className="card">
           <h3>Pagamentos em aberto</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>
             EUR {Number(open).toFixed(2)}
           </div>
-          <p>{entradas.filter((item) => item.status === 'open').length} lançamentos pendentes</p>
+          <p>{entradas.filter((item) => item.status === 'open').length} lanÃ§amentos pendentes</p>
         </article>
       </div>
 
@@ -58,7 +65,7 @@ function AdminFinanceiro() {
           <thead>
             <tr>
               <th>Data</th>
-              <th>Descrição</th>
+              <th>DescriÃ§Ã£o</th>
               <th>Valor</th>
               <th>Status</th>
             </tr>
@@ -82,3 +89,6 @@ function AdminFinanceiro() {
 }
 
 export default AdminFinanceiro
+
+
+

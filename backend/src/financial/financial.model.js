@@ -1,6 +1,15 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import mongoose from 'mongoose';
 
-// Modelo financeiro: registra ganhos por atendimento
+
+
+
 const FinancialSchema = new mongoose.Schema(
   {
     appointment: {
@@ -29,3 +38,8 @@ const FinancialSchema = new mongoose.Schema(
 );
 
 export default mongoose.model('Financial', FinancialSchema);
+
+
+
+
+

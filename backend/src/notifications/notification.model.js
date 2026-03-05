@@ -1,6 +1,15 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import mongoose from 'mongoose';
 
-// Modelo de notificacao simples
+
+
+
 const NotificationSchema = new mongoose.Schema(
   {
     user: {
@@ -25,3 +34,8 @@ const NotificationSchema = new mongoose.Schema(
 );
 
 export default mongoose.model('Notification', NotificationSchema);
+
+
+
+
+

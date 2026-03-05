@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
 import api from '../../api/api.js'
@@ -59,13 +66,13 @@ function ProfessionalRelatorio() {
   return (
     <section className="page">
       <div>
-        <h1>Relatório</h1>
-        <p className="page-subtitle">Comparativo por período (seus resultados).</p>
+        <h1>RelatÃ³rio</h1>
+        <p className="page-subtitle">Comparativo por perÃ­odo (seus resultados).</p>
       </div>
 
       <div className="card" style={{ display: 'grid', gap: '1rem' }}>
         <div style={{ display: 'grid', gap: '0.6rem' }}>
-          <label>Período atual</label>
+          <label>PerÃ­odo atual</label>
           <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
             <input
               className="search"
@@ -82,7 +89,7 @@ function ProfessionalRelatorio() {
           </div>
         </div>
         <div style={{ display: 'grid', gap: '0.6rem' }}>
-          <label>Período anterior</label>
+          <label>PerÃ­odo anterior</label>
           <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
             <input
               className="search"
@@ -102,25 +109,25 @@ function ProfessionalRelatorio() {
 
       <div className="stats-grid">
         <article className="card">
-          <h3>Período atual</h3>
+          <h3>PerÃ­odo atual</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>
             EUR {Number(data?.periodA?.total || 0).toFixed(2)}
           </div>
           <p>{dayjs(range.startA).format('DD MMM')} a {dayjs(range.endA).format('DD MMM')}</p>
         </article>
         <article className="card">
-          <h3>Período anterior</h3>
+          <h3>PerÃ­odo anterior</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>
             EUR {Number(data?.periodB?.total || 0).toFixed(2)}
           </div>
           <p>{dayjs(range.startB).format('DD MMM')} a {dayjs(range.endB).format('DD MMM')}</p>
         </article>
         <article className="card">
-          <h3>Variação</h3>
+          <h3>VariaÃ§Ã£o</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>
             {data?.percent === null ? 'N/A' : `${data?.percent}%`}
           </div>
-          <p>Diferença: EUR {Number(data?.difference || 0).toFixed(2)}</p>
+          <p>DiferenÃ§a: EUR {Number(data?.difference || 0).toFixed(2)}</p>
         </article>
       </div>
 
@@ -128,7 +135,7 @@ function ProfessionalRelatorio() {
         <h3>Comparativo visual</h3>
         <Bar
           data={{
-            labels: ['Período atual', 'Período anterior'],
+            labels: ['PerÃ­odo atual', 'PerÃ­odo anterior'],
             datasets: [
               {
                 label: 'Receita',
@@ -154,7 +161,7 @@ function ProfessionalRelatorio() {
       </div>
 
       <div className="card">
-        <h3>Receita diária (período atual)</h3>
+        <h3>Receita diÃ¡ria (perÃ­odo atual)</h3>
         <Line
           data={{
             labels: (() => {
@@ -215,3 +222,6 @@ function ProfessionalRelatorio() {
 }
 
 export default ProfessionalRelatorio
+
+
+

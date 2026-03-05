@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { Navigate } from 'react-router-dom'
 
 function RequireAuth({ children }) {
@@ -9,3 +16,6 @@ function RequireAuth({ children }) {
 }
 
 export default RequireAuth
+
+
+

@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 import nodemailer from 'nodemailer'
@@ -11,7 +18,9 @@ import {
 } from './user.service.js'
 import User from './user.model.js'
 
-// Cadastro de usuario
+
+
+
 export const register = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body
@@ -53,7 +62,9 @@ export const register = async (req, res) => {
   }
 }
 
-// Login do usuario
+
+
+
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body
@@ -91,7 +102,9 @@ export const login = async (req, res) => {
   }
 }
 
-// Retorna dados do usuario autenticado
+
+
+
 export const me = async (req, res) => {
   try {
     const user = await findUserById(req.user.id)
@@ -105,7 +118,9 @@ export const me = async (req, res) => {
   }
 }
 
-// Atualiza avatar do usuario autenticado
+
+
+
 export const updateAvatar = async (req, res) => {
   try {
     if (!req.file) {
@@ -121,18 +136,30 @@ export const updateAvatar = async (req, res) => {
   }
 }
 
-// Rota de teste para admin
+
+
+
 export const adminOnly = async (_req, res) => {
   res.json({ message: 'Acesso admin liberado' })
 }
 
-// Admin cria usuario (profissional ou cliente)
+
+
+
 export const adminCreateUser = async (req, res) => {
   try {
     const { name, email, password, role, phone } = req.body
 
     if (!name || !email || !password || !role) {
       return res.status(400).json({ message: 'Nome, email, senha e role sao obrigatorios' })
+    }
+
+    if (!['admin', 'profissional', 'cliente'].includes(role)) {
+      return res.status(400).json({ message: 'Role invalida' })
+    }
+
+    if (req.user.role === 'profissional' && role !== 'cliente') {
+      return res.status(403).json({ message: 'Profissional pode criar apenas clientes' })
     }
 
     const userExists = await findUserByEmail(email)
@@ -164,7 +191,9 @@ export const adminCreateUser = async (req, res) => {
   }
 }
 
-// Admin remove usuario
+
+
+
 export const adminDeleteUser = async (req, res) => {
   try {
     const { id } = req.params
@@ -178,7 +207,9 @@ export const adminDeleteUser = async (req, res) => {
   }
 }
 
-// Atualiza dados do usuario autenticado
+
+
+
 export const updateMe = async (req, res) => {
   try {
     const { name, phone, about } = req.body
@@ -201,7 +232,9 @@ export const updateMe = async (req, res) => {
   }
 }
 
-// Lista profissionais para exibicao publica no site cliente
+
+
+
 export const listProfessionalsPublic = async (_req, res) => {
   try {
     const users = await User.find({ role: 'profissional' })
@@ -213,7 +246,9 @@ export const listProfessionalsPublic = async (_req, res) => {
   }
 }
 
-// Atualiza o "sobre" de um profissional (admin ou a propria profissional)
+
+
+
 export const updateProfessionalAbout = async (req, res) => {
   try {
     const { id } = req.params
@@ -243,7 +278,9 @@ export const updateProfessionalAbout = async (req, res) => {
   }
 }
 
-// Atualiza senha do usuario autenticado
+
+
+
 export const updatePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body
@@ -272,7 +309,9 @@ export const updatePassword = async (req, res) => {
   }
 }
 
-// Solicita reset de senha via email
+
+
+
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body
@@ -342,7 +381,9 @@ export const forgotPassword = async (req, res) => {
   }
 }
 
-// Redefine senha com token
+
+
+
 export const resetPassword = async (req, res) => {
   try {
     const { token, newPassword } = req.body
@@ -371,3 +412,8 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ message: 'Erro ao redefinir senha' })
   }
 }
+
+
+
+
+

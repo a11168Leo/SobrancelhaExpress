@@ -1,50 +1,57 @@
-SobrancelhaExpress — Especificação Funcional e Técnica
+﻿
+<!--
+====================
+SECAO INTERNA PADRAO
+====================
+-->
 
-O SobrancelhaExpress é um sistema web de gestão para salões de estética, desenvolvido para simplificar a operação diária de administradores, profissionais e clientes. O sistema permite o gerenciamento completo de agendamentos, serviços, clientes e finanças, de forma eficiente e segura.
-O projeto utiliza a stack MERN (MongoDB, Express, React e Node.js), com autenticação baseada em JWT e arquitetura organizada em camadas (Controllers, Services, Models e Middlewares).
+SobrancelhaExpress â€” EspecificaÃ§Ã£o Funcional e TÃ©cnica
 
-Perfis de Usuário
-Administrador: Possui acesso completo ao sistema, podendo visualizar todas as marcações, acessar todos os calendários dos profissionais, criar, editar e remover serviços, visualizar o faturamento total do salão, adicionar e gerenciar profissionais, e criar agendamentos para clientes.
+O SobrancelhaExpress Ã© um sistema web de gestÃ£o para salÃµes de estÃ©tica, desenvolvido para simplificar a operaÃ§Ã£o diÃ¡ria de administradores, profissionais e clientes. O sistema permite o gerenciamento completo de agendamentos, serviÃ§os, clientes e finanÃ§as, de forma eficiente e segura.
+O projeto utiliza a stack MERN (MongoDB, Express, React e Node.js), com autenticaÃ§Ã£o baseada em JWT e arquitetura organizada em camadas (Controllers, Services, Models e Middlewares).
 
-Profissional: Pode visualizar suas próprias marcações e calendário individual, editar apenas os serviços associados às suas especialidades, acessar seu faturamento individual, criar novos agendamentos, iniciar e concluir serviços, e notificar clientes sobre disponibilidade.
+Perfis de UsuÃ¡rio
+Administrador: Possui acesso completo ao sistema, podendo visualizar todas as marcaÃ§Ãµes, acessar todos os calendÃ¡rios dos profissionais, criar, editar e remover serviÃ§os, visualizar o faturamento total do salÃ£o, adicionar e gerenciar profissionais, e criar agendamentos para clientes.
 
-Cliente: Pode agendar serviços, consultar o histórico de atendimentos e receber notificações relacionadas aos seus agendamentos.
+Profissional: Pode visualizar suas prÃ³prias marcaÃ§Ãµes e calendÃ¡rio individual, editar apenas os serviÃ§os associados Ã s suas especialidades, acessar seu faturamento individual, criar novos agendamentos, iniciar e concluir serviÃ§os, e notificar clientes sobre disponibilidade.
+
+Cliente: Pode agendar serviÃ§os, consultar o histÃ³rico de atendimentos e receber notificaÃ§Ãµes relacionadas aos seus agendamentos.
 Regras de Agendamento
-O sistema trabalha com blocos de 30 minutos. Cada serviço possui uma duração definida em minutos, podendo ocupar múltiplos blocos consecutivos.
-O sistema não permite sobreposição de horários para o mesmo profissional. Qualquer tentativa de criar agendamento que entre em conflito com outro existente deve ser impedida.
+O sistema trabalha com blocos de 30 minutos. Cada serviÃ§o possui uma duraÃ§Ã£o definida em minutos, podendo ocupar mÃºltiplos blocos consecutivos.
+O sistema nÃ£o permite sobreposiÃ§Ã£o de horÃ¡rios para o mesmo profissional. Qualquer tentativa de criar agendamento que entre em conflito com outro existente deve ser impedida.
 
 Exemplo de conflito:
-Um cliente agenda um serviço às 09:30.
-Outro cliente tenta agendar um serviço de 50 minutos às 09:00 para o mesmo profissional.
-O sistema deve impedir a marcação devido ao conflito de horários.
-O sistema também deve disponibilizar botões para:
-Iniciar o serviço, registrando o horário real de início.
-Concluir o serviço, registrando o valor no financeiro.
-Notificar o cliente quando o profissional estiver disponível.
-Execução do Serviço
+Um cliente agenda um serviÃ§o Ã s 09:30.
+Outro cliente tenta agendar um serviÃ§o de 50 minutos Ã s 09:00 para o mesmo profissional.
+O sistema deve impedir a marcaÃ§Ã£o devido ao conflito de horÃ¡rios.
+O sistema tambÃ©m deve disponibilizar botÃµes para:
+Iniciar o serviÃ§o, registrando o horÃ¡rio real de inÃ­cio.
+Concluir o serviÃ§o, registrando o valor no financeiro.
+Notificar o cliente quando o profissional estiver disponÃ­vel.
+ExecuÃ§Ã£o do ServiÃ§o
 Cada agendamento possui os seguintes estados operacionais:
 Pendente
 Em andamento
-Concluído
+ConcluÃ­do
 Cancelado
-Ao iniciar um serviço, o profissional registra a hora de início e pode notificar o cliente. Ao concluir o serviço, o agendamento é marcado como concluído e o valor do serviço é registrado automaticamente no módulo financeiro, associando o rendimento ao profissional e ao salão.
+Ao iniciar um serviÃ§o, o profissional registra a hora de inÃ­cio e pode notificar o cliente. Ao concluir o serviÃ§o, o agendamento Ã© marcado como concluÃ­do e o valor do serviÃ§o Ã© registrado automaticamente no mÃ³dulo financeiro, associando o rendimento ao profissional e ao salÃ£o.
 
 Financeiro
-Cada serviço concluído gera um registro financeiro. O profissional visualiza apenas o seu faturamento individual, enquanto o administrador visualiza o faturamento total do salão. Essa estrutura permite gerar relatórios financeiros, como lucro total e ticket médio.
+Cada serviÃ§o concluÃ­do gera um registro financeiro. O profissional visualiza apenas o seu faturamento individual, enquanto o administrador visualiza o faturamento total do salÃ£o. Essa estrutura permite gerar relatÃ³rios financeiros, como lucro total e ticket mÃ©dio.
 Modelagem de Dados (MongoDB)
 User
 nome
-email (único)
+email (Ãºnico)
 senha (armazenada com bcrypt)
 telefone
 role: admin, professional ou client
 ativo
-data de criação
+data de criaÃ§Ã£o
 Servico
 nome
-descrição
-preço
-duração em minutos
+descriÃ§Ã£o
+preÃ§o
+duraÃ§Ã£o em minutos
 ativo
 categoriaPrincipal (ex: Tratamento Facial)
 subcategoria1 (ex: Sobrancelha threading e pestanas)
@@ -52,12 +59,13 @@ subcategoria2 (ex: Sobrancelhas)
 subcategoria3 (ex: Design de linhas)
 
 Agendamento
-clienteId (referência para User)
-profissionalId (referência para User)
-servicoId (referência para Servico)
+clienteId (referÃªncia para User)
+profissionalId (referÃªncia para User)
+servicoId (referÃªncia para Servico)
 dataHoraInicio
 dataHoraFim
-estado: pendente, em andamento, concluído ou cancelado
-observações
-Segurança
-O sistema utiliza autenticação via JWT com expiração. Todas as rotas protegidas passam por middleware de autenticação e autorização baseada em perfil. O backend valida todos os dados recebidos do frontend e nunca deve confiar apenas nas informações enviadas pelo cliente.
+estado: pendente, em andamento, concluÃ­do ou cancelado
+observaÃ§Ãµes
+SeguranÃ§a
+O sistema utiliza autenticaÃ§Ã£o via JWT com expiraÃ§Ã£o. Todas as rotas protegidas passam por middleware de autenticaÃ§Ã£o e autorizaÃ§Ã£o baseada em perfil. O backend valida todos os dados recebidos do frontend e nunca deve confiar apenas nas informaÃ§Ãµes enviadas pelo cliente.
+

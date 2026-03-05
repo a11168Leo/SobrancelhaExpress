@@ -1,11 +1,20 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import jwt from 'jsonwebtoken';
 
-// Valida token JWT e injeta o usuário na request
+
+
+
 export const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.status(401).json({ message: 'Token não fornecido' });
+    return res.status(401).json({ message: 'Token nÃ£o fornecido' });
   }
 
   const [, token] = authHeader.split(' ');
@@ -21,6 +30,11 @@ export const authMiddleware = (req, res, next) => {
 
     next();
   } catch {
-    res.status(401).json({ message: 'Token inválido' });
+    res.status(401).json({ message: 'Token invÃ¡lido' });
   }
 };
+
+
+
+
+

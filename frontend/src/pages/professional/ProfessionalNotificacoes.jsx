@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useState } from 'react'
 import api from '../../api/api.js'
 
@@ -15,15 +22,15 @@ function ProfessionalNotificacoes() {
   return (
     <section className="page">
       <div>
-        <h1>Notificações</h1>
+        <h1>NotificaÃ§Ãµes</h1>
         <p className="page-subtitle">Avisos e lembretes do sistema.</p>
       </div>
 
       <div className="card" style={{ display: 'grid', gap: '0.8rem' }}>
         {notificacoes.length === 0 && (
           <div className="notify-item">
-            <h5>Sem notificações</h5>
-            <p>Você está em dia.</p>
+            <h5>Sem notificaÃ§Ãµes</h5>
+            <p>VocÃª estÃ¡ em dia.</p>
           </div>
         )}
         {notificacoes.map((item) => (
@@ -36,7 +43,7 @@ function ProfessionalNotificacoes() {
             <p>{item.message}</p>
             <div style={{ display: 'flex', gap: '0.6rem' }}>
               <button
-                className="btn"
+                className="btn btn-profissional-notificacoes"
                 type="button"
                 onClick={async () => {
                   await api.patch(`/notifications/${item._id}/read`)
@@ -48,7 +55,7 @@ function ProfessionalNotificacoes() {
                 Marcar como lida
               </button>
               <button
-                className="btn"
+                className="btn btn-profissional-notificacoes"
                 type="button"
                 onClick={async () => {
                   await api.delete(`/notifications/${item._id}`)
@@ -66,3 +73,8 @@ function ProfessionalNotificacoes() {
 }
 
 export default ProfessionalNotificacoes
+
+
+
+
+

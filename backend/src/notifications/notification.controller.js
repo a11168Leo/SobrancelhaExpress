@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import Notification from './notification.model.js';
 import {
   createNotification,
@@ -6,7 +13,9 @@ import {
   deleteNotification
 } from './notification.service.js';
 
-// Cria notificacao (admin)
+
+
+
 export const create = async (req, res) => {
   try {
     const { userId, title, message } = req.body;
@@ -27,7 +36,9 @@ export const create = async (req, res) => {
   }
 };
 
-// Lista notificacoes do usuario autenticado
+
+
+
 export const listMine = async (req, res) => {
   try {
     const notifications = await listNotificationsByUser(req.user.id);
@@ -37,7 +48,9 @@ export const listMine = async (req, res) => {
   }
 };
 
-// Marca notificacao como lida (somente dono)
+
+
+
 export const markRead = async (req, res) => {
   try {
     const { id } = req.params;
@@ -59,7 +72,9 @@ export const markRead = async (req, res) => {
   }
 };
 
-// Remove notificacao (somente dono)
+
+
+
 export const remove = async (req, res) => {
   try {
     const { id } = req.params;
@@ -80,3 +95,8 @@ export const remove = async (req, res) => {
     res.status(500).json({ message: 'Erro ao remover notificacao' });
   }
 };
+
+
+
+
+

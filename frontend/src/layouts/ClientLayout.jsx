@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { Outlet, useNavigate } from 'react-router-dom'
 import { useEffect, useMemo, useState } from 'react'
 import {
@@ -14,6 +21,11 @@ import api from '../api/api.js'
 import '../css/client.css'
 import logo from '../assets/Logo2.svg'
 
+/*
+====================
+Dados de Tela
+====================
+*/
 const heroImages = Object.values(
   import.meta.glob('../assets/interior/*.{jpg,jpeg,png,webp}', {
     eager: true,
@@ -27,6 +39,11 @@ const salonUnits = [
 ]
 
 function ClientLayout() {
+  /*
+  ====================
+  Estado e Navegacao
+  ====================
+  */
   const navigate = useNavigate()
   const [slideIndex, setSlideIndex] = useState(0)
   const [serviceCategories, setServiceCategories] = useState([])
@@ -36,6 +53,11 @@ function ClientLayout() {
   const [now, setNow] = useState(() => new Date())
   const token = localStorage.getItem('token') || sessionStorage.getItem('token')
 
+  /*
+  ====================
+  Effects de Ciclo de Vida
+  ====================
+  */
   useEffect(() => {
     document.body.classList.add('client-body')
     return () => document.body.classList.remove('client-body')
@@ -65,6 +87,11 @@ function ClientLayout() {
     return () => window.clearInterval(timer)
   }, [])
 
+  /*
+  ====================
+  Valores Derivados
+  ====================
+  */
   const currentHero = useMemo(() => {
     if (heroImages.length === 0) return ''
     return heroImages[slideIndex] || heroImages[0]
@@ -82,8 +109,18 @@ function ClientLayout() {
     return true
   }, [now])
 
+  /*
+  ====================
+  Render
+  ====================
+  */
   return (
     <div className="client-shell">
+      {/*
+      ====================
+      Header / Hero
+      ====================
+      */}
       <header className="client-hero">
         <div className="client-hero-slides" aria-hidden="true">
           {heroImages.map((image, index) => (
@@ -115,7 +152,7 @@ function ClientLayout() {
                   className="client-menu-link"
                   onClick={() => setIsServicesOpen((prev) => !prev)}
                 >
-                  Serviços
+                  ServiÃ§os
                   <FiChevronDown className={`client-chevron${isServicesOpen ? ' is-open' : ''}`} size={16} />
                 </button>
                 {isServicesOpen && (
@@ -146,7 +183,7 @@ function ClientLayout() {
                 onClick={() => navigate('/cliente/servicos#sobre')}
               >
                 <FiInfo size={16} />
-                Sobre nós
+                Sobre nÃ³s
               </button>
 
               <div className="client-menu-dropdown">
@@ -156,7 +193,7 @@ function ClientLayout() {
                   onClick={() => setIsLocationOpen((prev) => !prev)}
                 >
                   <FiMapPin size={16} />
-                  Localização
+                  LocalizaÃ§Ã£o
                   <FiChevronDown className={`client-chevron${isLocationOpen ? ' is-open' : ''}`} size={16} />
                 </button>
                 {isLocationOpen && (
@@ -229,10 +266,20 @@ function ClientLayout() {
         </div>
       </header>
 
+      {/*
+      ====================
+      Conteudo Principal
+      ====================
+      */}
       <main className="client-main">
         <Outlet />
       </main>
 
+      {/*
+      ====================
+      Footer
+      ====================
+      */}
       <footer className="client-footer">
         <div className="client-footer-socials" aria-label="Redes sociais do salao">
           <a
@@ -271,3 +318,6 @@ function ClientLayout() {
 }
 
 export default ClientLayout
+
+
+

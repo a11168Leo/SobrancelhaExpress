@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
 import api from '../../api/api.js'
@@ -99,4 +106,7 @@ function ClientAgendamentos() {
 }
 
 export default ClientAgendamentos
+
+
+
 

@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
 import FullCalendar from '@fullcalendar/react'
@@ -44,11 +51,11 @@ function AdminAgendamentos() {
         time: dayjs(item.startTime).format('DD/MM HH:mm'),
         client: item.client?.name || 'Cliente',
         prof: item.professional?.name || 'Profissional',
-        service: item.service?.name || 'Serviço',
+        service: item.service?.name || 'ServiÃ§o',
       }))
       const mappedEvents = appointments.map((item) => ({
         id: item._id,
-        title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'Serviço'}`,
+        title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'ServiÃ§o'}`,
         start: item.startTime,
         end: item.endTime,
         extendedProps: {
@@ -57,7 +64,7 @@ function AdminAgendamentos() {
           serviceId: item.service?._id || item.service,
           status: item.status,
           clientName: item.client?.name || 'Cliente',
-          serviceName: item.service?.name || 'Serviço',
+          serviceName: item.service?.name || 'ServiÃ§o',
         }
       }))
       setAgendamentos(data)
@@ -144,16 +151,16 @@ function AdminAgendamentos() {
           <p>Resumo de hoje</p>
         </article>
         <article className="card">
-          <h3>Agendamentos no mês</h3>
+          <h3>Agendamentos no mÃªs</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{stats.monthCount}</div>
-          <p>Total do mês</p>
+          <p>Total do mÃªs</p>
         </article>
       </div>
 
       <div className="card">
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3>Calendário</h3>
-          <button className="btn" type="button" onClick={() => setIsModalOpen(true)}>
+          <h3>CalendÃ¡rio</h3>
+          <button className="btn btn-admin-agendamentos" type="button" onClick={() => setIsModalOpen(true)}>
             Novo agendamento
           </button>
         </div>
@@ -175,22 +182,22 @@ function AdminAgendamentos() {
             }
           />
           <button
-            className="btn"
+            className="btn btn-admin-agendamentos"
             type="button"
             onClick={async () => {
               try {
                 if (!businessConfig.startTime || !businessConfig.endTime) {
-                  showToast('Preencha os horários do expediente.')
+                  showToast('Preencha os horÃ¡rios do expediente.')
                   return
                 }
                 if (businessConfig.startTime >= businessConfig.endTime) {
-                  showToast('O horário inicial deve ser menor que o final.')
+                  showToast('O horÃ¡rio inicial deve ser menor que o final.')
                   return
                 }
                 await api.put('/settings/business-hours', businessConfig)
                 showToast('Expediente salvo.')
               } catch {
-                showToast('Não foi possível salvar o expediente.')
+                showToast('NÃ£o foi possÃ­vel salvar o expediente.')
               }
             }}
           >
@@ -257,11 +264,11 @@ function AdminAgendamentos() {
                   time: dayjs(item.startTime).format('DD/MM HH:mm'),
                   client: item.client?.name || 'Cliente',
                   prof: item.professional?.name || 'Profissional',
-                  service: item.service?.name || 'Serviço',
+                  service: item.service?.name || 'ServiÃ§o',
                 }))
                 const mappedEvents = appointments.map((item) => ({
                   id: item._id,
-                  title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'Serviço'}`,
+                  title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'ServiÃ§o'}`,
                   start: item.startTime,
                   end: item.endTime,
                   extendedProps: {
@@ -270,7 +277,7 @@ function AdminAgendamentos() {
                     serviceId: item.service?._id || item.service,
                     status: item.status,
                     clientName: item.client?.name || 'Cliente',
-                    serviceName: item.service?.name || 'Serviço',
+                    serviceName: item.service?.name || 'ServiÃ§o',
                   }
                 }))
                 setAgendamentos(data)
@@ -279,18 +286,18 @@ function AdminAgendamentos() {
                 showToast('Agendamento atualizado.')
               } catch {
                 info.revert()
-                showToast('Não foi possível reagendar.')
+                showToast('NÃ£o foi possÃ­vel reagendar.')
               }
             }}
             eventResize={async (info) => {
               const duration = getServiceDuration(info.event.extendedProps.serviceId)
               const newMinutes = dayjs(info.event.end).diff(dayjs(info.event.start), 'minute')
               if (duration && newMinutes > duration) {
-                showToast('Duração maior que o serviço. Ajuste o tempo correto.')
+                showToast('DuraÃ§Ã£o maior que o serviÃ§o. Ajuste o tempo correto.')
                 info.revert()
                 return
               }
-              const ok = window.confirm('Deseja alterar a duração deste atendimento?')
+              const ok = window.confirm('Deseja alterar a duraÃ§Ã£o deste atendimento?')
               if (!ok) {
                 info.revert()
                 return
@@ -308,11 +315,11 @@ function AdminAgendamentos() {
                   time: dayjs(item.startTime).format('DD/MM HH:mm'),
                   client: item.client?.name || 'Cliente',
                   prof: item.professional?.name || 'Profissional',
-                  service: item.service?.name || 'Serviço',
+                  service: item.service?.name || 'ServiÃ§o',
                 }))
                 const mappedEvents = appointments.map((item) => ({
                   id: item._id,
-                  title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'Serviço'}`,
+                  title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'ServiÃ§o'}`,
                   start: item.startTime,
                   end: item.endTime,
                   extendedProps: {
@@ -321,16 +328,16 @@ function AdminAgendamentos() {
                     serviceId: item.service?._id || item.service,
                     status: item.status,
                     clientName: item.client?.name || 'Cliente',
-                    serviceName: item.service?.name || 'Serviço',
+                    serviceName: item.service?.name || 'ServiÃ§o',
                   }
                 }))
                 setAgendamentos(data)
                 setEvents(mappedEvents)
                 setAppointmentsRaw(appointments)
-                showToast('Duração atualizada.')
+                showToast('DuraÃ§Ã£o atualizada.')
               } catch {
                 info.revert()
-                showToast('Não foi possível atualizar.')
+                showToast('NÃ£o foi possÃ­vel atualizar.')
               }
             }}
             eventClick={(info) => {
@@ -349,14 +356,14 @@ function AdminAgendamentos() {
       </div>
 
       <div className="card">
-        <h3>Próximos atendimentos</h3>
+        <h3>PrÃ³ximos atendimentos</h3>
         <table className="table">
           <thead>
             <tr>
-              <th>Horário</th>
+              <th>HorÃ¡rio</th>
               <th>Cliente</th>
               <th>Profissional</th>
-              <th>Serviço</th>
+              <th>ServiÃ§o</th>
             </tr>
           </thead>
           <tbody>
@@ -377,7 +384,7 @@ function AdminAgendamentos() {
           <div className="salon-modal" onClick={(e) => e.stopPropagation()}>
             <div className="salon-modal-header">
               <h3>Novo agendamento</h3>
-              <button className="btn" type="button" onClick={() => setIsModalOpen(false)}>
+              <button className="btn btn-admin-agendamentos" type="button" onClick={() => setIsModalOpen(false)}>
                 Fechar
               </button>
             </div>
@@ -411,7 +418,7 @@ function AdminAgendamentos() {
                 value={form.serviceId}
                 onChange={(e) => setForm((prev) => ({ ...prev, serviceId: e.target.value }))}
               >
-                <option value="">Selecione o serviço</option>
+                <option value="">Selecione o serviÃ§o</option>
                 {servicos.map((service) => (
                   <option key={service._id} value={service._id}>
                     {service.name}
@@ -426,13 +433,13 @@ function AdminAgendamentos() {
               />
               {form.serviceId && (
                 <p style={{ margin: 0, color: 'var(--muted)' }}>
-                  Duração: {getServiceDuration(form.serviceId)} min
+                  DuraÃ§Ã£o: {getServiceDuration(form.serviceId)} min
                 </p>
               )}
               {error && <p style={{ color: '#b12a5b', margin: 0 }}>{error}</p>}
               <div style={{ display: 'flex', gap: '0.6rem' }}>
                 <button
-                  className="btn"
+                  className="btn btn-admin-agendamentos"
                   type="button"
                   onClick={async () => {
                     setError('')
@@ -442,7 +449,7 @@ function AdminAgendamentos() {
                     }
                     const duration = getServiceDuration(form.serviceId)
                     if (!duration) {
-                      setError('Serviço sem duração válida.')
+                      setError('ServiÃ§o sem duraÃ§Ã£o vÃ¡lida.')
                       return
                     }
                     if (
@@ -452,7 +459,7 @@ function AdminAgendamentos() {
                         duration
                       )
                     ) {
-                      setError('Horário em conflito.')
+                      setError('HorÃ¡rio em conflito.')
                       return
                     }
                     try {
@@ -470,11 +477,11 @@ function AdminAgendamentos() {
                         time: dayjs(item.startTime).format('DD/MM HH:mm'),
                         client: item.client?.name || 'Cliente',
                         prof: item.professional?.name || 'Profissional',
-                        service: item.service?.name || 'Serviço',
+                        service: item.service?.name || 'ServiÃ§o',
                       }))
                       const mappedEvents = appointments.map((item) => ({
                         id: item._id,
-                        title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'Serviço'}`,
+                        title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'ServiÃ§o'}`,
                         start: item.startTime,
                         end: item.endTime,
                         extendedProps: {
@@ -483,7 +490,7 @@ function AdminAgendamentos() {
                           serviceId: item.service?._id || item.service,
                           status: item.status,
                           clientName: item.client?.name || 'Cliente',
-                          serviceName: item.service?.name || 'Serviço',
+                          serviceName: item.service?.name || 'ServiÃ§o',
                         }
                       }))
                       setAgendamentos(data)
@@ -491,13 +498,13 @@ function AdminAgendamentos() {
                       setAppointmentsRaw(appointments)
                       showToast('Agendamento criado.')
                     } catch {
-                      setError('Não foi possível criar o agendamento.')
+                      setError('NÃ£o foi possÃ­vel criar o agendamento.')
                     }
                   }}
                 >
                   Salvar
                 </button>
-                <button className="btn" type="button" onClick={() => setIsModalOpen(false)}>
+                <button className="btn btn-admin-agendamentos" type="button" onClick={() => setIsModalOpen(false)}>
                   Cancelar
                 </button>
               </div>
@@ -511,7 +518,7 @@ function AdminAgendamentos() {
           <div className="salon-modal" onClick={(e) => e.stopPropagation()}>
             <div className="salon-modal-header">
               <h3>Editar agendamento</h3>
-              <button className="btn" type="button" onClick={() => setEditModalOpen(false)}>
+              <button className="btn btn-admin-agendamentos" type="button" onClick={() => setEditModalOpen(false)}>
                 Fechar
               </button>
             </div>
@@ -549,7 +556,7 @@ function AdminAgendamentos() {
                   setEditForm((prev) => ({ ...prev, serviceId: e.target.value }))
                 }
               >
-                <option value="">Selecione o serviço</option>
+                <option value="">Selecione o serviÃ§o</option>
                 {servicos.map((service) => (
                   <option key={service._id} value={service._id}>
                     {service.name}
@@ -564,13 +571,13 @@ function AdminAgendamentos() {
               />
               {editForm.serviceId && (
                 <p style={{ margin: 0, color: 'var(--muted)' }}>
-                  Duração: {getServiceDuration(editForm.serviceId)} min
+                  DuraÃ§Ã£o: {getServiceDuration(editForm.serviceId)} min
                 </p>
               )}
               {error && <p style={{ color: '#b12a5b', margin: 0 }}>{error}</p>}
               <div style={{ display: 'flex', gap: '0.6rem' }}>
                 <button
-                  className="btn"
+                  className="btn btn-admin-agendamentos"
                   type="button"
                   onClick={async () => {
                     setError('')
@@ -585,7 +592,7 @@ function AdminAgendamentos() {
                     }
                     const duration = getServiceDuration(editForm.serviceId)
                     if (!duration) {
-                      setError('Serviço sem duração válida.')
+                      setError('ServiÃ§o sem duraÃ§Ã£o vÃ¡lida.')
                       return
                     }
                     if (
@@ -596,7 +603,7 @@ function AdminAgendamentos() {
                         editForm.id
                       )
                     ) {
-                      setError('Horário em conflito.')
+                      setError('HorÃ¡rio em conflito.')
                       return
                     }
                     try {
@@ -614,11 +621,11 @@ function AdminAgendamentos() {
                         time: dayjs(item.startTime).format('DD/MM HH:mm'),
                         client: item.client?.name || 'Cliente',
                         prof: item.professional?.name || 'Profissional',
-                        service: item.service?.name || 'Serviço',
+                        service: item.service?.name || 'ServiÃ§o',
                       }))
                       const mappedEvents = appointments.map((item) => ({
                         id: item._id,
-                        title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'Serviço'}`,
+                        title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'ServiÃ§o'}`,
                         start: item.startTime,
                         end: item.endTime,
                         extendedProps: {
@@ -627,7 +634,7 @@ function AdminAgendamentos() {
                           serviceId: item.service?._id || item.service,
                           status: item.status,
                           clientName: item.client?.name || 'Cliente',
-                          serviceName: item.service?.name || 'Serviço',
+                          serviceName: item.service?.name || 'ServiÃ§o',
                         }
                       }))
                       setAgendamentos(data)
@@ -635,14 +642,14 @@ function AdminAgendamentos() {
                       setAppointmentsRaw(appointments)
                       showToast('Agendamento atualizado.')
                     } catch {
-                      setError('Não foi possível atualizar o agendamento.')
+                      setError('NÃ£o foi possÃ­vel atualizar o agendamento.')
                     }
                   }}
                 >
-                  Salvar alterações
+                  Salvar alteraÃ§Ãµes
                 </button>
                 <button
-                  className="btn"
+                  className="btn btn-admin-agendamentos"
                   type="button"
                   onClick={async () => {
                     try {
@@ -657,11 +664,11 @@ function AdminAgendamentos() {
                         time: dayjs(item.startTime).format('DD/MM HH:mm'),
                         client: item.client?.name || 'Cliente',
                         prof: item.professional?.name || 'Profissional',
-                        service: item.service?.name || 'Serviço',
+                        service: item.service?.name || 'ServiÃ§o',
                       }))
                       const mappedEvents = appointments.map((item) => ({
                         id: item._id,
-                        title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'Serviço'}`,
+                        title: `${item.client?.name || 'Cliente'} - ${item.service?.name || 'ServiÃ§o'}`,
                         start: item.startTime,
                         end: item.endTime,
                         extendedProps: {
@@ -670,7 +677,7 @@ function AdminAgendamentos() {
                           serviceId: item.service?._id || item.service,
                           status: item.status,
                           clientName: item.client?.name || 'Cliente',
-                          serviceName: item.service?.name || 'Serviço',
+                          serviceName: item.service?.name || 'ServiÃ§o',
                         }
                       }))
                       setAgendamentos(data)
@@ -678,7 +685,7 @@ function AdminAgendamentos() {
                       setAppointmentsRaw(appointments)
                       showToast('Agendamento cancelado.')
                     } catch {
-                      setError('Não foi possível cancelar o agendamento.')
+                      setError('NÃ£o foi possÃ­vel cancelar o agendamento.')
                     }
                   }}
                 >
@@ -712,3 +719,7 @@ function AdminAgendamentos() {
 }
 
 export default AdminAgendamentos
+
+
+
+

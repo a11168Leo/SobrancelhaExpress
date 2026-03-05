@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useState } from 'react'
 import '../css/login.css'
 import { useNavigate } from 'react-router-dom'
@@ -23,7 +30,7 @@ function Login() {
     e.preventDefault()
     setError('')
     if (isRegister && password !== confirmPassword) {
-      setError('As senhas não coincidem.')
+      setError('As senhas nÃ£o coincidem.')
       return
     }
     try {
@@ -48,20 +55,20 @@ function Login() {
       if (serverMessage) {
         setError(serverMessage)
       } else {
-        setError(isRegister ? 'Não foi possível cadastrar.' : 'Credenciais inválidas.')
+        setError(isRegister ? 'NÃ£o foi possÃ­vel cadastrar.' : 'Credenciais invÃ¡lidas.')
       }
     }
   }
 
   return (
     <div className="login-page">
-      {/* Camada de fundo da página (Imagem de fundo com overlay) */}
+      {/* Camada de fundo da pÃ¡gina (Imagem de fundo com overlay) */}
       <div className="page-background" style={{ backgroundImage: `url(${bgLeft})` }}>
         <div className="page-overlay" />
       </div>
 
       <div className={`login-shell ${isRegister ? 'active' : ''}`}>
-        {/* LADO DOS FORMULÁRIOS (LOGIN E CADASTRO) */}
+        {/* LADO DOS FORMULÃRIOS (LOGIN E CADASTRO) */}
         <div className="form-container sign-up">
           <form onSubmit={handleSubmit}>
             <img src={logo} alt="Logo" className="mini-logo" />
@@ -128,7 +135,7 @@ function Login() {
           <form onSubmit={handleSubmit}>
             <img src={logo} alt="Logo" className="mini-logo" />
             <h2>Entrar</h2>
-            <p className="subtitle">Acesse o painel do salão.</p>
+            <p className="subtitle">Acesse o painel do salÃ£o.</p>
             <input
               type="email"
               placeholder="Email"
@@ -174,14 +181,14 @@ function Login() {
                 <h3>Bem-vinda de volta</h3>
                 <p>Acesse sua conta e continue.</p>
                 <button type="button" className="ghost-btn" onClick={() => setIsRegister(false)}>
-                  Já tenho conta
+                  JÃ¡ tenho conta
                 </button>
               </div>
             </div>
             <div className="toggle-panel toggle-right" style={{ backgroundImage: `url(${bgRight})` }}>
               <div className="inner-overlay" />
               <div className="toggle-content">
-                <h3>É nova por aqui?</h3>
+                <h3>Ã‰ nova por aqui?</h3>
                 <p>Crie sua conta e comece agora mesmo.</p>
                 <button type="button" className="ghost-btn" onClick={() => setIsRegister(true)}>
                   Criar conta
@@ -197,3 +204,6 @@ function Login() {
 }
 
 export default Login
+
+
+

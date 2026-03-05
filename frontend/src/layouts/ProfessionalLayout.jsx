@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import '../css/professional.css'
 import { useEffect, useState } from 'react'
@@ -18,36 +25,51 @@ import { Toast } from 'bootstrap'
 import api, { API_BASE_URL } from '../api/api.js'
 import logo from '../assets/Logo2.svg'
 
+/*
+====================
+Menus
+====================
+*/
 const menuPrincipal = [
   { label: 'Dashboard', to: '/profissional/dashboard', icon: FiGrid },
   { label: 'Agendamentos', to: '/profissional/agendamentos', icon: FiCalendar },
   { label: 'Clientes', to: '/profissional/clientes', icon: FiUsers },
-  { label: 'Serviços', to: '/profissional/servicos', icon: FiScissors },
+  { label: 'ServiÃ§os', to: '/profissional/servicos', icon: FiScissors },
 ]
 
 const menuGestao = [
   { label: 'Financeiro', to: '/profissional/financeiro', icon: FiDollarSign },
-  { label: 'Relatório', to: '/profissional/relatorio', icon: FiBarChart2 },
+  { label: 'RelatÃ³rio', to: '/profissional/relatorio', icon: FiBarChart2 },
 ]
 
 const menuConta = [
   { label: 'Perfil', to: '/profissional/perfil', icon: FiUser },
-  { label: 'Notificações', to: '/profissional/notificacoes', icon: FiBell },
-  { label: 'Configurações', to: '/profissional/configuracoes', icon: FiSettings },
+  { label: 'NotificaÃ§Ãµes', to: '/profissional/notificacoes', icon: FiBell },
+  { label: 'ConfiguraÃ§Ãµes', to: '/profissional/configuracoes', icon: FiSettings },
 ]
 
 function ProfessionalLayout() {
+  /*
+  ====================
+  Estado e Navegacao
+  ====================
+  */
   const [name, setName] = useState('Profissional')
   const [notifications, setNotifications] = useState([])
   const [avatar, setAvatar] = useState('')
   const [toastData, setToastData] = useState({
-    title: 'Notificações',
+    title: 'NotificaÃ§Ãµes',
     time: 'Agora',
-    message: 'Sem notificações.',
+    message: 'Sem notificaÃ§Ãµes.',
   })
   const navigate = useNavigate()
   const location = useLocation()
 
+  /*
+  ====================
+  Effects de Carga Inicial
+  ====================
+  */
   useEffect(() => {
     const load = async () => {
       const res = await api.get('/auth/me')
@@ -65,19 +87,24 @@ function ProfessionalLayout() {
     loadNotifications().catch(() => {})
   }, [])
 
+  /*
+  ====================
+  Handlers
+  ====================
+  */
   const showNotificationToast = () => {
     const latest = notifications[0]
     if (latest) {
       setToastData({
-        title: latest.title || 'Notificação',
+        title: latest.title || 'NotificaÃ§Ã£o',
         time: 'Agora',
         message: latest.message || '',
       })
     } else {
       setToastData({
-        title: 'Notificações',
+        title: 'NotificaÃ§Ãµes',
         time: 'Agora',
-        message: 'Sem notificações.',
+        message: 'Sem notificaÃ§Ãµes.',
       })
     }
     const el = document.getElementById('notifyToast')
@@ -87,8 +114,18 @@ function ProfessionalLayout() {
     }
   }
 
+  /*
+  ====================
+  Render
+  ====================
+  */
   return (
     <div className="app-shell salon-shell">
+      {/*
+      ====================
+      Header / Navbar
+      ====================
+      */}
       <header className="salon-header">
         <nav className="navbar salon-navbar navbar-expand-lg">
           <div className="container-fluid">
@@ -99,32 +136,32 @@ function ProfessionalLayout() {
               data-bs-target="#professionalOffcanvas"
               aria-controls="professionalOffcanvas"
             >
-              <img src={logo} alt="Logo do salão" className="brand-logo" />
+              <img src={logo} alt="Logo do salÃ£o" className="brand-logo" />
               <div className="salon-brand-text">
                 <span className="salon-brand-title">Painel Profissional</span>
-                <span className="salon-greeting">Olá, {name}</span>
+                <span className="salon-greeting">OlÃ¡, {name}</span>
               </div>
             </button>
             <form className="d-flex salon-search" role="search">
               <input
                 className="form-control salon-input"
                 type="search"
-                placeholder="Pesquisar cliente ou serviço"
+                placeholder="Pesquisar cliente ou serviÃ§o"
                 aria-label="Search"
               />
-              <button className="btn salon-btn-outline" type="submit">Buscar</button>
+              <button className="btn btn-profissional-layout salon-btn-outline" type="submit">Buscar</button>
             </form>
             <div className="salon-actions">
               <button
-                className="btn salon-btn-icon"
+                className="btn btn-profissional-layout salon-btn-icon"
                 type="button"
                 onClick={showNotificationToast}
-                aria-label="Notificações"
+                aria-label="NotificaÃ§Ãµes"
               >
                 <FiBell size={18} />
               </button>
               <button
-                className="btn salon-btn"
+                className="btn btn-profissional-layout salon-btn"
                 type="button"
                 onClick={() => navigate('/profissional/agendamentos?novo=1')}
               >
@@ -136,6 +173,11 @@ function ProfessionalLayout() {
         </nav>
       </header>
 
+      {/*
+      ====================
+      Offcanvas de Navegacao
+      ====================
+      */}
       <div
         className="offcanvas offcanvas-start salon-offcanvas"
         data-bs-scroll="true"
@@ -180,7 +222,7 @@ function ProfessionalLayout() {
           </div>
 
           <div className="offcanvas-section">
-            <h6>Gestão</h6>
+            <h6>GestÃ£o</h6>
             <nav className="offcanvas-nav">
               {menuGestao.map((item) => (
                 <button
@@ -217,7 +259,7 @@ function ProfessionalLayout() {
 
           <div className="offcanvas-exit">
             <button
-              className="btn salon-btn-outline w-100"
+              className="btn btn-profissional-layout salon-btn-outline w-100"
               type="button"
               onClick={() => {
                 localStorage.removeItem('token')
@@ -236,10 +278,20 @@ function ProfessionalLayout() {
         </div>
       </div>
 
+      {/*
+      ====================
+      Conteudo Principal
+      ====================
+      */}
       <main className="main">
         <Outlet />
       </main>
 
+      {/*
+      ====================
+      Toast de Notificacoes
+      ====================
+      */}
       <div className="toast-container position-fixed top-0 end-0 p-3">
         <div className="toast salon-toast" role="alert" aria-live="assertive" aria-atomic="true" id="notifyToast">
           <div className="toast-header">
@@ -258,3 +310,7 @@ function ProfessionalLayout() {
 }
 
 export default ProfessionalLayout
+
+
+
+

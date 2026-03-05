@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useState } from 'react'
 import api from '../api/api.js'
 import '../css/login.css'
@@ -49,3 +56,6 @@ function ForgotPassword() {
 }
 
 export default ForgotPassword
+
+
+

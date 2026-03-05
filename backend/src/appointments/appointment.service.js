@@ -1,11 +1,22 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import Appointment from './appointment.model.js';
 
-// Cria um novo agendamento
+
+
+
 export const createAppointment = (data) => {
   return Appointment.create(data);
 };
 
-// Procura conflito de horário para uma profissional
+
+
+
 export const findConflictingAppointment = (professionalId, startTime, endTime) => {
   return Appointment.findOne({
     professional: professionalId,
@@ -15,7 +26,9 @@ export const findConflictingAppointment = (professionalId, startTime, endTime) =
   });
 };
 
-// Procura conflito ignorando um agendamento especifico
+
+
+
 export const findConflictingAppointmentExcluding = (
   appointmentId,
   professionalId,
@@ -31,7 +44,9 @@ export const findConflictingAppointmentExcluding = (
   });
 };
 
-// Lista agenda de uma profissional
+
+
+
 export const listAppointmentsByProfessional = (professionalId) => {
   return Appointment.find({ professional: professionalId })
     .sort({ startTime: 1 })
@@ -39,7 +54,9 @@ export const listAppointmentsByProfessional = (professionalId) => {
     .populate('service', 'name');
 };
 
-// Lista agenda de um cliente
+
+
+
 export const listAppointmentsByClient = (clientId) => {
   return Appointment.find({ client: clientId })
     .sort({ startTime: 1 })
@@ -47,7 +64,9 @@ export const listAppointmentsByClient = (clientId) => {
     .populate('service', 'name');
 };
 
-// Lista todos os agendamentos (admin)
+
+
+
 export const listAllAppointments = () => {
   return Appointment.find({})
     .sort({ startTime: 1 })
@@ -56,12 +75,16 @@ export const listAllAppointments = () => {
     .populate('service', 'name durationMinutes maxDurationMinutes');
 };
 
-// Busca agendamento por id
+
+
+
 export const findAppointmentById = (appointmentId) => {
   return Appointment.findById(appointmentId);
 };
 
-// Atualiza status do agendamento
+
+
+
 export const updateAppointmentStatus = (appointmentId, status) => {
   return Appointment.findByIdAndUpdate(
     appointmentId,
@@ -70,7 +93,14 @@ export const updateAppointmentStatus = (appointmentId, status) => {
   );
 };
 
-// Atualiza dados do agendamento
+
+
+
 export const updateAppointment = (appointmentId, data) => {
   return Appointment.findByIdAndUpdate(appointmentId, data, { new: true });
 };
+
+
+
+
+

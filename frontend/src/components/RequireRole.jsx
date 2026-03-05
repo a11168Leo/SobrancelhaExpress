@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { Navigate } from 'react-router-dom'
 
 const getStored = (key) =>
@@ -27,3 +34,6 @@ function RequireRole({ role, children }) {
 }
 
 export default RequireRole
+
+
+

@@ -1,3 +1,9 @@
+﻿/*
+====================
+ARQUIVO CSS LOGIN
+====================
+*/
+
 .login-page {
     position: relative;
     width: 100vw;
@@ -8,7 +14,11 @@
     overflow: hidden;
 }
 
-/* Background da Página Inteira */
+/*
+====================
+Background da PÃ¡gina Inteira
+====================
+*/
 .page-background {
     position: absolute;
     inset: 0;
@@ -24,7 +34,11 @@
     z-index: -1;
 }
 
-/* Container Central */
+/*
+====================
+Container Central
+====================
+*/
 .login-shell {
     background-color: #fff;
     border-radius: 30px;
@@ -98,7 +112,11 @@ input {
     cursor: pointer;
 }
 
-/* Painel Deslizante */
+/*
+====================
+Painel Deslizante
+====================
+*/
 .toggle-container {
     position: absolute;
     top: 0;
@@ -171,3 +189,9 @@ input {
 .forgot-link:hover {
     text-decoration: underline;
 }
+
+
+
+
+
+

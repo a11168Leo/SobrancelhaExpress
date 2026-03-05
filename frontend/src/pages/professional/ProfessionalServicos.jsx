@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import ServicesCatalogPage from '../../components/ServicesCatalogPage.jsx'
 
 function ProfessionalServicos() {
@@ -5,3 +12,6 @@ function ProfessionalServicos() {
 }
 
 export default ProfessionalServicos
+
+
+

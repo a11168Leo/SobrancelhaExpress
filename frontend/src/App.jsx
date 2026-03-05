@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { Navigate, Route, Routes } from 'react-router-dom'
 import './css/App.css'
 import AdminLayout from './layouts/AdminLayout.jsx'
@@ -126,3 +133,6 @@ function App() {
 }
 
 export default App
+
+
+

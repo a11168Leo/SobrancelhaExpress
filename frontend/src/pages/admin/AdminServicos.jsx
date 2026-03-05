@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import ServicesCatalogPage from '../../components/ServicesCatalogPage.jsx'
 
 function AdminServicos() {
@@ -5,3 +12,6 @@ function AdminServicos() {
 }
 
 export default AdminServicos
+
+
+

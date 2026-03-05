@@ -1,15 +1,26 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
 
-// Garante que a pasta de upload exista
+
+
+
 const ensureDir = (dirPath) => {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
   }
 };
 
-// Cria um storage apontando para uma subpasta (services ou professionals)
+
+
+
 const createStorage = (folder) =>
   multer.diskStorage({
     destination: (_req, _file, cb) => {
@@ -24,7 +35,9 @@ const createStorage = (folder) =>
     }
   });
 
-// Filtro para aceitar apenas imagens
+
+
+
 const imageFilter = (_req, file, cb) => {
   const allowed = ['image/jpeg', 'image/png', 'image/webp'];
   if (!allowed.includes(file.mimetype)) {
@@ -33,16 +46,25 @@ const imageFilter = (_req, file, cb) => {
   return cb(null, true);
 };
 
-// Uploader para imagens de servicos
+
+
+
 export const serviceImageUpload = multer({
   storage: createStorage('services'),
   fileFilter: imageFilter,
   limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-// Uploader para avatar de profissionais
+
+
+
 export const professionalAvatarUpload = multer({
   storage: createStorage('professionals'),
   fileFilter: imageFilter,
   limits: { fileSize: 5 * 1024 * 1024 }
 });
+
+
+
+
+

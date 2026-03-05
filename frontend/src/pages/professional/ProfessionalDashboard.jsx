@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
 import api, { API_BASE_URL } from '../../api/api.js'
@@ -37,7 +44,7 @@ function ProfessionalDashboard() {
         time: dayjs(item.startTime).format('HH:mm'),
         client: item.client?.name || 'Cliente',
         phone: item.client?.phone || '-',
-        service: item.service?.name || 'Serviço',
+        service: item.service?.name || 'ServiÃ§o',
         status: item.status || 'scheduled',
         avatar: item.client?.avatar || '',
       }))
@@ -69,19 +76,19 @@ function ProfessionalDashboard() {
         <article className="card">
           <h3>Agendamentos hoje</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{stats.todayCount}</div>
-          <p>Seu total diário</p>
+          <p>Seu total diÃ¡rio</p>
         </article>
         <article className="card">
-          <h3>Faturamento do mês</h3>
+          <h3>Faturamento do mÃªs</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>
             EUR {stats.monthTotal.toFixed(2)}
           </div>
-          <p>Seu total no período</p>
+          <p>Seu total no perÃ­odo</p>
         </article>
         <article className="card">
-          <h3>Serviços ativos</h3>
+          <h3>ServiÃ§os ativos</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{services.length}</div>
-          <p>Catálogo pessoal</p>
+          <p>CatÃ¡logo pessoal</p>
         </article>
       </div>
 
@@ -103,10 +110,10 @@ function ProfessionalDashboard() {
           <table className="table">
             <thead>
               <tr>
-                <th>Horário</th>
+                <th>HorÃ¡rio</th>
                 <th>Cliente</th>
                 <th>Telefone</th>
-                <th>Serviço</th>
+                <th>ServiÃ§o</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -214,3 +221,6 @@ function ProfessionalDashboard() {
 }
 
 export default ProfessionalDashboard
+
+
+

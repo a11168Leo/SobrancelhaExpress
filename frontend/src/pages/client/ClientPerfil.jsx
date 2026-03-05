@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useState } from 'react'
 import api, { API_BASE_URL } from '../../api/api.js'
 
@@ -124,4 +131,7 @@ function ClientPerfil() {
 }
 
 export default ClientPerfil
+
+
+
 

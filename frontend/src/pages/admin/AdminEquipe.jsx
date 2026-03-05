@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useState } from 'react'
 import api from '../../api/api.js'
 
@@ -30,7 +37,7 @@ function AdminEquipe() {
       setProfissionais((prev) => [res.data.user, ...prev])
       setForm({ name: '', email: '', phone: '', password: '' })
     } catch {
-      setError('Não foi possível adicionar o profissional.')
+      setError('NÃ£o foi possÃ­vel adicionar o profissional.')
     }
   }
 
@@ -45,7 +52,7 @@ function AdminEquipe() {
     <section className="page">
       <div>
         <h1>Gerir equipe</h1>
-        <p className="page-subtitle">Adicione e gerencie profissionais do salão.</p>
+        <p className="page-subtitle">Adicione e gerencie profissionais do salÃ£o.</p>
       </div>
 
       <div className="card" style={{ display: 'grid', gap: '1rem' }}>
@@ -79,7 +86,7 @@ function AdminEquipe() {
           />
         </div>
         {error && <p style={{ color: '#b12a5b', margin: 0 }}>{error}</p>}
-        <button className="btn" type="button" onClick={addProfissional}>
+        <button className="btn btn-admin-equipe" type="button" onClick={addProfissional}>
           Adicionar profissional
         </button>
       </div>
@@ -92,7 +99,7 @@ function AdminEquipe() {
               <th>Nome</th>
               <th>Email</th>
               <th>Telefone</th>
-              <th>Ações</th>
+              <th>AÃ§Ãµes</th>
             </tr>
           </thead>
           <tbody>
@@ -102,7 +109,7 @@ function AdminEquipe() {
                 <td title={item.email}>{item.email}</td>
                 <td>{item.phone || '-'}</td>
                 <td>
-                  <button className="btn" type="button" onClick={() => removeProfissional(item._id || item.id)}>
+                  <button className="btn btn-admin-equipe" type="button" onClick={() => removeProfissional(item._id || item.id)}>
                     Excluir
                   </button>
                 </td>
@@ -116,3 +123,7 @@ function AdminEquipe() {
 }
 
 export default AdminEquipe
+
+
+
+

@@ -1,6 +1,15 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { listUsers } from '../users/user.service.js';
 
-// Lista usuarios por papel (admin)
+
+
+
 export const listByRole = async (req, res) => {
   try {
     const { role } = req.params;
@@ -11,7 +20,9 @@ export const listByRole = async (req, res) => {
   }
 };
 
-// Lista todos os profissionais (admin)
+
+
+
 export const listProfessionals = async (_req, res) => {
   try {
     const users = await listUsers({ role: 'profissional' });
@@ -21,7 +32,9 @@ export const listProfessionals = async (_req, res) => {
   }
 };
 
-// Lista todos os clientes (admin)
+
+
+
 export const listClients = async (_req, res) => {
   try {
     const users = await listUsers({ role: 'cliente' });
@@ -30,3 +43,8 @@ export const listClients = async (_req, res) => {
     res.status(500).json({ message: 'Erro ao listar clientes' });
   }
 };
+
+
+
+
+

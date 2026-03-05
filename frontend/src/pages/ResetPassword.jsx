@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useState } from 'react'
 import { useSearchParams, useNavigate } from 'react-router-dom'
 import api from '../api/api.js'
@@ -21,7 +28,7 @@ function ResetPassword() {
 
     const token = params.get('token')
     if (!token) {
-      setMessage('Token ausente. Refaça o pedido de recuperacao.')
+      setMessage('Token ausente. RefaÃ§a o pedido de recuperacao.')
       return
     }
 
@@ -73,3 +80,6 @@ function ResetPassword() {
 }
 
 export default ResetPassword
+
+
+

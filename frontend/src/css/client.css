@@ -1,3 +1,9 @@
+﻿/*
+====================
+ARQUIVO CSS CLIENTE
+====================
+*/
+
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
 
 :root {
@@ -196,18 +202,21 @@ body.client-body {
   height: 42px;
   border-radius: 999px;
   padding: 0 1.2rem;
-  background: #ffa4d5;
+  background: linear-gradient(135deg, var(--client-brand), var(--client-brand-strong));
   color: #ffffff;
   font-weight: 700;
   box-shadow: 0 12px 28px rgba(53, 27, 46, 0.2);
-  transition: background-color 220ms ease, color 220ms ease, transform 220ms ease;
+  transition: transform 220ms ease, box-shadow 220ms ease, filter 220ms ease;
 }
 
 .client-schedule-btn:hover {
-  background: #ffffff;
-  color: #ffa4d5;
-  transform: translateY(-1px);
-  box-shadow: 0 0 16px rgba(255, 164, 213, 0.85), 0 0 28px rgba(255, 164, 213, 0.55);
+  transform: translateY(-2px);
+  filter: brightness(1.03);
+  box-shadow: 0 14px 30px rgba(53, 27, 46, 0.24), 0 0 0 1px rgba(255, 255, 255, 0.32) inset;
+}
+
+.client-schedule-btn:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .client-salon-status {
@@ -282,9 +291,21 @@ body.client-body {
   border-radius: 999px;
   min-height: 42px;
   padding: 0 1rem;
-  background: var(--client-brand);
+  background: linear-gradient(135deg, var(--client-brand), var(--client-brand-strong));
   color: #ffffff;
   font-weight: 600;
+  box-shadow: 0 10px 20px rgba(53, 27, 46, 0.15);
+  transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
+  box-shadow: 0 14px 24px rgba(53, 27, 46, 0.22);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .table {
@@ -734,3 +755,7 @@ body.client-body {
     text-align: center;
   }
 }
+
+
+
+

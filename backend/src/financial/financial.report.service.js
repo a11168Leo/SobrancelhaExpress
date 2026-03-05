@@ -1,6 +1,15 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import Financial from './financial.model.js';
 
-// Relatorio por periodo (admin)
+
+
+
 export const reportByPeriod = async (startDate, endDate, professionalId) => {
   const filters = { createdAt: { $gte: startDate, $lte: endDate } };
   if (professionalId) {
@@ -13,7 +22,9 @@ export const reportByPeriod = async (startDate, endDate, professionalId) => {
   return { items, total };
 };
 
-// Compara dois periodos (admin)
+
+
+
 export const compareByPeriod = async (
   startA,
   endA,
@@ -35,3 +46,8 @@ export const compareByPeriod = async (
     percent
   };
 };
+
+
+
+
+

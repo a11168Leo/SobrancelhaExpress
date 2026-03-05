@@ -1,6 +1,15 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import mongoose from 'mongoose';
 
-// Modelo de agendamento
+
+
+
 const AppointmentSchema = new mongoose.Schema(
   {
     client: {
@@ -37,3 +46,8 @@ const AppointmentSchema = new mongoose.Schema(
 );
 
 export default mongoose.model('Appointment', AppointmentSchema);
+
+
+
+
+

@@ -1,6 +1,15 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import mongoose from 'mongoose';
 
-// Modelo de serviço do salão
+
+
+
 const ServiceSchema = new mongoose.Schema(
   {
     name: {
@@ -17,36 +26,48 @@ const ServiceSchema = new mongoose.Schema(
       type: Number,
       required: true
     },
+    // ====================
     // Duracao maxima (opcional, usada quando ha intervalo)
+    // ====================
     maxDurationMinutes: {
       type: Number,
       default: null
     },
+    // ====================
     // Categoria principal (level 0)
+    // ====================
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
       required: true
     },
+    // ====================
     // Subcategoria (level 1)
+    // ====================
     subcategory: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
       default: null
     },
+    // ====================
     // Subcategoria2 (level 2)
+    // ====================
     subcategory2: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
       default: null
     },
+    // ====================
     // Subcategoria3 (level 3)
+    // ====================
     subcategory3: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Category',
       default: null
     },
-    // Profissional dono do serviço (opcional)
+    // ====================
+    // Profissional dono do serviÃ§o (opcional)
+    // ====================
     professional: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -62,3 +83,8 @@ const ServiceSchema = new mongoose.Schema(
 );
 
 export default mongoose.model('Service', ServiceSchema);
+
+
+
+
+

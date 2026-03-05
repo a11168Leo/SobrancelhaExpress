@@ -1,3 +1,10 @@
+﻿
+/*
+====================
+SECAO INTERNA PADRAO
+====================
+*/
+
 import { useEffect, useMemo, useRef, useState } from 'react'
 import {
   FiChevronLeft,
@@ -9,7 +16,9 @@ import {
 } from 'react-icons/fi'
 import api, { API_BASE_URL } from '../api/api.js'
 
-// Helpers de transformacao para manter o JSX mais limpo.
+
+
+
 const getEntityId = (value) => {
   if (!value) return ''
   if (typeof value === 'object') return value._id || value.id || ''
@@ -26,11 +35,15 @@ const getImageUrl = (value) => {
 function ServicesCatalogPage() {
   const carouselRef = useRef(null)
 
-  // Estado base dos dados.
+
+
+
   const [servicos, setServicos] = useState([])
   const [categorias, setCategorias] = useState([])
 
-  // Estado de navegacao/filtros da tela.
+
+
+
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [search, setSearch] = useState('')
   const [searchDraft, setSearchDraft] = useState('')
@@ -39,7 +52,9 @@ function ServicesCatalogPage() {
   const [onlyWithImage, setOnlyWithImage] = useState(false)
   const [isFiltersOpen, setIsFiltersOpen] = useState(false)
 
-  // Estado de edicao/criacao de servicos.
+
+
+
   const [editing, setEditing] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [serviceError, setServiceError] = useState('')
@@ -57,7 +72,9 @@ function ServicesCatalogPage() {
     subcategory3: '',
   })
 
-  // Estado do modal de categorias (hierarquia).
+
+
+
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false)
   const [categoryForm, setCategoryForm] = useState({
     id: null,
@@ -69,7 +86,9 @@ function ServicesCatalogPage() {
 
   useEffect(() => {
     const load = async () => {
+      // ====================
       // Carrega servicos e estrutura de categorias em paralelo.
+      // ====================
       const [servicesRes, categoriesRes] = await Promise.all([
         api.get('/services'),
         api.get('/categories'),
@@ -95,7 +114,9 @@ function ServicesCatalogPage() {
   }, [categorias])
 
   const categoriesByParent = useMemo(() => {
+    // ====================
     // Index por pai para facilitar selects em cascata.
+    // ====================
     const map = new Map()
     for (const item of categorias) {
       const key = item.parent || 'root'
@@ -106,7 +127,9 @@ function ServicesCatalogPage() {
   }, [categorias])
 
   const categoriesByLevel = useMemo(() => {
+    // ====================
     // Separa exatamente como no banco: nivel 0..3.
+    // ====================
     const byLevel = {
       0: [],
       1: [],
@@ -142,7 +165,9 @@ function ServicesCatalogPage() {
   }
 
   const filtered = useMemo(() => {
+    // ====================
     // Aplica todos os filtros da UI no catalogo.
+    // ====================
     const term = search.trim().toLowerCase()
     const list = servicos.filter((item) => {
       const categoriesInService = [
@@ -166,7 +191,9 @@ function ServicesCatalogPage() {
     })
 
     return list.sort((a, b) => {
+      // ====================
       // Ordenacao dinamica pelo seletor do topo.
+      // ====================
       const priceA = Number(a.price || 0)
       const priceB = Number(b.price || 0)
       const durationA = getDuration(a)
@@ -231,7 +258,9 @@ function ServicesCatalogPage() {
   }
 
   const deleteServiceFromEdit = async () => {
+    // ====================
     // Exclui o servico somente dentro do fluxo de editar.
+    // ====================
     if (!editing?.id) return
 
     const serviceName = editing.name || 'este servico'
@@ -248,7 +277,9 @@ function ServicesCatalogPage() {
   }
 
   const uploadServiceImage = async (serviceId, file, updateList = true) => {
+    // ====================
     // Upload dedicado da imagem do servico.
+    // ====================
     if (!file || !serviceId) return null
 
     setUploadingImageId(serviceId)
@@ -273,7 +304,9 @@ function ServicesCatalogPage() {
   }
 
   const openModal = () => {
+    // ====================
     // Reseta o formulario de criacao.
+    // ====================
     setServiceError('')
     setIsModalOpen(true)
     setNewServiceImage(null)
@@ -322,7 +355,9 @@ function ServicesCatalogPage() {
     }
 
     try {
+      // ====================
       // Cria primeiro o servico, depois tenta anexar imagem (se houver).
+      // ====================
       const res = await api.post('/services', payload)
 
       let createdService = res.data.service
@@ -365,7 +400,9 @@ function ServicesCatalogPage() {
   }
 
   const saveCategory = async () => {
+    // ====================
     // Valida e salva categoria/subcategoria de acordo com o nivel.
+    // ====================
     if (!categoryForm.name.trim()) {
       setCategoryError('Nome da categoria e obrigatorio.')
       return
@@ -400,7 +437,9 @@ function ServicesCatalogPage() {
   }
 
   const deleteCategory = async (cat = null) => {
+    // ====================
     // Exclui categoria via modal de edicao (ou fallback com item recebido).
+    // ====================
     const categoryId = cat?._id || cat?.id || categoryForm.id
     const categoryName = cat?.name || categoryForm.name || 'esta categoria'
     if (!categoryId) return
@@ -415,7 +454,9 @@ function ServicesCatalogPage() {
   }
 
   const scrollCarousel = (direction) => {
+    // ====================
     // Navegacao horizontal dos cards.
+    // ====================
     if (!carouselRef.current) return
     const amount = direction === 'left' ? -320 : 320
     carouselRef.current.scrollBy({ left: amount, behavior: 'smooth' })
@@ -430,7 +471,9 @@ function ServicesCatalogPage() {
   }
 
   const showAllServices = () => {
+    // ====================
     // "Todas": limpa filtros e volta para visao completa.
+    // ====================
     setSelectedCategory(null)
     resetFilters()
   }
@@ -441,7 +484,9 @@ function ServicesCatalogPage() {
   }
 
   const renderCategoryGroup = (level, title) => {
+    // ====================
     // Mostra 3 itens por nivel para manter o bloco objetivo/compacto.
+    // ====================
     const list = (categoriesByLevel[level] || []).slice(0, 3)
 
     return (
@@ -1022,3 +1067,8 @@ function ServicesCatalogPage() {
 }
 
 export default ServicesCatalogPage
+
+
+
+
+
