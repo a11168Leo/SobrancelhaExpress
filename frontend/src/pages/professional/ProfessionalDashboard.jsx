@@ -1,226 +1,288 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
-
 import { useEffect, useMemo, useState } from 'react'
 import dayjs from 'dayjs'
-import api, { API_BASE_URL } from '../../api/api.js'
+import api from '../../api/api.js'
+
+const formatMoney = (value) => `EUR ${Number(value || 0).toFixed(2)}`
+
+const inRangeInclusive = (value, start, end) => {
+  const date = dayjs(value)
+  return date.isSame(start) || date.isSame(end) || (date.isAfter(start) && date.isBefore(end))
+}
+
+const getPct = (current, previous) => {
+  if (!previous) return current > 0 ? 100 : 0
+  return ((current - previous) / Math.abs(previous)) * 100
+}
 
 function ProfessionalDashboard() {
   const [appointments, setAppointments] = useState([])
   const [financials, setFinancials] = useState([])
   const [services, setServices] = useState([])
-  const [todayClients, setTodayClients] = useState([])
-  const [statusFilter, setStatusFilter] = useState('all')
-  const [goal, setGoal] = useState(() => {
-    const saved = localStorage.getItem('professionalGoal')
-    return saved ? Number(saved) : 800
-  })
+  const [clients, setClients] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    let mounted = true
+
     const load = async () => {
-      const me = await api.get('/auth/me')
-      const [appointmentsRes, financialRes, servicesRes] = await Promise.all([
-        api.get(`/appointments/professional/${me.data.user.id}`),
-        api.get('/financial'),
-        api.get(`/services?professionalId=${me.data.user.id}`),
-      ])
-      const list = appointmentsRes.data.appointments || []
-      setAppointments(list)
-      setFinancials(financialRes.data.financials || [])
-      setServices(servicesRes.data.services || [])
+      try {
+        const meRes = await api.get('/auth/me')
+        const professionalId = meRes.data.user?.id || meRes.data.user?._id
+        if (!professionalId) return
 
-      const todayKey = dayjs().format('YYYY-MM-DD')
-      const todayAppointments = list.filter(
-        (item) => dayjs(item.startTime).format('YYYY-MM-DD') === todayKey
-      )
-      const filteredToday = statusFilter === 'all'
-        ? todayAppointments
-        : todayAppointments.filter((item) => item.status === statusFilter)
-      const agendaItems = filteredToday.slice(0, 6).map((item) => ({
-        time: dayjs(item.startTime).format('HH:mm'),
-        client: item.client?.name || 'Cliente',
-        phone: item.client?.phone || '-',
-        service: item.service?.name || 'ServiÃ§o',
-        status: item.status || 'scheduled',
-        avatar: item.client?.avatar || '',
-      }))
-      setTodayClients(agendaItems)
+        const [appointmentsRes, financialRes, servicesRes, clientsRes] = await Promise.all([
+          api.get(`/appointments/professional/${professionalId}`).catch(() => ({ data: { appointments: [] } })),
+          api.get('/financial').catch(() => ({ data: { financials: [] } })),
+          api.get(`/services?professionalId=${professionalId}`).catch(() => ({ data: { services: [] } })),
+          api.get('/team/clients').catch(() => ({ data: { users: [] } })),
+        ])
+
+        if (!mounted) return
+
+        setAppointments(appointmentsRes.data.appointments || [])
+        setFinancials(financialRes.data.financials || [])
+        setServices(servicesRes.data.services || [])
+        setClients(clientsRes.data.users || [])
+        setLoading(false)
+      } catch {
+        if (!mounted) return
+        setLoading(false)
+      }
     }
-    load().catch(() => {})
-  }, [statusFilter])
 
-  const stats = useMemo(() => {
-    const today = dayjs().format('YYYY-MM-DD')
-    const todayCount = appointments.filter(
-      (item) => dayjs(item.startTime).format('YYYY-MM-DD') === today
-    ).length
-    const month = dayjs().format('YYYY-MM')
-    const monthTotal = financials
-      .filter((item) => dayjs(item.createdAt).format('YYYY-MM') === month)
+    load()
+    const interval = window.setInterval(load, 45000)
+    return () => {
+      mounted = false
+      window.clearInterval(interval)
+    }
+  }, [])
+
+  const todayRange = useMemo(() => {
+    return {
+      start: dayjs().startOf('day'),
+      end: dayjs().endOf('day'),
+    }
+  }, [])
+
+  const yesterdayRange = useMemo(() => {
+    return {
+      start: dayjs().subtract(1, 'day').startOf('day'),
+      end: dayjs().subtract(1, 'day').endOf('day'),
+    }
+  }, [])
+
+  const todayAppointments = useMemo(() => {
+    return appointments.filter((item) => inRangeInclusive(item.startTime, todayRange.start, todayRange.end))
+  }, [appointments, todayRange])
+
+  const yesterdayAppointments = useMemo(() => {
+    return appointments.filter((item) => inRangeInclusive(item.startTime, yesterdayRange.start, yesterdayRange.end))
+  }, [appointments, yesterdayRange])
+
+  const todayRevenue = useMemo(() => {
+    return financials
+      .filter((item) => item.status !== 'cancelled')
+      .filter((item) => inRangeInclusive(item.createdAt, todayRange.start, todayRange.end))
       .reduce((sum, item) => sum + Number(item.amount || 0), 0)
-    return { todayCount, monthTotal }
+  }, [financials, todayRange])
+
+  const yesterdayRevenue = useMemo(() => {
+    return financials
+      .filter((item) => item.status !== 'cancelled')
+      .filter((item) => inRangeInclusive(item.createdAt, yesterdayRange.start, yesterdayRange.end))
+      .reduce((sum, item) => sum + Number(item.amount || 0), 0)
+  }, [financials, yesterdayRange])
+
+  const todayUniqueClients = useMemo(() => {
+    return new Set(
+      todayAppointments
+        .map((item) => item.client?._id || item.client?.id || item.client?.email)
+        .filter(Boolean)
+    ).size
+  }, [todayAppointments])
+
+  const yesterdayUniqueClients = useMemo(() => {
+    return new Set(
+      yesterdayAppointments
+        .map((item) => item.client?._id || item.client?.id || item.client?.email)
+        .filter(Boolean)
+    ).size
+  }, [yesterdayAppointments])
+
+  const revenueTrendPct = useMemo(
+    () => getPct(todayRevenue, yesterdayRevenue),
+    [todayRevenue, yesterdayRevenue]
+  )
+
+  const clientsTrendPct = useMemo(
+    () => getPct(todayUniqueClients, yesterdayUniqueClients),
+    [todayUniqueClients, yesterdayUniqueClients]
+  )
+
+  const completedToday = useMemo(
+    () => todayAppointments.filter((item) => item.status === 'completed').length,
+    [todayAppointments]
+  )
+
+  const averageTicket = completedToday ? todayRevenue / completedToday : 0
+
+  const upcomingAppointments = useMemo(() => {
+    return appointments.filter((item) => {
+      return item.status !== 'cancelled' && dayjs(item.startTime).isAfter(dayjs())
+    })
+  }, [appointments])
+
+  const newClientsToday = useMemo(() => {
+    return clients.filter((item) => inRangeInclusive(item.createdAt, todayRange.start, todayRange.end)).length
+  }, [clients, todayRange])
+
+  const habitualClients = useMemo(() => {
+    const counter = new Map()
+    for (const appointment of appointments) {
+      const clientId = appointment.client?._id || appointment.client?.id
+      if (!clientId) continue
+      counter.set(clientId, (counter.get(clientId) || 0) + 1)
+    }
+    return Array.from(counter.values()).filter((count) => count >= 3).length
+  }, [appointments])
+
+  const chartPoints = useMemo(() => {
+    return Array.from({ length: 7 }, (_, index) => {
+      const day = dayjs().subtract(6 - index, 'day')
+      const start = day.startOf('day')
+      const end = day.endOf('day')
+
+      const money = financials
+        .filter((item) => item.status !== 'cancelled')
+        .filter((item) => inRangeInclusive(item.createdAt, start, end))
+        .reduce((sum, item) => sum + Number(item.amount || 0), 0)
+
+      const clientsCount = new Set(
+        appointments
+          .filter((item) => inRangeInclusive(item.startTime, start, end))
+          .map((item) => item.client?._id || item.client?.id || item.client?.email)
+          .filter(Boolean)
+      ).size
+
+      return {
+        label: day.format('DD/MM'),
+        money,
+        clients: clientsCount,
+      }
+    })
   }, [appointments, financials])
 
+  const maxMoney = useMemo(
+    () => Math.max(...chartPoints.map((item) => item.money), 1),
+    [chartPoints]
+  )
+
+  const maxClients = useMemo(
+    () => Math.max(...chartPoints.map((item) => item.clients), 1),
+    [chartPoints]
+  )
+
   return (
-    <section className="page">
-      <div>
-        <h1>Dashboard</h1>
-        <p className="page-subtitle">Resumo da sua agenda e faturamento.</p>
+    <section className="page professional-dashboard">
+      <div className="professional-dashboard-head">
+        <div>
+          <h1>Dashboard</h1>
+          <p className="page-subtitle">Visao geral dos seus resultados em tempo real.</p>
+        </div>
+        <div className="professional-live-pill">Atualizacao automatica a cada 45s</div>
       </div>
 
-      <div className="stats-grid">
-        <article className="card">
-          <h3>Agendamentos hoje</h3>
-          <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{stats.todayCount}</div>
-          <p>Seu total diÃ¡rio</p>
+      {loading && (
+        <article className="professional-performance-card">
+          <p style={{ margin: 0 }}>Carregando indicadores...</p>
         </article>
-        <article className="card">
-          <h3>Faturamento do mÃªs</h3>
-          <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>
-            EUR {stats.monthTotal.toFixed(2)}
-          </div>
-          <p>Seu total no perÃ­odo</p>
-        </article>
-        <article className="card">
-          <h3>ServiÃ§os ativos</h3>
-          <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{services.length}</div>
-          <p>CatÃ¡logo pessoal</p>
-        </article>
-      </div>
+      )}
 
-      <div className="stats-grid">
-        <div className="card">
-          <h3>Clientes agendados hoje</h3>
-          <div style={{ display: 'flex', gap: '0.6rem', marginBottom: '0.8rem' }}>
-            <select
-              className="search"
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-            >
-              <option value="all">Todos os status</option>
-              <option value="scheduled">Agendado</option>
-              <option value="completed">Finalizado</option>
-              <option value="cancelled">Cancelado</option>
-            </select>
-          </div>
-          <table className="table">
-            <thead>
-              <tr>
-                <th>HorÃ¡rio</th>
-                <th>Cliente</th>
-                <th>Telefone</th>
-                <th>ServiÃ§o</th>
-                <th>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {todayClients.map((item) => (
-                <tr key={`${item.time}-${item.client}`}>
-                  <td>{item.time}</td>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                      {item.avatar ? (
-                        <img
-                          src={item.avatar.startsWith('http') ? item.avatar : `${API_BASE_URL}${item.avatar}`}
-                          alt={item.client}
-                          style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: '28px',
-                            height: '28px',
-                            borderRadius: '50%',
-                            background: 'rgba(217, 136, 179, 0.2)',
-                            display: 'grid',
-                            placeItems: 'center',
-                            fontSize: '0.8rem',
-                            fontWeight: 600,
-                            color: 'var(--accent-strong)',
-                          }}
-                        >
-                          {item.client?.[0] || 'C'}
-                        </div>
-                      )}
-                      <span>{item.client}</span>
+      {!loading && (
+        <>
+          <article className="professional-performance-card">
+            <div className="professional-metric-row">
+              <div className="professional-metric-box">
+                <span>Total de servicos</span>
+                <strong>{services.length}</strong>
+                <small>Catalogo ativo da profissional</small>
+              </div>
+              <div className="professional-metric-box">
+                <span>Rendimento de hoje</span>
+                <strong>{formatMoney(todayRevenue)}</strong>
+                <small className={revenueTrendPct >= 0 ? 'up' : 'down'}>
+                  {revenueTrendPct >= 0 ? '+' : '-'}
+                  {Math.abs(revenueTrendPct).toFixed(1)}% vs ontem
+                </small>
+              </div>
+              <div className="professional-metric-box">
+                <span>Clientes de hoje</span>
+                <strong>{todayUniqueClients}</strong>
+                <small className={clientsTrendPct >= 0 ? 'up' : 'down'}>
+                  {clientsTrendPct >= 0 ? '+' : '-'}
+                  {Math.abs(clientsTrendPct).toFixed(1)}% vs ontem
+                </small>
+              </div>
+            </div>
+
+            <div className="professional-chart">
+              <div className="professional-chart-legend">
+                <span><i className="professional-dot money" /> Dinheiro por dia</span>
+                <span><i className="professional-dot clients" /> Clientes por dia</span>
+              </div>
+
+              <div className="professional-bars">
+                {chartPoints.map((point) => (
+                  <div key={point.label} className="professional-bar-col">
+                    <div className="professional-bar-stack">
+                      <div
+                        className="professional-bar money"
+                        style={{ height: `${Math.max(4, (point.money / maxMoney) * 100)}%` }}
+                        title={`${point.label}: ${formatMoney(point.money)}`}
+                      />
+                      <div
+                        className="professional-bar clients"
+                        style={{ height: `${Math.max(4, (point.clients / maxClients) * 100)}%` }}
+                        title={`${point.label}: ${point.clients} clientes`}
+                      />
                     </div>
-                  </td>
-                  <td>{item.phone}</td>
-                  <td>{item.service}</td>
-                  <td>
-                    <span className="pill">
-                      {item.status === 'completed'
-                        ? 'Finalizado'
-                        : item.status === 'cancelled'
-                          ? 'Cancelado'
-                          : 'Agendado'}
-                    </span>
-                  </td>
-                </tr>
-              ))}
-              {todayClients.length === 0 && (
-                <tr>
-                  <td colSpan={5}>Sem agendamentos para hoje.</td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                    <span className="professional-bar-label">{point.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </article>
 
-        <div className="card">
-          <h3>Meta de faturamento</h3>
-          <p className="page-subtitle">Ajuste sua meta e acompanhe o progresso.</p>
-          <div style={{ display: 'grid', gap: '0.8rem' }}>
-            <input
-              type="range"
-              min="0"
-              max="5000"
-              step="50"
-              value={goal}
-              onChange={(e) => {
-                const value = Number(e.target.value)
-                setGoal(value)
-                localStorage.setItem('professionalGoal', String(value))
-              }}
-            />
-            <div style={{ fontWeight: 600 }}>
-              Meta: EUR {goal.toFixed(2)}
-            </div>
-            <div style={{ fontSize: '0.95rem', color: 'var(--muted)' }}>
-              Atual: EUR {Number(stats.monthTotal).toFixed(2)}
-            </div>
-            <div
-              style={{
-                height: '10px',
-                borderRadius: '999px',
-                background: 'var(--stroke)',
-                overflow: 'hidden',
-              }}
-            >
-              <div
-                style={{
-                  width: `${Math.min(100, ((stats.monthTotal || 0) / goal) * 100)}%`,
-                  height: '100%',
-                  background: 'var(--accent)',
-                }}
-              />
-            </div>
-            <div style={{ fontSize: '0.9rem' }}>
-              {Math.min(100, ((stats.monthTotal || 0) / goal) * 100).toFixed(1)}
-              % atingido
-            </div>
+          <div className="professional-kpi-grid">
+            <article className="professional-kpi-card">
+              <span>Sobra agendamentos</span>
+              <strong>{upcomingAppointments.length}</strong>
+              <small>Atendimentos ainda pendentes na agenda</small>
+            </article>
+
+            <article className="professional-kpi-card">
+              <span>Media</span>
+              <strong>{formatMoney(averageTicket)}</strong>
+              <small>Valor medio por atendimento concluido hoje</small>
+            </article>
+
+            <article className="professional-kpi-card">
+              <span>Novos clientes</span>
+              <strong>{newClientsToday}</strong>
+              <small>Clientes cadastrados hoje na plataforma</small>
+            </article>
+
+            <article className="professional-kpi-card">
+              <span>Clientes habituais</span>
+              <strong>{habitualClients}</strong>
+              <small>Clientes com 3 ou mais atendimentos</small>
+            </article>
           </div>
-        </div>
-      </div>
+        </>
+      )}
     </section>
   )
 }
 
 export default ProfessionalDashboard
-
-
-

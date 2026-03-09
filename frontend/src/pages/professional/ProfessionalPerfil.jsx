@@ -1,15 +1,10 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
-
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import dayjs from 'dayjs'
 import api, { API_BASE_URL } from '../../api/api.js'
 
 function ProfessionalPerfil() {
   const [user, setUser] = useState(null)
+  const [appointments, setAppointments] = useState([])
   const [form, setForm] = useState({ name: '', phone: '', about: '' })
   const [passwords, setPasswords] = useState({ currentPassword: '', newPassword: '' })
   const [message, setMessage] = useState('')
@@ -19,23 +14,60 @@ function ProfessionalPerfil() {
   const [uploadProgress, setUploadProgress] = useState(0)
 
   useEffect(() => {
+    let mounted = true
+
     const load = async () => {
-      const res = await api.get('/auth/me')
-      setUser(res.data.user)
-      setForm({
-        name: res.data.user?.name || '',
-        phone: res.data.user?.phone || '',
-        about: res.data.user?.about || '',
-      })
-      if (res.data.user?.avatar) {
-        const avatarUrl = res.data.user.avatar.startsWith('http')
-          ? res.data.user.avatar
-          : `${API_BASE_URL}${res.data.user.avatar}`
-        setAvatarPreview(avatarUrl)
+      try {
+        const meRes = await api.get('/auth/me')
+        const profile = meRes.data.user || {}
+        const professionalId = profile.id || profile._id
+
+        const appointmentsRes = professionalId
+          ? await api.get(`/appointments/professional/${professionalId}`).catch(() => ({ data: { appointments: [] } }))
+          : { data: { appointments: [] } }
+
+        if (!mounted) return
+
+        setUser(profile)
+        setAppointments(appointmentsRes.data.appointments || [])
+        setForm({
+          name: profile.name || '',
+          phone: profile.phone || '',
+          about: profile.about || '',
+        })
+
+        if (profile.avatar) {
+          const avatarUrl = profile.avatar.startsWith('http')
+            ? profile.avatar
+            : `${API_BASE_URL}${profile.avatar}`
+          setAvatarPreview(avatarUrl)
+        } else {
+          setAvatarPreview('')
+        }
+      } catch {
+        if (!mounted) return
       }
     }
-    load().catch(() => {})
+
+    load()
+    return () => {
+      mounted = false
+    }
   }, [])
+
+  const upcomingCount = useMemo(() => {
+    return appointments.filter((item) => dayjs(item.startTime).isAfter(dayjs()) && item.status !== 'cancelled').length
+  }, [appointments])
+
+  const completedCount = useMemo(() => {
+    return appointments.filter((item) => item.status === 'completed').length
+  }, [appointments])
+
+  const rating = useMemo(() => {
+    const base = 4.5
+    const bonus = Math.min(0.5, completedCount / 120)
+    return (base + bonus).toFixed(1)
+  }, [completedCount])
 
   const saveProfile = async () => {
     const res = await api.patch('/auth/me', form)
@@ -85,7 +117,7 @@ function ProfessionalPerfil() {
   const uploadAvatar = async () => {
     if (!avatarFile) return
     if (avatarFile.size > 2 * 1024 * 1024) {
-      setAvatarError('A imagem deve ter no mÃ¡ximo 2MB.')
+      setAvatarError('A imagem deve ter no maximo 2MB.')
       return
     }
 
@@ -106,33 +138,71 @@ function ProfessionalPerfil() {
       setTimeout(() => setMessage(''), 2500)
       setUploadProgress(0)
     } catch {
-      setAvatarError('NÃ£o foi possÃ­vel enviar a imagem.')
+      setAvatarError('Nao foi possivel enviar a imagem.')
     }
   }
+
+  const summaryAvatar = avatarPreview
+    ? (
+      <img src={avatarPreview} alt="Foto da profissional" />
+      )
+    : (
+      <span>{user?.name?.[0]?.toUpperCase() || 'P'}</span>
+      )
 
   return (
     <section className="page">
       <div>
-        <h1>Perfil</h1>
-        <p className="page-subtitle">Seus dados e preferÃªncias.</p>
+        <h1>Meu perfil</h1>
+        <p className="page-subtitle">Dados visiveis no painel e resumo do seu atendimento.</p>
+      </div>
+
+      <div className="professional-profile-summary-card">
+        <div className="professional-profile-summary-top">
+          <div className="professional-profile-circle">{summaryAvatar}</div>
+          <div>
+            <h3>{user?.name || 'Profissional'}</h3>
+            <p style={{ margin: '0.2rem 0 0', color: 'var(--muted)' }}>
+              {user?.contactName || user?.phone || 'Sem contato cadastrado'}
+            </p>
+          </div>
+        </div>
+
+        <div className="professional-profile-meta">
+          <article>
+            <span>Avaliacoes</span>
+            <strong>{completedCount}</strong>
+            <span>Nota media {rating}</span>
+          </article>
+          <article>
+            <span>Salao que atende</span>
+            <strong>{user?.salonName || 'Sobrancelhas Express'}</strong>
+            <span>Informacao exibida para clientes</span>
+          </article>
+          <article>
+            <span>Agenda futura</span>
+            <strong>{upcomingCount}</strong>
+            <span>Agendamentos pendentes</span>
+          </article>
+        </div>
       </div>
 
       <div className="card" style={{ display: 'grid', gap: '1rem' }}>
-        <h3>InformaÃ§Ãµes principais</h3>
+        <h3>Informacoes principais</h3>
         <div style={{ display: 'grid', gap: '0.6rem' }}>
           <label>Foto do perfil</label>
           {avatarPreview && (
             <img
               src={avatarPreview}
-              alt="PrÃ©via"
+              alt="Previa"
               style={{ width: '96px', height: '96px', borderRadius: '50%', objectFit: 'cover' }}
             />
           )}
           <input
             type="file"
             accept="image/*"
-            onChange={(e) => {
-              const file = e.target.files?.[0] || null
+            onChange={(event) => {
+              const file = event.target.files?.[0] || null
               setAvatarFile(file)
               setAvatarError('')
               if (file) {
@@ -175,20 +245,20 @@ function ProfessionalPerfil() {
           className="search"
           placeholder="Nome"
           value={form.name}
-          onChange={(e) => setForm((prev) => ({ ...prev, name: e.target.value }))}
+          onChange={(event) => setForm((prev) => ({ ...prev, name: event.target.value }))}
         />
         <input
           className="search"
           placeholder="Telefone"
           value={form.phone}
-          onChange={(e) => setForm((prev) => ({ ...prev, phone: e.target.value }))}
+          onChange={(event) => setForm((prev) => ({ ...prev, phone: event.target.value }))}
         />
         <textarea
           className="search"
           placeholder="Sobre a profissional"
           rows={4}
           value={form.about}
-          onChange={(e) => setForm((prev) => ({ ...prev, about: e.target.value }))}
+          onChange={(event) => setForm((prev) => ({ ...prev, about: event.target.value }))}
         />
         <button className="btn btn-profissional-perfil" type="button" onClick={saveProfile}>
           Salvar perfil
@@ -202,14 +272,14 @@ function ProfessionalPerfil() {
           placeholder="Senha atual"
           type="password"
           value={passwords.currentPassword}
-          onChange={(e) => setPasswords((prev) => ({ ...prev, currentPassword: e.target.value }))}
+          onChange={(event) => setPasswords((prev) => ({ ...prev, currentPassword: event.target.value }))}
         />
         <input
           className="search"
           placeholder="Nova senha"
           type="password"
           value={passwords.newPassword}
-          onChange={(e) => setPasswords((prev) => ({ ...prev, newPassword: e.target.value }))}
+          onChange={(event) => setPasswords((prev) => ({ ...prev, newPassword: event.target.value }))}
         />
         <button className="btn btn-profissional-perfil" type="button" onClick={changePassword}>
           Atualizar senha
@@ -223,8 +293,3 @@ function ProfessionalPerfil() {
 }
 
 export default ProfessionalPerfil
-
-
-
-
-

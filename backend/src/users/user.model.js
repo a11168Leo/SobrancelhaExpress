@@ -39,6 +39,18 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: ''
     },
+    contactName: {
+      type: String,
+      default: ''
+    },
+    salonName: {
+      type: String,
+      default: ''
+    },
+    specialties: {
+      type: [String],
+      default: []
+    },
     resetPasswordToken: String,
     resetPasswordExpires: Date
   },

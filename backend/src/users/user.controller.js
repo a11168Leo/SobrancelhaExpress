@@ -212,10 +212,20 @@ export const adminDeleteUser = async (req, res) => {
 
 export const updateMe = async (req, res) => {
   try {
-    const { name, phone, about } = req.body
+    const {
+      name,
+      phone,
+      about,
+      contactName,
+      salonName,
+      specialties
+    } = req.body
+
     const updates = {
       ...(name ? { name } : {}),
-      ...(phone !== undefined ? { phone } : {})
+      ...(phone !== undefined ? { phone } : {}),
+      ...(contactName !== undefined ? { contactName } : {}),
+      ...(salonName !== undefined ? { salonName } : {})
     }
 
     if (about !== undefined) {
@@ -223,6 +233,21 @@ export const updateMe = async (req, res) => {
         return res.status(403).json({ message: 'Somente admin ou profissional pode editar o sobre' })
       }
       updates.about = about
+    }
+
+    if (specialties !== undefined) {
+      if (!['admin', 'profissional'].includes(req.user.role)) {
+        return res.status(403).json({ message: 'Somente admin ou profissional pode editar especialidades' })
+      }
+
+      if (!Array.isArray(specialties)) {
+        return res.status(400).json({ message: 'specialties deve ser um array' })
+      }
+
+      updates.specialties = specialties
+        .map((item) => String(item || '').trim())
+        .filter(Boolean)
+        .slice(0, 30)
     }
 
     const updated = await updateUserById(req.user.id, updates)
@@ -238,7 +263,7 @@ export const updateMe = async (req, res) => {
 export const listProfessionalsPublic = async (_req, res) => {
   try {
     const users = await User.find({ role: 'profissional' })
-      .select('name avatar about phone')
+      .select('name avatar about phone contactName salonName specialties')
       .sort({ name: 1 })
     res.json({ users })
   } catch (error) {

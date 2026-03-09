@@ -29,6 +29,7 @@ function ClientServicos() {
   const [professionals, setProfessionals] = useState([])
   const [selectedProfessionalId, setSelectedProfessionalId] = useState('')
   const [professionalServices, setProfessionalServices] = useState([])
+  const [portfolioIndex, setPortfolioIndex] = useState(0)
   const [categoryNameById, setCategoryNameById] = useState({})
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
@@ -66,6 +67,10 @@ function ClientServicos() {
       setProfessionalServices(res.data.services || [])
     }
     loadProfessionalServices().catch(() => {})
+  }, [selectedProfessionalId])
+
+  useEffect(() => {
+    setPortfolioIndex(0)
   }, [selectedProfessionalId])
 
   useEffect(() => {
@@ -117,6 +122,33 @@ function ClientServicos() {
     }
     return Array.from(labels)
   }, [professionalServices, categoryNameById])
+
+  const professionalSpecialties = useMemo(() => {
+    if (selectedProfessional?.specialties?.length) {
+      return selectedProfessional.specialties
+    }
+    return professionalServiceLabels
+  }, [selectedProfessional, professionalServiceLabels])
+
+  const portfolioImages = useMemo(() => {
+    return professionalServices
+      .map((item) => ({
+        name: item.name || 'Servico',
+        imageUrl: item.imageUrl
+          ? (item.imageUrl.startsWith('http') ? item.imageUrl : `${API_BASE_URL}${item.imageUrl}`)
+          : '',
+      }))
+      .filter((item) => Boolean(item.imageUrl))
+  }, [professionalServices])
+
+  useEffect(() => {
+    if (portfolioImages.length <= 1) return undefined
+    const interval = window.setInterval(() => {
+      setPortfolioIndex((prev) => (prev + 1) % portfolioImages.length)
+    }, 3200)
+
+    return () => window.clearInterval(interval)
+  }, [portfolioImages.length])
 
   return (
     <section className="page">
@@ -256,21 +288,81 @@ function ClientServicos() {
                 <div className="client-team-about">
                   <h4>Sobre</h4>
                   <p>{selectedProfessional.about || 'Profissional especializada em beleza e bem-estar.'}</p>
+                  <p style={{ marginTop: '0.45rem' }}>
+                    <strong>Salao:</strong> {selectedProfessional.salonName || 'Sobrancelhas Express'}
+                  </p>
                 </div>
 
                 <div className="client-team-services">
-                  <h4>Servicos</h4>
+                  <h4>Especialidades</h4>
                   <div className="client-team-service-list">
-                    {professionalServiceLabels.map((label) => (
+                    {professionalSpecialties.map((label) => (
                       <span key={label} className="client-team-service-chip">{label}</span>
                     ))}
-                    {professionalServiceLabels.length === 0 && (
+                    {professionalSpecialties.length === 0 && (
                       <>
                         <span className="client-team-service-chip">Tratamento Facial</span>
                         <span className="client-team-service-chip">Tratamento corporal</span>
                       </>
                     )}
                   </div>
+                </div>
+
+                <div className="client-team-portfolio">
+                  <div className="client-team-portfolio-head">
+                    <h4>Portfolio</h4>
+                    {portfolioImages.length > 1 && (
+                      <div className="client-team-portfolio-actions">
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setPortfolioIndex((prev) => (prev - 1 + portfolioImages.length) % portfolioImages.length)
+                          }
+                          aria-label="Foto anterior"
+                        >
+                          ‹
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setPortfolioIndex((prev) => (prev + 1) % portfolioImages.length)}
+                          aria-label="Proxima foto"
+                        >
+                          ›
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
+                  {portfolioImages.length > 0 ? (
+                    <div className="client-portfolio-carousel">
+                      <div
+                        className="client-portfolio-track"
+                        style={{ transform: `translateX(-${portfolioIndex * 100}%)` }}
+                      >
+                        {portfolioImages.map((item) => (
+                          <figure key={`${item.name}-${item.imageUrl}`} className="client-portfolio-slide">
+                            <img src={item.imageUrl} alt={item.name} />
+                            <figcaption>{item.name}</figcaption>
+                          </figure>
+                        ))}
+                      </div>
+                      <div className="client-portfolio-dots">
+                        {portfolioImages.map((item, index) => (
+                          <button
+                            key={`${item.imageUrl}-${index}`}
+                            type="button"
+                            className={index === portfolioIndex ? 'active' : ''}
+                            onClick={() => setPortfolioIndex(index)}
+                            aria-label={`Ir para foto ${index + 1}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <p style={{ margin: 0, color: 'var(--client-muted)' }}>
+                      Portfolio em atualizacao. As fotos dos servicos da profissional aparecerao aqui.
+                    </p>
+                  )}
                 </div>
               </>
             ) : (
