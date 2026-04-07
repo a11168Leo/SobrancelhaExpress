@@ -1,12 +1,11 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/USERS/USER.MODEL.JS */
+/* ======================================== */
 
+// Importacoes
 import mongoose from 'mongoose';
 
+// Bloco: UserSchema
 const UserSchema = new mongoose.Schema(
   {
     name: {
@@ -51,13 +50,17 @@ const UserSchema = new mongoose.Schema(
       type: [String],
       default: []
     },
+    mustChangePassword: {
+      type: Boolean,
+      default: false
+    },
+    temporaryPasswordGeneratedAt: Date,
     resetPasswordToken: String,
     resetPasswordExpires: Date
   },
   { timestamps: true }
 );
 
+// Exportacao principal
 export default mongoose.model('User', UserSchema);
-
-
 

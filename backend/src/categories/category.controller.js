@@ -1,10 +1,8 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/CATEGORIES/CATEGORY.CONTROLLER.JS */
+/* ======================================== */
 
+// Importacoes
 import {
   createCategory,
   findCategoryById,
@@ -13,9 +11,7 @@ import {
   deleteCategory
 } from './category.service.js';
 
-
-
-
+// Funcao exportada: create
 export const create = async (req, res) => {
   try {
     const { name, parentId, level } = req.body;
@@ -62,9 +58,7 @@ export const create = async (req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: list
 export const list = async (req, res) => {
   try {
     const { level, parentId } = req.query;
@@ -84,9 +78,7 @@ export const list = async (req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: update
 export const update = async (req, res) => {
   try {
     const { id } = req.params;
@@ -126,9 +118,7 @@ export const update = async (req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: remove
 export const remove = async (req, res) => {
   try {
     const { id } = req.params;
@@ -143,8 +133,4 @@ export const remove = async (req, res) => {
     res.status(500).json({ message: 'Erro ao remover categoria' });
   }
 };
-
-
-
-
 

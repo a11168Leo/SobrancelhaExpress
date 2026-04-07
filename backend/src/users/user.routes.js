@@ -1,10 +1,8 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/USERS/USER.ROUTES.JS */
+/* ======================================== */
 
+// Importacoes
 import { Router } from 'express';
 import {
   register,
@@ -13,22 +11,24 @@ import {
   adminOnly,
   updateAvatar,
   adminCreateUser,
+  publicCreateProfessional,
   adminDeleteUser,
   updateMe,
   updatePassword,
   forgotPassword,
   resetPassword,
   listProfessionalsPublic,
-  updateProfessionalAbout
+  listClientsPublic,
+  updateProfessionalAbout,
+  updateProfessional,
+  publicCreateClientWithTemporaryPassword
 } from './user.controller.js';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { allowRoles } from '../middlewares/role.middleware.js';
 import { uploadProfessionalAvatar } from '../middlewares/upload.middleware.js';
 
+// Bloco: router
 const router = Router();
-
-
-
 
 router.post('/register', register);
 router.post('/login', login);
@@ -42,6 +42,11 @@ router.get('/me', authMiddleware, me);
 // Listagem publica de profissionais (site cliente)
 // ====================
 router.get('/professionals', listProfessionalsPublic);
+router.get('/clients', listClientsPublic);
+router.post('/clients/temp', publicCreateClientWithTemporaryPassword);
+// rota pública para cadastro de profissional (sem autenticação, para admin/inicialização)
+router.post('/professionals', publicCreateProfessional);
+router.patch('/professionals/:id', updateProfessional);
 // ====================
 // Upload de avatar
 // ====================
@@ -70,9 +75,6 @@ router.patch(
   updateProfessionalAbout
 );
 
+// Exportacao principal
 export default router;
-
-
-
-
 

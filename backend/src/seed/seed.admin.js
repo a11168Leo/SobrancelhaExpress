@@ -1,10 +1,8 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/SEED/SEED.ADMIN.JS */
+/* ======================================== */
 
+// Importacoes
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -13,9 +11,13 @@ import bcrypt from 'bcryptjs';
 import { connectDB } from '../config/db.js';
 import User from '../users/user.model.js';
 
+// Bloco: ADMIN_EMAIL
 const ADMIN_EMAIL = 'admin@leonardo.com';
+
+// Bloco: ADMIN_PASSWORD
 const ADMIN_PASSWORD = 'admin1234';
 
+// Bloco: seedAdmin
 const seedAdmin = async () => {
   await connectDB();
 
@@ -44,6 +46,4 @@ seedAdmin().catch((error) => {
   mongoose.disconnect();
   process.exit(1);
 });
-
-
 

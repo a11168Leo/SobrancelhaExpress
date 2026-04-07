@@ -1,12 +1,11 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/CONFIG/DB.JS */
+/* ======================================== */
 
+// Importacoes
 import mongoose from 'mongoose';
 
+// Funcao exportada: connectDB
 export const connectDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -16,6 +15,4 @@ export const connectDB = async () => {
     process.exit(1);
   }
 };
-
-
 

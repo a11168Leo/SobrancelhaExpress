@@ -1,0 +1,53 @@
+/* ======================================== */
+/* ARQUIVO: FRONTEND/SRC/APP.CSS */
+/* ======================================== */
+
+/* Seletor: .app */
+.app {
+  min-height: 100vh;
+  background: var(--app-bg);
+  color: var(--text-primary);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Seletor: .layout */
+.layout {
+  display: flex;
+  align-items: stretch;
+}
+
+/* Seletor: .page */
+.page {
+  flex: 1;
+  padding: 24px;
+}
+
+/* Seletor: .page h1 */
+.page h1 {
+  margin: 0;
+  font-size: 28px;
+  color: var(--text-primary);
+}
+
+@media (max-width: 900px) {
+
+/* Seletor: .layout */
+  .layout {
+    flex-direction: column;
+  }
+
+/* Seletor: .page */
+  .page {
+    padding-bottom: 132px;
+  }
+}
+
+@media (max-width: 640px) {
+
+/* Seletor: .page */
+  .page {
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-bottom: 122px;
+  }
+}

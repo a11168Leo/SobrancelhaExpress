@@ -1,138 +1,79 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: FRONTEND/SRC/APP.JSX */
+/* ======================================== */
 
-import { Navigate, Route, Routes } from 'react-router-dom'
-import './css/App.css'
-import AdminLayout from './layouts/AdminLayout.jsx'
-import AdminDashboard from './pages/admin/AdminDashboard.jsx'
-import AdminAgendamentos from './pages/admin/AdminAgendamentos.jsx'
-import AdminClientes from './pages/admin/AdminClientes.jsx'
-import AdminServicos from './pages/admin/AdminServicos.jsx'
-import AdminFinanceiro from './pages/admin/AdminFinanceiro.jsx'
-import AdminRelatorio from './pages/admin/AdminRelatorio.jsx'
-import AdminPerfil from './pages/admin/AdminPerfil.jsx'
-import AdminNotificacoes from './pages/admin/AdminNotificacoes.jsx'
-import AdminConfiguracoes from './pages/admin/AdminConfiguracoes.jsx'
-import AdminEquipe from './pages/admin/AdminEquipe.jsx'
-import RequireRole from './components/RequireRole.jsx'
-import Login from './pages/Login.jsx'
-import ForgotPassword from './pages/ForgotPassword.jsx'
-import ResetPassword from './pages/ResetPassword.jsx'
-import ProfessionalLayout from './layouts/ProfessionalLayout.jsx'
-import ProfessionalDashboard from './pages/professional/ProfessionalDashboard.jsx'
-import ProfessionalAgendamentos from './pages/professional/ProfessionalAgendamentos.jsx'
-import ProfessionalServicos from './pages/professional/ProfessionalServicos.jsx'
-import ProfessionalFinanceiro from './pages/professional/ProfessionalFinanceiro.jsx'
-import ProfessionalPerfil from './pages/professional/ProfessionalPerfil.jsx'
-import ProfessionalClientes from './pages/professional/ProfessionalClientes.jsx'
-import ProfessionalRelatorio from './pages/professional/ProfessionalRelatorio.jsx'
-import ProfessionalNotificacoes from './pages/professional/ProfessionalNotificacoes.jsx'
-import ProfessionalConfiguracoes from './pages/professional/ProfessionalConfiguracoes.jsx'
-import ClientLayout from './layouts/ClientLayout.jsx'
-import ClientDashboard from './pages/client/ClientDashboard.jsx'
-import ClientAgendamentos from './pages/client/ClientAgendamentos.jsx'
-import ClientServicos from './pages/client/ClientServicos.jsx'
-import ClientPerfil from './pages/client/ClientPerfil.jsx'
-import ClientNotificacoes from './pages/client/ClientNotificacoes.jsx'
-import ClientConfiguracoes from './pages/client/ClientConfiguracoes.jsx'
+// Importacoes
+import { useEffect, useState } from 'react'
+import './styles/core/App.css'
+import Header from './components/Header/Header'
+import Sidebar from './components/Sidebar/Sidebar'
+import GerirEquipe from './pages/GerirEquipe'
+import Clientes from './pages/Clientes'
+import Calendario from './pages/Calendario'
+import AdicionarProfissional from './pages/AdicionarProfissional'
+import CatalogoServicos from './pages/CatalogoServicos'
+import Configuracoes from './pages/Configuracoes'
 
+// Funcao: App
 function App() {
+
+// Estado do componente
+  const [currentPage, setCurrentPage] = useState('gerir-equipe')
+  const [reloadProfessionals, setReloadProfessionals] = useState(0)
+  const [darkMode, setDarkMode] = useState(() => {
+    if (typeof window === 'undefined') {
+      return false
+    }
+
+    return window.localStorage.getItem('sobrancelha-theme') === 'dark'
+  })
+
+// Efeito: persistencia do tema
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light')
+    window.localStorage.setItem('sobrancelha-theme', darkMode ? 'dark' : 'light')
+  }, [darkMode])
+
+  const navigate = (page, options = {}) => {
+    if (page === 'gerir-equipe' && options.refresh) {
+      setReloadProfessionals((prev) => prev + 1)
+    }
+    setCurrentPage(page)
+  }
+
+// Renderizadores auxiliares
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'agenda':
+        return <Calendario onNavigate={navigate} />
+      case 'cliente':
+        return <Clientes onNavigate={navigate} />
+      case 'gerir-equipe':
+        return <GerirEquipe onNavigate={navigate} reloadKey={reloadProfessionals} />
+      case 'adicionar-profissional':
+        return <AdicionarProfissional onNavigate={navigate} />
+      case 'catalogo-servicos':
+        return <CatalogoServicos onNavigate={navigate} />
+      case 'config':
+        return <Configuracoes darkMode={darkMode} setDarkMode={setDarkMode} />
+      default:
+        return <GerirEquipe onNavigate={navigate} reloadKey={reloadProfessionals} />
+    }
+  }
+
+// Renderizacao principal
   return (
-    <Routes>
-      <Route path="/" element={<Navigate to="/cliente/servicos" replace />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/esqueceu-senha" element={<ForgotPassword />} />
-      <Route path="/resetar-senha" element={<ResetPassword />} />
-      <Route
-        path="/admin"
-        element={
-          <RequireRole role="admin">
-            <AdminLayout />
-          </RequireRole>
-        }
-      >
-        <Route path="dashboard" element={<AdminDashboard />} />
-        <Route path="agendamentos" element={<AdminAgendamentos />} />
-        <Route path="clientes" element={<AdminClientes />} />
-        <Route path="servicos" element={<AdminServicos />} />
-        <Route path="financeiro" element={<AdminFinanceiro />} />
-        <Route path="relatorio" element={<AdminRelatorio />} />
-        <Route path="equipe" element={<AdminEquipe />} />
-        <Route path="perfil" element={<AdminPerfil />} />
-        <Route path="notificacoes" element={<AdminNotificacoes />} />
-        <Route path="configuracoes" element={<AdminConfiguracoes />} />
-      </Route>
-      <Route
-        path="/profissional"
-        element={
-          <RequireRole role="profissional">
-            <ProfessionalLayout />
-          </RequireRole>
-        }
-      >
-        <Route path="dashboard" element={<ProfessionalDashboard />} />
-        <Route path="agendamentos" element={<ProfessionalAgendamentos />} />
-        <Route path="clientes" element={<ProfessionalClientes />} />
-        <Route path="servicos" element={<ProfessionalServicos />} />
-        <Route path="financeiro" element={<ProfessionalFinanceiro />} />
-        <Route path="relatorio" element={<ProfessionalRelatorio />} />
-        <Route path="perfil" element={<ProfessionalPerfil />} />
-        <Route path="notificacoes" element={<ProfessionalNotificacoes />} />
-        <Route path="configuracoes" element={<ProfessionalConfiguracoes />} />
-      </Route>
-      <Route path="/cliente" element={<ClientLayout />}>
-        <Route path="servicos" element={<ClientServicos />} />
-        <Route
-          path="dashboard"
-          element={
-            <RequireRole role="cliente">
-              <ClientDashboard />
-            </RequireRole>
-          }
-        />
-        <Route
-          path="agendamentos"
-          element={
-            <RequireRole role="cliente">
-              <ClientAgendamentos />
-            </RequireRole>
-          }
-        />
-        <Route
-          path="perfil"
-          element={
-            <RequireRole role="cliente">
-              <ClientPerfil />
-            </RequireRole>
-          }
-        />
-        <Route
-          path="notificacoes"
-          element={
-            <RequireRole role="cliente">
-              <ClientNotificacoes />
-            </RequireRole>
-          }
-        />
-        <Route
-          path="configuracoes"
-          element={
-            <RequireRole role="cliente">
-              <ClientConfiguracoes />
-            </RequireRole>
-          }
-        />
-      </Route>
-      <Route path="*" element={<Navigate to="/cliente/servicos" replace />} />
-    </Routes>
+    <div className="app">
+      <Header onNavigate={navigate} />
+      <div className="layout">
+        <Sidebar onNavigate={navigate} currentPage={currentPage} />
+        <main className="page">
+          {renderPage()}
+        </main>
+      </div>
+    </div>
   )
 }
 
+// Exportacao principal
 export default App
-
-
-

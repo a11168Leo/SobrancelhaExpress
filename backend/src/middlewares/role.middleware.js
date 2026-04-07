@@ -1,10 +1,8 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/MIDDLEWARES/ROLE.MIDDLEWARE.JS */
+/* ======================================== */
 
+// Funcao exportada: allowRoles
 export const allowRoles =
   (...allowedRoles) =>
   (req, res, next) => {
@@ -18,8 +16,4 @@ export const allowRoles =
 
     return next();
   };
-
-
-
-
 

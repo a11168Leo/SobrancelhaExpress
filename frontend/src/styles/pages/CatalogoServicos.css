@@ -1,0 +1,948 @@
+/* ======================================== */
+/* ARQUIVO: FRONTEND/SRC/PAGES/CATALOGOSERVICOS.CSS */
+/* ======================================== */
+
+/* Seletor: .catalog-page */
+.catalog-page {
+  min-height: 100%;
+  display: grid;
+  align-content: start;
+  gap: 24px;
+  background: transparent;
+  padding: 20px;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Seletor: .catalog-header */
+.catalog-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Seletor: .catalog-header h1 */
+.catalog-header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #24181f;
+}
+
+/* Seletor: .catalog-header p */
+.catalog-header p {
+  margin: 8px 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Seletor: .catalog-add-service-button */
+.catalog-add-service-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #eea8bc 0%, #d77e99 100%);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  height: fit-content;
+  box-shadow: 0 14px 28px rgba(215, 126, 153, 0.24);
+}
+
+/* Seletor: .catalog-add-service-button:hover */
+.catalog-add-service-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 30px rgba(215, 126, 153, 0.3);
+}
+
+/* Seletor: .catalog-add-service-button:active */
+.catalog-add-service-button:active {
+  transform: translateY(0);
+}
+
+/* Seletor: .catalog-add-service-button svg */
+.catalog-add-service-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Seletor: .catalog-toolbar */
+.catalog-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(238, 168, 188, 0.5);
+  padding: 12px 16px;
+  border-radius: 18px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Seletor: .search-box */
+.search-box {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Seletor: .search-box input */
+.search-box input {
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+  padding: 0 16px 0 40px;
+  font-size: 14px;
+  color: #24181f;
+  outline: none;
+}
+
+/* Seletor: .search-box input::placeholder */
+.search-box input::placeholder {
+  color: #9a7d8b;
+}
+
+/* Seletor: .search-box input:focus */
+.search-box input:focus {
+  box-shadow: 0 0 0 3px rgba(238, 168, 188, 0.2);
+}
+
+/* Seletor: .search-icon */
+.search-icon {
+  position: absolute;
+  left: 12px;
+  color: #b88b9b;
+  pointer-events: none;
+}
+
+/* Seletor: .filter-button */
+.filter-button {
+  width: 44px;
+  height: 44px;
+  border: none;
+  border-radius: 12px;
+  background: #fff;
+  color: #24181f;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* Seletor: .filter-button:hover */
+.filter-button:hover {
+  background: #f0f0f0;
+}
+
+/* Seletor: .filter-button svg */
+.filter-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Seletor: .categories-scroll */
+.categories-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 0;
+  scroll-behavior: smooth;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Seletor: .categories-scroll::-webkit-scrollbar */
+.categories-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+/* Seletor: .categories-scroll::-webkit-scrollbar-track */
+.categories-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Seletor: .categories-scroll::-webkit-scrollbar-thumb */
+.categories-scroll::-webkit-scrollbar-thumb {
+  background: rgba(215, 126, 153, 0.3);
+  border-radius: 3px;
+}
+
+/* Seletor: .categories-scroll::-webkit-scrollbar-thumb:hover */
+.categories-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(215, 126, 153, 0.5);
+}
+
+/* Seletor: .categories-nav */
+.categories-nav {
+  display: flex;
+  gap: 12px;
+  padding: 8px;
+}
+
+/* Seletor: .category-chip */
+.category-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border: 1px solid rgba(215, 126, 153, 0.3);
+  border-radius: 20px;
+  background: #fff;
+  color: #24181f;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+/* Seletor: .category-chip:hover */
+.category-chip:hover {
+  border-color: #eea8bc;
+  background: rgba(238, 168, 188, 0.05);
+}
+
+/* Seletor: .category-chip.active */
+.category-chip.active {
+  background: #eea8bc;
+  color: #fff;
+  border-color: #eea8bc;
+}
+
+/* Seletor: .category-name */
+.category-name {
+  display: inline;
+}
+
+/* Seletor: .category-count */
+.category-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.1);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* Seletor: .category-chip.active .category-count */
+.category-chip.active .category-count {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Seletor: .services-list */
+.services-list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  padding: 20px 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Seletor: .empty-state */
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: #999;
+  font-size: 16px;
+}
+
+/* Seletor: .category-section */
+.category-section {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Seletor: .category-title */
+.category-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #24181f;
+  padding-bottom: 16px;
+  border-bottom: 2px solid rgba(238, 168, 188, 0.25);
+}
+
+/* Seletor: .service-item */
+.service-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 18px 28px;
+  background: #fff;
+  border: 1px solid rgba(215, 126, 153, 0.15);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Seletor: .service-item:hover */
+.service-item:hover {
+  border-color: #eea8bc;
+  box-shadow: 0 4px 16px rgba(238, 168, 188, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Seletor: .service-info */
+.service-info {
+  flex: 1;
+  display: grid;
+  gap: 10px;
+}
+
+/* Seletor: .service-info h3 */
+.service-info h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #24181f;
+}
+
+/* Seletor: .service-details */
+.service-details {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  font-size: 13px;
+  color: #9a7d8b;
+}
+
+/* Seletor: .duration, .price */
+.duration,
+.price {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #9a7d8b;
+  font-size: 13px;
+}
+
+/* Seletor: .duration svg, .price svg */
+.duration svg,
+.price svg {
+  color: #d77e99;
+  flex-shrink: 0;
+  stroke: #d77e99;
+}
+
+/* Seletor: .service-actions */
+.service-actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Seletor: .menu-button */
+.menu-button {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #b88b9b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+/* Seletor: .menu-button:hover */
+.menu-button:hover {
+  background: rgba(238, 168, 188, 0.15);
+  color: #d77e99;
+}
+
+/* Seletor: .menu-button svg */
+.menu-button svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* Seletor: .context-menu */
+.context-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 12px;
+  background: #fff;
+  border: 1px solid rgba(215, 126, 153, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  min-width: 200px;
+  z-index: 10;
+  overflow: hidden;
+}
+
+/* Seletor: .menu-item */
+.menu-item {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border: none;
+  background: transparent;
+  color: #24181f;
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Seletor: .menu-item:not(:last-child) */
+.menu-item:not(:last-child) {
+  border-bottom: 1px solid rgba(215, 126, 153, 0.08);
+}
+
+/* Seletor: .menu-item:hover:not(.delete) */
+.menu-item:hover:not(.delete) {
+  background: rgba(238, 168, 188, 0.08);
+  color: #d77e99;
+}
+
+/* Seletor: .menu-item.delete */
+.menu-item.delete {
+  color: #dc3545;
+}
+
+/* Seletor: .menu-item.delete:hover */
+.menu-item.delete:hover {
+  background: rgba(220, 53, 69, 0.08);
+}
+
+/* Seletor: .add-service-sheet-backdrop */
+.add-service-sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(36, 24, 31, 0);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 24px;
+  z-index: 50;
+  transition: background 0.32s ease;
+}
+
+/* Seletor: .add-service-sheet-backdrop.is-visible */
+.add-service-sheet-backdrop.is-visible {
+  background: rgba(36, 24, 31, 0.36);
+}
+
+/* Seletor: .add-service-sheet */
+.add-service-sheet {
+  width: min(760px, 100%);
+  max-height: min(86vh, 900px);
+  overflow: auto;
+  background: #ffffff;
+  border-radius: 28px 28px 0 0;
+  padding: 18px 24px 24px;
+  box-shadow: 0 -18px 42px rgba(36, 24, 31, 0.16);
+  transform: translateY(110%);
+  opacity: 0;
+  transition: transform 0.32s ease, opacity 0.32s ease;
+}
+
+/* Seletor: .add-service-sheet.is-visible */
+.add-service-sheet.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Seletor: .add-service-sheet-handle */
+.add-service-sheet-handle {
+  width: 56px;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(183, 140, 156, 0.45);
+  margin: 0 auto 18px;
+}
+
+/* Seletor: .add-service-sheet-header */
+.add-service-sheet-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Seletor: .add-service-sheet-header h2 */
+.add-service-sheet-header h2 {
+  margin: 0;
+  color: #24181f;
+  font-size: 26px;
+}
+
+/* Seletor: .add-service-sheet-header p */
+.add-service-sheet-header p {
+  margin: 8px 0 0;
+  color: #7a6270;
+  font-size: 14px;
+}
+
+/* Seletor: .add-service-close */
+.add-service-close {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 12px;
+  background: rgba(238, 168, 188, 0.16);
+  color: #a35d74;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+/* Seletor: .add-service-close:hover */
+.add-service-close:hover {
+  background: rgba(238, 168, 188, 0.28);
+  transform: translateY(-1px);
+}
+
+/* Seletor: .add-service-form */
+.add-service-form {
+  display: grid;
+  gap: 0;
+}
+
+/* Seletor: .panel-tabbar, .level-tabbar */
+.panel-tabbar,
+.level-tabbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Seletor: .panel-tab, .level-tab, .parent-category-pill */
+.panel-tab,
+.level-tab,
+.parent-category-pill {
+  border: 1px solid rgba(215, 126, 153, 0.22);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #6e5460;
+  padding: 11px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, color 0.2s ease;
+}
+
+/* Seletor: .panel-tab:hover, .level-tab:hover, .parent-category-pill:hover */
+.panel-tab:hover,
+.level-tab:hover,
+.parent-category-pill:hover {
+  border-color: #ff5fb2;
+  box-shadow: 0 0 10px rgba(255, 95, 178, 0.22);
+  transform: translateY(-1px);
+}
+
+/* Seletor: .panel-tab.active, .level-tab.active, .parent-category-pill.active */
+.panel-tab.active,
+.level-tab.active,
+.parent-category-pill.active {
+  border-color: #ff4ea1;
+  color: #b13872;
+  box-shadow: 0 0 0 3px rgba(255, 78, 161, 0.12);
+}
+
+/* Seletor: .panel-section-header */
+.panel-section-header {
+  display: grid;
+  gap: 8px;
+  padding: 6px 0 20px;
+  border-bottom: 1px solid rgba(215, 126, 153, 0.14);
+  margin-bottom: 10px;
+}
+
+/* Seletor: .panel-section-header h3 */
+.panel-section-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #24181f;
+}
+
+/* Seletor: .panel-section-header p */
+.panel-section-header p {
+  margin: 0;
+  color: #7a6270;
+  font-size: 14px;
+}
+
+/* Seletor: .parent-category-nav */
+.parent-category-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 20px 0 24px;
+  border-bottom: 1px solid rgba(215, 126, 153, 0.14);
+}
+
+/* Seletor: .add-service-grid */
+.add-service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+/* Seletor: .add-service-field */
+.add-service-field {
+  display: grid;
+  gap: 10px;
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(215, 126, 153, 0.14);
+}
+
+/* Seletor: .add-service-field span */
+.add-service-field span {
+  color: #8e6b79;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Seletor: .add-service-field input, .add-service-field textarea, .add-service-field select */
+.add-service-field input,
+.add-service-field textarea,
+.add-service-field select {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 6px 0 0;
+  color: #24181f;
+  font-size: 16px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Seletor: .add-service-field textarea */
+.add-service-field textarea {
+  resize: vertical;
+  min-height: 112px;
+}
+
+/* Seletor: .add-service-field select:disabled */
+.add-service-field select:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  background: transparent;
+}
+
+/* Seletor: .add-service-field input:hover, .add-service-field textarea:hover, .add-service-field select:hover */
+.add-service-field input:hover,
+.add-service-field textarea:hover,
+.add-service-field select:hover {
+  box-shadow: none;
+}
+
+/* Seletor: .add-service-field input:focus, .add-service-field textarea:focus, .add-service-field select:focus */
+.add-service-field input:focus,
+.add-service-field textarea:focus,
+.add-service-field select:focus {
+  box-shadow: none;
+}
+
+/* Seletor: .add-service-insight */
+.add-service-insight {
+  display: grid;
+  gap: 6px;
+  align-content: start;
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(215, 126, 153, 0.14);
+  background: transparent;
+}
+
+/* Seletor: .add-service-insight span */
+.add-service-insight span {
+  color: #8e6b79;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Seletor: .add-service-insight strong */
+.add-service-insight strong {
+  color: #24181f;
+  font-size: 24px;
+}
+
+/* Seletor: .add-service-insight p */
+.add-service-insight p {
+  margin: 0;
+  color: #7a6270;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Seletor: .add-service-feedback */
+.add-service-feedback {
+  margin: 0;
+  color: #b13f57;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Seletor: .add-service-image-preview */
+.add-service-image-preview {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid rgba(215, 126, 153, 0.16);
+  border-radius: 20px;
+  background: #ffffff;
+}
+
+/* Seletor: .add-service-image-preview span */
+.add-service-image-preview span {
+  color: #5e4651;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Seletor: .add-service-image-preview img */
+.add-service-image-preview img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: 16px;
+  background: #f4e8ee;
+}
+
+/* Seletor: .add-service-actions */
+.add-service-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 28px;
+}
+
+/* Seletor: .add-service-secondary, .add-service-primary */
+.add-service-secondary,
+.add-service-primary {
+  min-width: 132px;
+  border: none;
+  border-radius: 16px;
+  padding: 13px 18px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Seletor: .add-service-secondary */
+.add-service-secondary {
+  background: #f7edf1;
+  color: #7a6270;
+}
+
+/* Seletor: .add-service-primary */
+.add-service-primary {
+  background: linear-gradient(135deg, #eea8bc 0%, #d77e99 100%);
+  color: #fff;
+  box-shadow: 0 12px 24px rgba(215, 126, 153, 0.25);
+}
+
+/* Seletor: .add-service-secondary:hover, .add-service-primary:hover */
+.add-service-secondary:hover,
+.add-service-primary:hover {
+  transform: translateY(-1px);
+}
+
+/* Seletor: .add-service-primary:disabled */
+.add-service-primary:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+@media (max-width: 768px) {
+
+/* Seletor: .catalog-page */
+  .catalog-page {
+    padding: 16px;
+    gap: 20px;
+  }
+
+/* Seletor: .catalog-header */
+  .catalog-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+/* Seletor: .catalog-add-service-button */
+  .catalog-add-service-button {
+    justify-content: center;
+  }
+
+/* Seletor: .catalog-toolbar */
+  .catalog-toolbar {
+    padding: 10px 12px;
+  }
+
+/* Seletor: .service-item */
+  .service-item {
+    padding: 18px 18px;
+  }
+
+/* Seletor: .service-details */
+  .service-details {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+/* Seletor: .add-service-sheet-backdrop */
+  .add-service-sheet-backdrop {
+    padding: 0;
+  }
+
+/* Seletor: .add-service-sheet */
+  .add-service-sheet {
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 28px 28px 0 0;
+    padding: 16px 16px 22px;
+  }
+
+/* Seletor: .add-service-grid */
+  .add-service-grid {
+    grid-template-columns: 1fr;
+  }
+
+/* Seletor: .panel-tabbar, .level-tabbar, .parent-category-nav */
+  .panel-tabbar,
+  .level-tabbar,
+  .parent-category-nav {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+/* Seletor: .add-service-actions */
+  .add-service-actions {
+    flex-direction: column-reverse;
+  }
+
+/* Seletor: .add-service-secondary, .add-service-primary */
+  .add-service-secondary,
+  .add-service-primary {
+    width: 100%;
+  }
+}
+
+/* ======================================== */
+/* DARK MODE                               */
+/* ======================================== */
+
+/* Seletor: :root[data-theme='dark'] .catalog-header h1, :root[data-theme='dark'] .category-title, :root[data-theme='dark'] .service-info h3, :root[data-theme='dark'] .add-service-sheet-header h2, :root[data-theme='dark'] .panel-section-header h3 */
+:root[data-theme='dark'] .catalog-header h1,
+:root[data-theme='dark'] .category-title,
+:root[data-theme='dark'] .service-info h3,
+:root[data-theme='dark'] .add-service-sheet-header h2,
+:root[data-theme='dark'] .panel-section-header h3 {
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .catalog-header p, :root[data-theme='dark'] .service-details, :root[data-theme='dark'] .duration, :root[data-theme='dark'] .price, :root[data-theme='dark'] .add-service-sheet-header p, :root[data-theme='dark'] .panel-section-header p, :root[data-theme='dark'] .empty-state */
+:root[data-theme='dark'] .catalog-header p,
+:root[data-theme='dark'] .service-details,
+:root[data-theme='dark'] .duration,
+:root[data-theme='dark'] .price,
+:root[data-theme='dark'] .add-service-sheet-header p,
+:root[data-theme='dark'] .panel-section-header p,
+:root[data-theme='dark'] .empty-state {
+  color: #c9b7c1;
+}
+
+/* Seletor: :root[data-theme='dark'] .catalog-toolbar */
+:root[data-theme='dark'] .catalog-toolbar {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Seletor: :root[data-theme='dark'] .search-box input, :root[data-theme='dark'] .filter-button, :root[data-theme='dark'] .category-chip, :root[data-theme='dark'] .service-item, :root[data-theme='dark'] .context-menu, :root[data-theme='dark'] .add-service-sheet, :root[data-theme='dark'] .add-service-image-preview, :root[data-theme='dark'] .panel-tab, :root[data-theme='dark'] .level-tab, :root[data-theme='dark'] .parent-category-pill, :root[data-theme='dark'] .add-service-field input, :root[data-theme='dark'] .add-service-field textarea, :root[data-theme='dark'] .add-service-field select */
+:root[data-theme='dark'] .search-box input,
+:root[data-theme='dark'] .filter-button,
+:root[data-theme='dark'] .category-chip,
+:root[data-theme='dark'] .service-item,
+:root[data-theme='dark'] .context-menu,
+:root[data-theme='dark'] .add-service-sheet,
+:root[data-theme='dark'] .add-service-image-preview,
+:root[data-theme='dark'] .panel-tab,
+:root[data-theme='dark'] .level-tab,
+:root[data-theme='dark'] .parent-category-pill,
+:root[data-theme='dark'] .add-service-field input,
+:root[data-theme='dark'] .add-service-field textarea,
+:root[data-theme='dark'] .add-service-field select {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .search-icon, :root[data-theme='dark'] .menu-button */
+:root[data-theme='dark'] .search-icon,
+:root[data-theme='dark'] .menu-button {
+  color: #c9b7c1;
+}
+
+/* Seletor: :root[data-theme='dark'] .category-chip.active, :root[data-theme='dark'] .add-service-primary */
+:root[data-theme='dark'] .category-chip.active,
+:root[data-theme='dark'] .add-service-primary {
+  color: #ffffff;
+}
+
+/* Seletor: :root[data-theme='dark'] .category-title, :root[data-theme='dark'] .menu-item:not(:last-child) */
+:root[data-theme='dark'] .category-title,
+:root[data-theme='dark'] .menu-item:not(:last-child) {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Seletor: :root[data-theme='dark'] .menu-item */
+:root[data-theme='dark'] .menu-item {
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .add-service-field span, :root[data-theme='dark'] .add-service-image-preview span */
+:root[data-theme='dark'] .add-service-field span,
+:root[data-theme='dark'] .add-service-image-preview span,
+:root[data-theme='dark'] .add-service-insight span {
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .add-service-secondary */
+:root[data-theme='dark'] .add-service-secondary {
+  background: #2b1f29;
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .add-service-insight */
+:root[data-theme='dark'] .add-service-insight {
+  background: transparent;
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Seletor: :root[data-theme='dark'] .add-service-insight strong, :root[data-theme='dark'] .add-service-insight p */
+:root[data-theme='dark'] .add-service-insight strong,
+:root[data-theme='dark'] .add-service-insight p {
+  color: #f7edf2;
+}

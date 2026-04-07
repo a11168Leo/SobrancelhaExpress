@@ -1,10 +1,8 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/APPOINTMENTS/APPOINTMENT.ROUTES.JS */
+/* ======================================== */
 
+// Importacoes
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { allowRoles } from '../middlewares/role.middleware.js';
@@ -14,14 +12,16 @@ import {
   listByClient,
   updateStatus,
   listAll,
+  listCalendarPublic,
   update
 } from './appointment.controller.js';
 
+// Bloco: router
 const router = Router();
 
-
-
-
+router.get('/calendar', listCalendarPublic);
+router.post('/public', create);
+router.patch('/public/:id', update);
 router.post('/', authMiddleware, allowRoles('admin', 'cliente', 'profissional'), create);
 // ====================
 // Admin vÃª qualquer agenda; profissional vÃª apenas a sua
@@ -49,9 +49,6 @@ router.patch('/:id/status', authMiddleware, allowRoles('admin', 'profissional'),
 // ====================
 router.patch('/:id', authMiddleware, allowRoles('admin'), update);
 
+// Exportacao principal
 export default router;
-
-
-
-
 

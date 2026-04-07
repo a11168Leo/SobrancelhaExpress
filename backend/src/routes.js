@@ -1,10 +1,8 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/ROUTES.JS */
+/* ======================================== */
 
+// Importacoes
 import { Router } from 'express';
 import userRoutes from './users/user.routes.js';
 import appointmentRoutes from './appointments/appointment.routes.js';
@@ -15,6 +13,7 @@ import notificationRoutes from './notifications/notification.routes.js';
 import teamRoutes from './team/team.routes.js';
 import settingsRoutes from './settings/settings.routes.js';
 
+// Bloco: routes
 const routes = Router();
 
 routes.use('/auth', userRoutes);
@@ -26,7 +25,6 @@ routes.use('/notifications', notificationRoutes);
 routes.use('/team', teamRoutes);
 routes.use('/settings', settingsRoutes);
 
+// Exportacao principal
 export default routes;
-
-
 

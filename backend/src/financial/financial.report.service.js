@@ -1,15 +1,11 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/FINANCIAL/FINANCIAL.REPORT.SERVICE.JS */
+/* ======================================== */
 
+// Importacoes
 import Financial from './financial.model.js';
 
-
-
-
+// Funcao exportada: reportByPeriod
 export const reportByPeriod = async (startDate, endDate, professionalId) => {
   const filters = { createdAt: { $gte: startDate, $lte: endDate } };
   if (professionalId) {
@@ -22,9 +18,7 @@ export const reportByPeriod = async (startDate, endDate, professionalId) => {
   return { items, total };
 };
 
-
-
-
+// Funcao exportada: compareByPeriod
 export const compareByPeriod = async (
   startA,
   endA,
@@ -46,8 +40,4 @@ export const compareByPeriod = async (
     percent
   };
 };
-
-
-
-
 

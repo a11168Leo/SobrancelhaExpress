@@ -1,15 +1,11 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/FINANCIAL/FINANCIAL.MODEL.JS */
+/* ======================================== */
 
+// Importacoes
 import mongoose from 'mongoose';
 
-
-
-
+// Bloco: FinancialSchema
 const FinancialSchema = new mongoose.Schema(
   {
     appointment: {
@@ -37,9 +33,6 @@ const FinancialSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Exportacao principal
 export default mongoose.model('Financial', FinancialSchema);
-
-
-
-
 

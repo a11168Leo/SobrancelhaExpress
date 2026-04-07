@@ -1,10 +1,8 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/USERS/USER.CONTROLLER.JS */
+/* ======================================== */
 
+// Importacoes
 import bcrypt from 'bcryptjs'
 import crypto from 'crypto'
 import nodemailer from 'nodemailer'
@@ -18,9 +16,61 @@ import {
 } from './user.service.js'
 import User from './user.model.js'
 
+// Funcao: generateTemporaryPassword
+function generateTemporaryPassword() {
+  return `SE${crypto.randomBytes(4).toString('hex').toUpperCase()}!`
+}
 
+// Funcao: sendTemporaryPasswordEmail
+async function sendTemporaryPasswordEmail({ email, name, temporaryPassword }) {
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    return false
+  }
 
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS
+    }
+  })
 
+  const appBaseUrl = process.env.APP_BASE_URL || 'http://localhost:5173'
+  const resetUrl = `${appBaseUrl}/resetar-senha`
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; background:#f7f7f7; padding:24px;">
+      <div style="max-width:520px; margin:0 auto; background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 8px 24px rgba(0,0,0,0.08);">
+        <div style="background:#d988b3; color:#fff; padding:20px 24px;">
+          <h2 style="margin:0; font-size:20px;">Sobrancelha Express</h2>
+          <p style="margin:6px 0 0; font-size:14px;">Acesso inicial do cliente</p>
+        </div>
+        <div style="padding:24px; color:#333;">
+          <p style="margin:0 0 12px;">Ola, ${name}.</p>
+          <p style="margin:0 0 16px;">Criamos o seu acesso ao sistema. Utilize a senha temporaria abaixo para entrar e troque-a no primeiro acesso.</p>
+          <div style="margin:0 0 18px; padding:14px 16px; border-radius:10px; background:#fff2f6; border:1px solid #f2c8d7;">
+            <strong style="display:block; color:#b54774; font-size:13px; text-transform:uppercase; letter-spacing:0.08em; margin-bottom:8px;">Senha temporaria</strong>
+            <span style="font-size:28px; font-weight:700; color:#7c294e; letter-spacing:0.06em;">${temporaryPassword}</span>
+          </div>
+          <p style="margin:0 0 8px; font-size:13px;">Depois de entrar, atualize imediatamente a sua senha para uma pessoal e segura.</p>
+          <p style="margin:0; font-size:12px; color:#666;">Se precisar redefinir depois, utilize o fluxo de recuperacao de senha em ${resetUrl}</p>
+        </div>
+      </div>
+    </div>
+  `
+
+  await transporter.sendMail({
+    from: process.env.SMTP_FROM || process.env.SMTP_USER,
+    to: email,
+    subject: 'Acesso inicial - Sobrancelha Express',
+    text: `Ola, ${name}. Sua senha temporaria e ${temporaryPassword}. Troque-a no primeiro acesso.`,
+    html
+  })
+
+  return true
+}
+
+// Funcao exportada: register
 export const register = async (req, res) => {
   try {
     const { name, email, password, phone } = req.body
@@ -62,9 +112,7 @@ export const register = async (req, res) => {
   }
 }
 
-
-
-
+// Funcao exportada: login
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body
@@ -86,14 +134,16 @@ export const login = async (req, res) => {
     const token = generateToken({
       id: user._id,
       role: user.role,
-      email: user.email
+      email: user.email,
+      mustChangePassword: Boolean(user.mustChangePassword)
     })
 
     res.json({
       user: {
         id: user._id,
         name: user.name,
-        role: user.role
+        role: user.role,
+        mustChangePassword: Boolean(user.mustChangePassword)
       },
       token
     })
@@ -102,9 +152,7 @@ export const login = async (req, res) => {
   }
 }
 
-
-
-
+// Funcao exportada: me
 export const me = async (req, res) => {
   try {
     const user = await findUserById(req.user.id)
@@ -118,9 +166,7 @@ export const me = async (req, res) => {
   }
 }
 
-
-
-
+// Funcao exportada: updateAvatar
 export const updateAvatar = async (req, res) => {
   try {
     if (!req.file) {
@@ -136,16 +182,12 @@ export const updateAvatar = async (req, res) => {
   }
 }
 
-
-
-
+// Funcao exportada: adminOnly
 export const adminOnly = async (_req, res) => {
   res.json({ message: 'Acesso admin liberado' })
 }
 
-
-
-
+// Funcao exportada: adminCreateUser
 export const adminCreateUser = async (req, res) => {
   try {
     const { name, email, password, role, phone } = req.body
@@ -191,9 +233,51 @@ export const adminCreateUser = async (req, res) => {
   }
 }
 
+// Funcao exportada: publicCreateProfessional
+export const publicCreateProfessional = async (req, res) => {
+  try {
+    const { name, email, password, phone, salonName, about, specialties } = req.body
 
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: 'Nome, email e senha sao obrigatorios' })
+    }
 
+    const userExists = await findUserByEmail(email)
+    if (userExists) {
+      return res.status(400).json({ message: 'Email ja cadastrado' })
+    }
 
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    const user = await createUser({
+      name,
+      email,
+      password: hashedPassword,
+      role: 'profissional',
+      phone: phone || '',
+      salonName: salonName || '',
+      about: about || '',
+      specialties: Array.isArray(specialties) ? specialties : []
+    })
+
+    res.status(201).json({
+      user: {
+        id: user._id,
+        name: user.name,
+        role: user.role,
+        email: user.email,
+        phone: user.phone,
+        salonName: user.salonName,
+        about: user.about,
+        specialties: user.specialties
+      }
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao criar profissional' })
+  }
+}
+
+// Funcao exportada: adminDeleteUser
 export const adminDeleteUser = async (req, res) => {
   try {
     const { id } = req.params
@@ -207,9 +291,7 @@ export const adminDeleteUser = async (req, res) => {
   }
 }
 
-
-
-
+// Funcao exportada: updateMe
 export const updateMe = async (req, res) => {
   try {
     const {
@@ -257,13 +339,11 @@ export const updateMe = async (req, res) => {
   }
 }
 
-
-
-
+// Funcao exportada: listProfessionalsPublic
 export const listProfessionalsPublic = async (_req, res) => {
   try {
     const users = await User.find({ role: 'profissional' })
-      .select('name avatar about phone contactName salonName specialties')
+      .select('name email role avatar about phone contactName salonName specialties')
       .sort({ name: 1 })
     res.json({ users })
   } catch (error) {
@@ -271,9 +351,132 @@ export const listProfessionalsPublic = async (_req, res) => {
   }
 }
 
+// Funcao exportada: publicCreateClientWithTemporaryPassword
+export const publicCreateClientWithTemporaryPassword = async (req, res) => {
+  try {
+    const { name, email, phone } = req.body
 
+    if (!name || !email) {
+      return res.status(400).json({ message: 'Nome e email sao obrigatorios' })
+    }
 
+    const normalizedEmail = String(email).trim().toLowerCase()
+    const userExists = await findUserByEmail(normalizedEmail)
+    if (userExists) {
+      return res.status(400).json({ message: 'Email ja cadastrado' })
+    }
 
+    const temporaryPassword = generateTemporaryPassword()
+    const hashedPassword = await bcrypt.hash(temporaryPassword, 10)
+
+    const user = await createUser({
+      name: String(name).trim(),
+      email: normalizedEmail,
+      password: hashedPassword,
+      role: 'cliente',
+      phone: phone || '',
+      mustChangePassword: true,
+      temporaryPasswordGeneratedAt: new Date()
+    })
+
+    let emailSent = false
+    try {
+      emailSent = await sendTemporaryPasswordEmail({
+        email: user.email,
+        name: user.name,
+        temporaryPassword
+      })
+    } catch (emailError) {
+      emailSent = false
+    }
+
+    res.status(201).json({
+      user: {
+        id: user._id,
+        name: user.name,
+        role: user.role,
+        email: user.email,
+        phone: user.phone,
+        mustChangePassword: user.mustChangePassword
+      },
+      temporaryPassword,
+      emailSent
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao criar cliente com senha temporaria' })
+  }
+}
+
+// Funcao exportada: listClientsPublic
+export const listClientsPublic = async (_req, res) => {
+  try {
+    const users = await User.find({ role: 'cliente' })
+      .select('name email phone')
+      .sort({ name: 1 })
+    res.json({ users })
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao listar clientes' })
+  }
+}
+
+// Funcao exportada: updateProfessional
+export const updateProfessional = async (req, res) => {
+  try {
+    const { id } = req.params
+    const {
+      name,
+      email,
+      phone,
+      about,
+      contactName,
+      salonName,
+      specialties,
+    } = req.body
+
+    const existing = await findUserById(id)
+    if (!existing) {
+      return res.status(404).json({ message: 'Usuario nao encontrado' })
+    }
+
+    if (existing.role !== 'profissional') {
+      return res.status(400).json({ message: 'Apenas perfis profissionais podem ser atualizados aqui' })
+    }
+
+    const updates = {
+      ...(name ? { name } : {}),
+      ...(email ? { email: String(email).trim().toLowerCase() } : {}),
+      ...(phone !== undefined ? { phone } : {}),
+      ...(contactName !== undefined ? { contactName } : {}),
+      ...(salonName !== undefined ? { salonName } : {}),
+      ...(about !== undefined ? { about } : {}),
+    }
+
+    if (specialties !== undefined) {
+      if (!Array.isArray(specialties)) {
+        return res.status(400).json({ message: 'specialties deve ser um array' })
+      }
+
+      updates.specialties = specialties
+        .map((item) => String(item || '').trim())
+        .filter(Boolean)
+        .slice(0, 30)
+    }
+
+    if (updates.email && updates.email !== existing.email) {
+      const userWithEmail = await User.findOne({ email: updates.email })
+      if (userWithEmail && userWithEmail._id.toString() !== id) {
+        return res.status(400).json({ message: 'Email ja cadastrado' })
+      }
+    }
+
+    const updated = await updateUserById(id, updates)
+    res.json({ user: updated })
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao atualizar profissional' })
+  }
+}
+
+// Funcao exportada: updateProfessionalAbout
 export const updateProfessionalAbout = async (req, res) => {
   try {
     const { id } = req.params
@@ -303,9 +506,7 @@ export const updateProfessionalAbout = async (req, res) => {
   }
 }
 
-
-
-
+// Funcao exportada: updatePassword
 export const updatePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body
@@ -326,17 +527,24 @@ export const updatePassword = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(newPassword, 10)
     user.password = hashedPassword
+    user.mustChangePassword = false
+    user.temporaryPasswordGeneratedAt = undefined
     await user.save()
 
-    res.json({ message: 'Senha atualizada com sucesso' })
+    const token = generateToken({
+      id: user._id,
+      role: user.role,
+      email: user.email,
+      mustChangePassword: false
+    })
+
+    res.json({ message: 'Senha atualizada com sucesso', token })
   } catch (error) {
     res.status(500).json({ message: 'Erro ao atualizar senha' })
   }
 }
 
-
-
-
+// Funcao exportada: forgotPassword
 export const forgotPassword = async (req, res) => {
   try {
     const { email } = req.body
@@ -406,9 +614,7 @@ export const forgotPassword = async (req, res) => {
   }
 }
 
-
-
-
+// Funcao exportada: resetPassword
 export const resetPassword = async (req, res) => {
   try {
     const { token, newPassword } = req.body
@@ -437,8 +643,4 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ message: 'Erro ao redefinir senha' })
   }
 }
-
-
-
-
 

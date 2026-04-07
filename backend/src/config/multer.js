@@ -1,26 +1,20 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/CONFIG/MULTER.JS */
+/* ======================================== */
 
+// Importacoes
 import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
 
-
-
-
+// Bloco: ensureDir
 const ensureDir = (dirPath) => {
   if (!fs.existsSync(dirPath)) {
     fs.mkdirSync(dirPath, { recursive: true });
   }
 };
 
-
-
-
+// Bloco: createStorage
 const createStorage = (folder) =>
   multer.diskStorage({
     destination: (_req, _file, cb) => {
@@ -35,9 +29,7 @@ const createStorage = (folder) =>
     }
   });
 
-
-
-
+// Bloco: imageFilter
 const imageFilter = (_req, file, cb) => {
   const allowed = ['image/jpeg', 'image/png', 'image/webp'];
   if (!allowed.includes(file.mimetype)) {
@@ -46,25 +38,17 @@ const imageFilter = (_req, file, cb) => {
   return cb(null, true);
 };
 
-
-
-
+// Funcao exportada: serviceImageUpload
 export const serviceImageUpload = multer({
   storage: createStorage('services'),
   fileFilter: imageFilter,
   limits: { fileSize: 5 * 1024 * 1024 }
 });
 
-
-
-
+// Funcao exportada: professionalAvatarUpload
 export const professionalAvatarUpload = multer({
   storage: createStorage('professionals'),
   fileFilter: imageFilter,
   limits: { fileSize: 5 * 1024 * 1024 }
 });
-
-
-
-
 

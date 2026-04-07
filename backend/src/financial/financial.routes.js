@@ -1,19 +1,15 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/FINANCIAL/FINANCIAL.ROUTES.JS */
+/* ======================================== */
 
+// Importacoes
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { allowRoles } from '../middlewares/role.middleware.js';
 import { create, list, updateStatus, report, reportCompare } from './financial.controller.js';
 
+// Bloco: router
 const router = Router();
-
-
-
 
 router.post('/', authMiddleware, allowRoles('admin'), create);
 // ====================
@@ -33,9 +29,6 @@ router.get('/report', authMiddleware, allowRoles('admin', 'profissional'), repor
 // ====================
 router.get('/report/compare', authMiddleware, allowRoles('admin', 'profissional'), reportCompare);
 
+// Exportacao principal
 export default router;
-
-
-
-
 

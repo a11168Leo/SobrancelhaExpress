@@ -1,15 +1,11 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/CATEGORIES/CATEGORY.MODEL.JS */
+/* ======================================== */
 
+// Importacoes
 import mongoose from 'mongoose';
 
-
-
-
+// Bloco: CategorySchema
 const CategorySchema = new mongoose.Schema(
   {
     name: {
@@ -32,14 +28,8 @@ const CategorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-
-
-
 CategorySchema.index({ name: 1, level: 1, parent: 1 }, { unique: true });
 
+// Exportacao principal
 export default mongoose.model('Category', CategorySchema);
-
-
-
-
 

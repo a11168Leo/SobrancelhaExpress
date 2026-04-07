@@ -1,15 +1,11 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/APPOINTMENTS/APPOINTMENT.MODEL.JS */
+/* ======================================== */
 
+// Importacoes
 import mongoose from 'mongoose';
 
-
-
-
+// Bloco: AppointmentSchema
 const AppointmentSchema = new mongoose.Schema(
   {
     client: {
@@ -40,14 +36,16 @@ const AppointmentSchema = new mongoose.Schema(
       enum: ['scheduled', 'completed', 'cancelled'],
       default: 'scheduled'
     },
+    unit: {
+      type: String,
+      enum: ['cascais', 'almada'],
+      default: 'cascais'
+    },
     notes: String
   },
   { timestamps: true }
 );
 
+// Exportacao principal
 export default mongoose.model('Appointment', AppointmentSchema);
-
-
-
-
 

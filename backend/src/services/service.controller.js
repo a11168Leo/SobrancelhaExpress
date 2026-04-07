@@ -1,10 +1,8 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/SERVICES/SERVICE.CONTROLLER.JS */
+/* ======================================== */
 
+// Importacoes
 import {
   createService,
   findServiceById,
@@ -14,9 +12,7 @@ import {
 } from './service.service.js';
 import { findCategoryById } from '../categories/category.service.js';
 
-
-
-
+// Bloco: validateCategoryLevel
 const validateCategoryLevel = async (categoryId, expectedLevel) => {
   if (!categoryId && categoryId !== null) {
     return null;
@@ -34,9 +30,7 @@ const validateCategoryLevel = async (categoryId, expectedLevel) => {
   return { category };
 };
 
-
-
-
+// Funcao exportada: create
 export const create = async (req, res) => {
   try {
     const {
@@ -44,6 +38,7 @@ export const create = async (req, res) => {
       description,
       price,
       durationMinutes,
+      maxDurationMinutes,
       category,
       subcategory,
       subcategory2,
@@ -77,17 +72,37 @@ export const create = async (req, res) => {
       return res.status(400).json({ message: sub3.error });
     }
 
+    const parsedDurationMinutes = Number(durationMinutes);
+    const parsedMaxDurationMinutes =
+      maxDurationMinutes !== undefined && maxDurationMinutes !== null && maxDurationMinutes !== ''
+        ? Number(maxDurationMinutes)
+        : null;
+
+    if (!Number.isFinite(parsedDurationMinutes) || parsedDurationMinutes <= 0) {
+      return res.status(400).json({ message: 'durationMinutes deve ser maior que zero' });
+    }
+
+    if (
+      parsedMaxDurationMinutes !== null &&
+      (!Number.isFinite(parsedMaxDurationMinutes) || parsedMaxDurationMinutes < parsedDurationMinutes)
+    ) {
+      return res.status(400).json({
+        message: 'maxDurationMinutes deve ser maior ou igual a durationMinutes'
+      });
+    }
+
     const service = await createService({
       name,
       description,
       price,
-      durationMinutes,
+      durationMinutes: parsedDurationMinutes,
+      maxDurationMinutes: parsedMaxDurationMinutes,
       category,
       subcategory: subcategory || null,
       subcategory2: subcategory2 || null,
       subcategory3: subcategory3 || null,
       imageUrl,
-      professional: req.user.role === 'profissional' ? req.user.id : null
+      professional: req.user?.role === 'profissional' ? req.user.id : null
     });
 
     res.status(201).json({ service });
@@ -96,9 +111,7 @@ export const create = async (req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: list
 export const list = async (req, res) => {
   try {
     const { category, subcategory, subcategory2, subcategory3, professionalId } = req.query;
@@ -117,13 +130,11 @@ export const list = async (req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: update
 export const update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, durationMinutes, active } = req.body;
+    const { name, description, price, durationMinutes, maxDurationMinutes, active } = req.body;
 
     const existing = await findServiceById(id);
     if (!existing) {
@@ -134,11 +145,32 @@ export const update = async (req, res) => {
       return res.status(403).json({ message: 'Sem permissao para editar este servico' });
     }
 
+    const parsedDurationMinutes =
+      durationMinutes !== undefined ? Number(durationMinutes) : existing.durationMinutes;
+    const parsedMaxDurationMinutes =
+      maxDurationMinutes !== undefined
+        ? (maxDurationMinutes === null || maxDurationMinutes === '' ? null : Number(maxDurationMinutes))
+        : existing.maxDurationMinutes;
+
+    if (!Number.isFinite(parsedDurationMinutes) || parsedDurationMinutes <= 0) {
+      return res.status(400).json({ message: 'durationMinutes deve ser maior que zero' });
+    }
+
+    if (
+      parsedMaxDurationMinutes !== null &&
+      (!Number.isFinite(parsedMaxDurationMinutes) || parsedMaxDurationMinutes < parsedDurationMinutes)
+    ) {
+      return res.status(400).json({
+        message: 'maxDurationMinutes deve ser maior ou igual a durationMinutes'
+      });
+    }
+
     const updated = await updateService(id, {
       ...(name ? { name } : {}),
       ...(description !== undefined ? { description } : {}),
       ...(price !== undefined ? { price } : {}),
-      ...(durationMinutes !== undefined ? { durationMinutes } : {}),
+      durationMinutes: parsedDurationMinutes,
+      maxDurationMinutes: parsedMaxDurationMinutes,
       ...(active !== undefined ? { active } : {})
     });
 
@@ -148,9 +180,7 @@ export const update = async (req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: updateImage
 export const updateImage = async (req, res) => {
   try {
     const { id } = req.params;
@@ -177,9 +207,7 @@ export const updateImage = async (req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: remove
 export const remove = async (req, res) => {
   try {
     const { id } = req.params;
@@ -199,8 +227,4 @@ export const remove = async (req, res) => {
     res.status(500).json({ message: 'Erro ao remover servico' });
   }
 };
-
-
-
-
 

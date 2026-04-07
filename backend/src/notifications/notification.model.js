@@ -1,15 +1,11 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/NOTIFICATIONS/NOTIFICATION.MODEL.JS */
+/* ======================================== */
 
+// Importacoes
 import mongoose from 'mongoose';
 
-
-
-
+// Bloco: NotificationSchema
 const NotificationSchema = new mongoose.Schema(
   {
     user: {
@@ -33,9 +29,6 @@ const NotificationSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Exportacao principal
 export default mongoose.model('Notification', NotificationSchema);
-
-
-
-
 

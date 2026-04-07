@@ -1,10 +1,8 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/APPOINTMENTS/APPOINTMENT.CONTROLLER.JS */
+/* ======================================== */
 
+// Importacoes
 import {
   createAppointment,
   findConflictingAppointment,
@@ -19,17 +17,16 @@ import {
 import { findServiceById } from '../services/service.service.js'
 import { createFinancial, findFinancialByAppointment } from '../financial/financial.service.js'
 
-
-
-
+// Bloco: parseDate
 const parseDate = (value) => {
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? null : date
 }
 
+// Bloco: VALID_UNITS
+const VALID_UNITS = ['cascais', 'almada']
 
-
-
+// Funcao exportada: create
 export const create = async (req, res) => {
   try {
     const {
@@ -39,7 +36,8 @@ export const create = async (req, res) => {
       durationMinutes,
       notes,
       clientId,
-      serviceId
+      serviceId,
+      unit
     } = req.body
 
     if (!professionalId || !startTime) {
@@ -83,7 +81,7 @@ export const create = async (req, res) => {
       return res.status(400).json({ message: 'startTime deve ser menor que endTime' })
     }
 
-    if (req.user.role === 'profissional' && professionalId !== req.user.id) {
+    if (req.user?.role === 'profissional' && professionalId !== req.user.id) {
       return res.status(403).json({ message: 'Profissional nao pode criar para outra agenda' })
     }
 
@@ -93,10 +91,14 @@ export const create = async (req, res) => {
     }
 
     const resolvedClientId =
-      req.user.role === 'cliente' ? req.user.id : clientId
+      req.user?.role === 'cliente' ? req.user.id : clientId
 
     if (!resolvedClientId) {
       return res.status(400).json({ message: 'clientId e obrigatorio para admin/profissional' })
+    }
+
+    if (unit && !VALID_UNITS.includes(unit)) {
+      return res.status(400).json({ message: 'Unidade invalida' })
     }
 
     const appointment = await createAppointment({
@@ -105,7 +107,8 @@ export const create = async (req, res) => {
       service: serviceId || null,
       startTime: start,
       endTime: end,
-      notes
+      notes,
+      unit: unit || 'cascais'
     })
 
     res.status(201).json({ appointment })
@@ -114,9 +117,7 @@ export const create = async (req, res) => {
   }
 }
 
-
-
-
+// Funcao exportada: listByProfessional
 export const listByProfessional = async (req, res) => {
   try {
     const { professionalId } = req.params
@@ -132,9 +133,7 @@ export const listByProfessional = async (req, res) => {
   }
 }
 
-
-
-
+// Funcao exportada: listByClient
 export const listByClient = async (req, res) => {
   try {
     const { clientId } = req.params
@@ -150,9 +149,7 @@ export const listByClient = async (req, res) => {
   }
 }
 
-
-
-
+// Funcao exportada: updateStatus
 export const updateStatus = async (req, res) => {
   try {
     const { id } = req.params
@@ -175,9 +172,6 @@ export const updateStatus = async (req, res) => {
     if (!appointment) {
       return res.status(404).json({ message: 'Agendamento nao encontrado' })
     }
-
-
-
 
     if (status === 'completed') {
       const existingFinancial = await findFinancialByAppointment(id)
@@ -205,9 +199,7 @@ export const updateStatus = async (req, res) => {
   }
 }
 
-
-
-
+// Funcao exportada: listAll
 export const listAll = async (_req, res) => {
   try {
     const appointments = await listAllAppointments()
@@ -217,13 +209,29 @@ export const listAll = async (_req, res) => {
   }
 }
 
+// Funcao exportada: listCalendarPublic
+export const listCalendarPublic = async (_req, res) => {
+  try {
+    const appointments = await listAllAppointments()
+    res.json({ appointments })
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao listar eventos do calendario' })
+  }
+}
 
-
-
+// Funcao exportada: update
 export const update = async (req, res) => {
   try {
     const { id } = req.params
-    const { professionalId, clientId, serviceId, startTime } = req.body
+    const {
+      professionalId,
+      clientId,
+      serviceId,
+      startTime,
+      notes,
+      status,
+      unit
+    } = req.body
 
     const existing = await findAppointmentById(id)
     if (!existing) {
@@ -257,12 +265,19 @@ export const update = async (req, res) => {
       return res.status(409).json({ message: 'Horario em conflito' })
     }
 
+    if (unit && !VALID_UNITS.includes(unit)) {
+      return res.status(400).json({ message: 'Unidade invalida' })
+    }
+
     const updated = await updateAppointment(id, {
       professional: professionalId,
       client: clientId,
       service: serviceId,
       startTime: start,
-      endTime: end
+      endTime: end,
+      notes: notes || '',
+      status: ['scheduled', 'completed', 'cancelled'].includes(status) ? status : existing.status,
+      unit: unit || existing.unit || 'cascais'
     })
 
     res.json({ appointment: updated })
@@ -270,8 +285,4 @@ export const update = async (req, res) => {
     res.status(500).json({ message: 'Erro ao atualizar agendamento' })
   }
 }
-
-
-
-
 

@@ -1,15 +1,11 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/TEAM/TEAM.CONTROLLER.JS */
+/* ======================================== */
 
+// Importacoes
 import { listUsers } from '../users/user.service.js';
 
-
-
-
+// Funcao exportada: listByRole
 export const listByRole = async (req, res) => {
   try {
     const { role } = req.params;
@@ -20,9 +16,7 @@ export const listByRole = async (req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: listProfessionals
 export const listProfessionals = async (_req, res) => {
   try {
     const users = await listUsers({ role: 'profissional' });
@@ -32,9 +26,7 @@ export const listProfessionals = async (_req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: listClients
 export const listClients = async (_req, res) => {
   try {
     const users = await listUsers({ role: 'cliente' });
@@ -43,8 +35,4 @@ export const listClients = async (_req, res) => {
     res.status(500).json({ message: 'Erro ao listar clientes' });
   }
 };
-
-
-
-
 

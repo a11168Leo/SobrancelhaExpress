@@ -1,10 +1,8 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/FINANCIAL/FINANCIAL.CONTROLLER.JS */
+/* ======================================== */
 
+// Importacoes
 import {
   createFinancial,
   findFinancialById,
@@ -15,9 +13,7 @@ import {
 import { reportByPeriod, compareByPeriod } from './financial.report.service.js';
 import { findAppointmentById } from '../appointments/appointment.service.js';
 
-
-
-
+// Funcao exportada: create
 export const create = async (req, res) => {
   try {
     const { appointmentId, professionalId, amount, notes } = req.body;
@@ -51,9 +47,7 @@ export const create = async (req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: list
 export const list = async (req, res) => {
   try {
     const filters = {};
@@ -69,9 +63,7 @@ export const list = async (req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: updateStatus
 export const updateStatus = async (req, res) => {
   try {
     const { id } = req.params;
@@ -93,9 +85,7 @@ export const updateStatus = async (req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: report
 export const report = async (req, res) => {
   try {
     const { start, end, professionalId } = req.query;
@@ -120,9 +110,7 @@ export const report = async (req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: reportCompare
 export const reportCompare = async (req, res) => {
   try {
     const { startA, endA, startB, endB, professionalId } = req.query;
@@ -154,8 +142,4 @@ export const reportCompare = async (req, res) => {
     res.status(500).json({ message: 'Erro ao gerar relatorio comparativo' });
   }
 };
-
-
-
-
 

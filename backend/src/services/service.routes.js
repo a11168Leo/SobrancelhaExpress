@@ -1,21 +1,18 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/SERVICES/SERVICE.ROUTES.JS */
+/* ======================================== */
 
+// Importacoes
 import { Router } from 'express';
 import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { allowRoles } from '../middlewares/role.middleware.js';
 import { uploadServiceImage } from '../middlewares/upload.middleware.js';
 import { create, list, update, remove, updateImage } from './service.controller.js';
 
+// Bloco: router
 const router = Router();
 
-
-
-
+router.post('/public', create);
 router.post('/', authMiddleware, allowRoles('admin', 'profissional'), create);
 // ====================
 // Listagem publica
@@ -37,9 +34,6 @@ router.post(
   updateImage
 );
 
+// Exportacao principal
 export default router;
-
-
-
-
 

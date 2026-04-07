@@ -1,15 +1,11 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/SERVICES/SERVICE.MODEL.JS */
+/* ======================================== */
 
+// Importacoes
 import mongoose from 'mongoose';
 
-
-
-
+// Bloco: ServiceSchema
 const ServiceSchema = new mongoose.Schema(
   {
     name: {
@@ -82,9 +78,6 @@ const ServiceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
+// Exportacao principal
 export default mongoose.model('Service', ServiceSchema);
-
-
-
-
 

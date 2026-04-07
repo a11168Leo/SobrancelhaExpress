@@ -1,0 +1,567 @@
+/* ======================================== */
+/* ARQUIVO: FRONTEND/SRC/STYLES/PAGES/CLIENTES.CSS */
+/* ======================================== */
+
+/* ======================================== */
+/* PAGINA CLIENTES                         */
+/* ======================================== */
+
+/* Seletor: .clients-page */
+.clients-page {
+  min-height: 100%;
+  display: grid;
+  align-content: start;
+  gap: 20px;
+  background: transparent;
+}
+
+/* Seletor: .clients-heading */
+.clients-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Seletor: .clients-heading h1 */
+.clients-heading h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #ff7a8c;
+}
+
+/* Seletor: .clients-heading p */
+.clients-heading p {
+  margin: 8px 0 0;
+  color: #7d6571;
+  font-size: 14px;
+}
+
+/* Seletor: .clients-add-button */
+.clients-add-button {
+  height: 52px;
+  border: 0;
+  border-radius: 18px;
+  padding: 0 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #ff8ca2 0%, #ff6f91 100%);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 14px 28px rgba(255, 111, 145, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Seletor: .clients-add-button:hover */
+.clients-add-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 30px rgba(255, 111, 145, 0.28);
+}
+
+/* Seletor: .clients-toolbar-shell */
+.clients-toolbar-shell {
+  background: rgba(238, 168, 188, 0.5);
+  border-radius: 24px;
+  padding: 12px;
+}
+
+/* Seletor: .clients-toolbar */
+.clients-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+/* Seletor: .clients-search */
+.clients-search {
+  width: min(50%, 620px);
+  position: relative;
+}
+
+/* Seletor: .clients-search input */
+.clients-search input {
+  width: 100%;
+  height: 52px;
+  border: 1px solid rgba(215, 126, 153, 0.18);
+  border-radius: 18px;
+  background: #fff7fb;
+  padding: 0 18px 0 46px;
+  font-size: 15px;
+  color: #24181f;
+  outline: none;
+  box-shadow: 0 10px 24px rgba(132, 67, 96, 0.08);
+}
+
+/* Seletor: .clients-search input::placeholder */
+.clients-search input::placeholder {
+  color: #9a7d8b;
+}
+
+/* Seletor: .clients-search input:focus */
+.clients-search input:focus {
+  border-color: #d77e99;
+  box-shadow: 0 0 0 4px rgba(238, 168, 188, 0.18);
+}
+
+/* Seletor: .clients-search-icon */
+.clients-search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #b88b9b;
+  pointer-events: none;
+}
+
+/* Seletor: .clients-list-divider */
+.clients-list-divider {
+  height: 1px;
+  width: 100%;
+  background: linear-gradient(90deg, rgba(215, 126, 153, 0.08), rgba(215, 126, 153, 0.45), rgba(215, 126, 153, 0.08));
+}
+
+/* ======================================== */
+/* TABELA                                  */
+/* ======================================== */
+
+/* Seletor: .clients-table */
+.clients-table {
+  display: grid;
+  gap: 10px;
+  padding: 8px 0 4px;
+}
+
+/* Seletor: .clients-table-header, .clients-table-row */
+.clients-table-header,
+.clients-table-row {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.2fr) minmax(260px, 1.15fr) minmax(180px, 0.8fr);
+  align-items: center;
+  gap: 20px;
+}
+
+/* Seletor: .clients-table-header */
+.clients-table-header {
+  padding: 0 16px 10px;
+}
+
+/* Seletor: .clients-table-header .clients-table-cell */
+.clients-table-header .clients-table-cell {
+  color: #8f6e7d;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Seletor: .clients-table-row */
+.clients-table-row {
+  padding: 18px 16px;
+  border-bottom: 1px solid rgba(238, 168, 188, 0.35);
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Seletor: .clients-table-row:hover */
+.clients-table-row:hover {
+  background: rgba(255, 247, 251, 0.78);
+  transform: translateX(4px);
+}
+
+/* Seletor: .clients-table-cell */
+.clients-table-cell {
+  min-width: 0;
+}
+
+/* Seletor: .clients-name-block */
+.clients-name-block {
+  display: grid;
+  gap: 4px;
+}
+
+/* Seletor: .clients-name-block strong */
+.clients-name-block strong {
+  font-size: 16px;
+  font-weight: 700;
+  color: #24181f;
+  line-height: 1.2;
+}
+
+/* Seletor: .clients-contact-block */
+.clients-contact-block {
+  display: grid;
+  gap: 4px;
+}
+
+/* Seletor: .clients-email, .clients-phone, .clients-last-visit */
+.clients-email,
+.clients-phone,
+.clients-last-visit {
+  display: block;
+  color: #5f4c55;
+  font-size: 14px;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+/* Seletor: .clients-email */
+.clients-email {
+  font-weight: 600;
+  color: #24181f;
+}
+
+/* Seletor: .clients-empty-state */
+.clients-empty-state {
+  border: 1px dashed rgba(231, 204, 216, 0.9);
+  border-radius: 18px;
+  padding: 24px;
+  text-align: center;
+  color: #8d6f7d;
+  background: rgba(255, 250, 252, 0.65);
+}
+
+/* ======================================== */
+/* MODAL DE CLIENTE                        */
+/* ======================================== */
+
+/* Seletor: .clients-modal-backdrop */
+.clients-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(22, 12, 18, 0.56);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 70;
+}
+
+/* Seletor: .clients-modal */
+.clients-modal {
+  width: min(100%, 560px);
+  display: grid;
+  gap: 0;
+  border-radius: 28px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #fff8fb 0%, #fff2f6 100%);
+  box-shadow: 0 28px 60px rgba(92, 47, 66, 0.24);
+}
+
+/* Seletor: .clients-modal-header */
+.clients-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 28px 24px 20px;
+  background: linear-gradient(180deg, rgba(255, 163, 176, 0.16) 0%, rgba(255, 255, 255, 0) 100%);
+  border-bottom: 1px solid rgba(215, 126, 153, 0.16);
+}
+
+/* Seletor: .clients-modal-header h2 */
+.clients-modal-header h2 {
+  margin: 0;
+  color: #24181f;
+  font-size: 24px;
+}
+
+/* Seletor: .clients-modal-header p */
+.clients-modal-header p {
+  margin: 6px 0 0;
+  color: #7d6571;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Seletor: .clients-modal-close */
+.clients-modal-close {
+  border: 0;
+  background: transparent;
+  color: #b84b77;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+/* Seletor: .clients-modal-form */
+.clients-modal-form {
+  display: grid;
+  gap: 0;
+  padding: 24px;
+  background: rgba(255, 255, 255, 0.55);
+}
+
+/* Seletor: .clients-modal-field */
+.clients-modal-field {
+  display: grid;
+  gap: 10px;
+  padding: 22px 0;
+  border-bottom: 1px solid rgba(215, 126, 153, 0.14);
+}
+
+/* Seletor: .clients-modal-field span */
+.clients-modal-field span {
+  color: #8f6e7d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Seletor: .clients-modal-field input */
+.clients-modal-field input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 6px 0 0;
+  color: #24181f;
+  font-size: 16px;
+  outline: none;
+}
+
+/* Seletor: .clients-modal-feedback */
+.clients-modal-feedback {
+  margin: 18px 0 0;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid transparent;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* Seletor: .clients-modal-feedback.is-error */
+.clients-modal-feedback.is-error {
+  background: rgba(220, 53, 69, 0.1);
+  border-color: rgba(220, 53, 69, 0.16);
+  color: #b42334;
+}
+
+/* Seletor: .clients-temp-password-card */
+.clients-temp-password-card {
+  display: grid;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid rgba(215, 126, 153, 0.16);
+}
+
+/* Seletor: .clients-temp-password-card span */
+.clients-temp-password-card span {
+  color: #8f6e7d;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Seletor: .clients-temp-password-card strong */
+.clients-temp-password-card strong {
+  color: #c95184;
+  font-size: 28px;
+  letter-spacing: 0.06em;
+}
+
+/* Seletor: .clients-temp-password-card p, .clients-temp-password-card small */
+.clients-temp-password-card p,
+.clients-temp-password-card small {
+  margin: 0;
+  color: #5f4c55;
+  line-height: 1.5;
+}
+
+/* Seletor: .clients-modal-actions */
+.clients-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 24px;
+}
+
+/* Seletor: .clients-secondary-button, .clients-primary-button */
+.clients-secondary-button,
+.clients-primary-button {
+  min-height: 46px;
+  border-radius: 14px;
+  padding: 0 18px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Seletor: .clients-secondary-button */
+.clients-secondary-button {
+  border: 1px solid rgba(215, 126, 153, 0.22);
+  background: #ffffff;
+  color: #5f4c55;
+}
+
+/* Seletor: .clients-primary-button */
+.clients-primary-button {
+  border: 0;
+  background: linear-gradient(135deg, #ffa3b0 0%, #ea748b 100%);
+  color: #ffffff;
+}
+
+/* ======================================== */
+/* RESPONSIVIDADE                          */
+/* ======================================== */
+
+@media (max-width: 900px) {
+
+/* Seletor: .clients-search */
+  .clients-search {
+    width: 100%;
+  }
+
+/* Seletor: .clients-table-header, .clients-table-row */
+  .clients-table-header,
+  .clients-table-row {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+
+/* Seletor: .clients-heading */
+  .clients-heading {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+/* Seletor: .clients-add-button */
+  .clients-add-button {
+    justify-content: center;
+  }
+
+/* Seletor: .clients-table-header */
+  .clients-table-header {
+    display: none;
+  }
+
+/* Seletor: .clients-table-row */
+  .clients-table-row {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+/* Seletor: .clients-modal-backdrop */
+  .clients-modal-backdrop {
+    padding: 12px;
+  }
+
+/* Seletor: .clients-modal-actions */
+  .clients-modal-actions {
+    flex-direction: column;
+  }
+}
+
+/* ======================================== */
+/* DARK MODE                               */
+/* ======================================== */
+
+/* Seletor: :root[data-theme='dark'] .clients-heading h1, :root[data-theme='dark'] .clients-name-block strong, :root[data-theme='dark'] .clients-modal-header h2 */
+:root[data-theme='dark'] .clients-heading h1,
+:root[data-theme='dark'] .clients-name-block strong,
+:root[data-theme='dark'] .clients-modal-header h2 {
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-heading p, :root[data-theme='dark'] .clients-table-header .clients-table-cell, :root[data-theme='dark'] .clients-empty-state, :root[data-theme='dark'] .clients-modal-header p */
+:root[data-theme='dark'] .clients-heading p,
+:root[data-theme='dark'] .clients-table-header .clients-table-cell,
+:root[data-theme='dark'] .clients-empty-state,
+:root[data-theme='dark'] .clients-modal-header p {
+  color: #c9b7c1;
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-toolbar-shell */
+:root[data-theme='dark'] .clients-toolbar-shell {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-search input, :root[data-theme='dark'] .clients-modal, :root[data-theme='dark'] .clients-temp-password-card */
+:root[data-theme='dark'] .clients-search input,
+:root[data-theme='dark'] .clients-modal,
+:root[data-theme='dark'] .clients-temp-password-card {
+  background: #241b23;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f7edf2;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.24);
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-search-icon */
+:root[data-theme='dark'] .clients-search-icon {
+  color: #c9b7c1;
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-email */
+:root[data-theme='dark'] .clients-email {
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-phone, :root[data-theme='dark'] .clients-last-visit, :root[data-theme='dark'] .clients-temp-password-card p, :root[data-theme='dark'] .clients-temp-password-card small */
+:root[data-theme='dark'] .clients-phone,
+:root[data-theme='dark'] .clients-last-visit,
+:root[data-theme='dark'] .clients-temp-password-card p,
+:root[data-theme='dark'] .clients-temp-password-card small {
+  color: #c9b7c1;
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-table-row */
+:root[data-theme='dark'] .clients-table-row {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-table-row:hover */
+:root[data-theme='dark'] .clients-table-row:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-empty-state */
+:root[data-theme='dark'] .clients-empty-state {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-modal-form */
+:root[data-theme='dark'] .clients-modal-form {
+  background: rgba(12, 9, 12, 0.28);
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-modal-field */
+:root[data-theme='dark'] .clients-modal-field {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-modal-field span, :root[data-theme='dark'] .clients-temp-password-card span */
+:root[data-theme='dark'] .clients-modal-field span,
+:root[data-theme='dark'] .clients-temp-password-card span {
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-modal-field input */
+:root[data-theme='dark'] .clients-modal-field input {
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-modal-close */
+:root[data-theme='dark'] .clients-modal-close {
+  color: #ffd7e4;
+}
+
+/* Seletor: :root[data-theme='dark'] .clients-secondary-button */
+:root[data-theme='dark'] .clients-secondary-button {
+  background: #2b1f29;
+  border-color: rgba(255, 255, 255, 0.08);
+  color: #f7edf2;
+}

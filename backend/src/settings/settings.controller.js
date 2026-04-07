@@ -1,15 +1,11 @@
-﻿
-/*
-====================
-SECAO INTERNA PADRAO
-====================
-*/
+/* ======================================== */
+/* ARQUIVO: BACKEND/SRC/SETTINGS/SETTINGS.CONTROLLER.JS */
+/* ======================================== */
 
+// Importacoes
 import Settings from './settings.model.js';
 
-
-
-
+// Funcao exportada: getBusinessHours
 export const getBusinessHours = async (_req, res) => {
   try {
     const settings = await Settings.findOne({ key: 'businessHours' });
@@ -22,9 +18,7 @@ export const getBusinessHours = async (_req, res) => {
   }
 };
 
-
-
-
+// Funcao exportada: updateBusinessHours
 export const updateBusinessHours = async (req, res) => {
   try {
     const { startTime, endTime } = req.body;
@@ -49,8 +43,4 @@ export const updateBusinessHours = async (req, res) => {
     res.status(500).json({ message: 'Erro ao salvar configuraÃ§Ãµes' });
   }
 };
-
-
-
-
 
