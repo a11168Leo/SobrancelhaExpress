@@ -5,7 +5,6 @@
 // Importacoes
 import { useEffect, useMemo, useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import ptLocale from '@fullcalendar/core/locales/pt'
@@ -233,6 +232,19 @@ function Calendario() {
     setShowScheduleModal(true)
   }
 
+  const openScheduleOnSelect = (selection) => {
+    const selectedStart = selection.start
+    setScheduleModalMode('create')
+    setSelectedAppointmentId('')
+    setScheduleForm((current) => ({
+      ...createEmptyScheduleForm(clients, professionals, services),
+      startDate: formatDateForInput(selectedStart),
+      startTime: formatTimeForInput(selectedStart),
+    }))
+    setSubmitError(null)
+    setShowScheduleModal(true)
+  }
+
   const closeScheduleModal = () => {
     setShowScheduleModal(false)
     setSubmitting(false)
@@ -328,11 +340,11 @@ function Calendario() {
 
           <div className="calendar-board">
             <FullCalendar
-              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+              plugins={[timeGridPlugin, interactionPlugin]}
               locale={ptLocale}
               initialView="timeGridWeek"
-              height={780}
-              contentHeight={760}
+              height="auto"
+              contentHeight="auto"
               expandRows
               nowIndicator
               allDaySlot={false}
@@ -340,17 +352,20 @@ function Calendario() {
               slotMaxTime="23:00:00"
               slotDuration="00:30:00"
               slotLabelInterval="01:00"
+              dayHeaderFormat={{ weekday: 'short', omitCommas: true }}
+              slotLabelFormat={{ hour: '2-digit', minute: '2-digit', hour12: false }}
               events={calendarEvents}
+              selectable
+              selectMirror
+              select={openScheduleOnSelect}
               headerToolbar={{
                 left: 'prev,next today',
                 center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay',
+                right: '',
               }}
               buttonText={{
                 today: 'Hoje',
-                month: 'Mes',
                 week: 'Semana',
-                day: 'Dia',
               }}
               eventTimeFormat={{
                 hour: '2-digit',

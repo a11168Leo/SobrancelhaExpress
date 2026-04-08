@@ -577,12 +577,19 @@
   --fc-button-active-border-color: #ea748b;
   --fc-event-border-color: transparent;
   --fc-event-text-color: #ffffff;
+  min-width: 0;
+  overflow-x: auto;
 }
 
 /* Seletor: .calendar-board .fc .fc-toolbar.fc-header-toolbar */
 .calendar-board .fc .fc-toolbar.fc-header-toolbar {
   gap: 14px;
   margin-bottom: 18px;
+}
+
+/* Seletor: .calendar-board .fc .fc-scrollgrid */
+.calendar-board .fc .fc-scrollgrid {
+  min-width: 100%;
 }
 
 /* Seletor: .calendar-board .fc .fc-toolbar-title */

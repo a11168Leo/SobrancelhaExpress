@@ -1,0 +1,423 @@
+/* ======================================== */
+/* ARQUIVO: FRONTEND/SRC/STYLES/PAGES/DASHBOARD.CSS */
+/* ======================================== */
+
+/* Container principal da página */
+.dashboard-page {
+  display: grid;
+  gap: 24px;
+  align-content: start;
+  background: var(--app-bg);
+}
+
+/* Header com título e botões de ação */
+.dashboard-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.dashboard-header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: var(--text-primary);
+}
+
+.dashboard-header p {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Container de botões de ação */
+.dashboard-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Botões de ação */
+.dashboard-primary-button,
+.dashboard-secondary-button {
+  min-height: 52px;
+  border: 0;
+  border-radius: 18px;
+  padding: 0 22px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-primary-button {
+  background: linear-gradient(135deg, #ffa3b0 0%, #ea748b 100%);
+  color: #ffffff;
+}
+
+.dashboard-primary-button:hover {
+  transform: translateY(-2px);
+}
+
+.dashboard-secondary-button {
+  background: var(--surface-primary);
+  color: #5f4c55;
+  border: 1px solid var(--border-soft);
+}
+
+.dashboard-secondary-button:hover {
+  background: var(--surface-secondary);
+}
+
+/* Grid de resumo com 4 cards */
+.dashboard-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 18px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+/* Card individual de resumo */
+.dashboard-summary-card {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+  border-radius: 22px;
+  background: var(--surface-primary);
+}
+
+.dashboard-summary-card span {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.dashboard-summary-card strong {
+  font-size: 36px;
+  color: #c95184;
+  line-height: 1;
+}
+
+.dashboard-summary-card p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Seção de calendário semanal */
+.dashboard-calendar-section {
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.dashboard-calendar-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.dashboard-calendar-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: var(--text-primary);
+}
+
+.dashboard-calendar-header p {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.dashboard-calendar-container {
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  min-height: auto;
+}
+
+/* Container de seções principais */
+.dashboard-sections {
+  display: grid;
+  grid-template-columns: minmax(0, 1.8fr) minmax(0, 1fr);
+  gap: 20px;
+}
+
+/* Card container padrão */
+.dashboard-card {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+  border-radius: 22px;
+  background: var(--surface-primary);
+  min-height: 420px;
+}
+
+.dashboard-card-large {
+  /* Cria espaço sem adicionar altura fixa */
+}
+
+/* Header do card com título e informações */
+.dashboard-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.dashboard-card-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: var(--text-primary);
+}
+
+.dashboard-card-header p {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Badge informativo */
+.dashboard-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: rgba(255, 163, 176, 0.16);
+  color: #b84b77;
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+/* Lista de agendamentos do dia */
+.dashboard-list {
+  display: grid;
+  gap: 12px;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+/* Item individual da lista */
+.dashboard-list-item {
+  display: grid;
+  grid-template-columns: 84px 1fr auto;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--surface-secondary);
+}
+
+.dashboard-list-time {
+  color: #c95184;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.dashboard-list-content strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.dashboard-list-content p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Status badge (scheduled, completed, cancelled) */
+.dashboard-status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 82px;
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.dashboard-status-scheduled {
+  background: rgba(255, 163, 176, 0.16);
+  color: #ad385a;
+}
+
+.dashboard-status-completed {
+  background: rgba(103, 198, 144, 0.16);
+  color: #2f7d55;
+}
+
+.dashboard-status-cancelled {
+  background: rgba(141, 123, 131, 0.16);
+  color: #5b4e56;
+}
+
+/* Timeline de próximos agendamentos */
+.dashboard-timeline-list {
+  display: grid;
+  gap: 14px;
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+.dashboard-timeline-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--surface-secondary);
+}
+
+.dashboard-timeline-time {
+  display: inline-block;
+  color: #c95184;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.dashboard-timeline-item strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.dashboard-timeline-item p {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+/* Estado vazio quando não há agendamentos */
+.dashboard-empty-state {
+  padding: 28px;
+  border-radius: 18px;
+  background: var(--surface-secondary);
+}
+
+.dashboard-empty-state p {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* ======================================== */
+/* RESPONSIVIDADE                          */
+/* ======================================== */
+
+@media (max-width: 1100px) {
+  .dashboard-sections {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard-actions {
+    justify-content: stretch;
+  }
+
+  .dashboard-actions button {
+    flex: 1;
+  }
+
+  .dashboard-summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-list-item {
+    grid-template-columns: 72px 1fr;
+  }
+
+  .dashboard-timeline-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .dashboard-calendar-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* ======================================== */
+/* DARK MODE                               */
+/* ======================================== */
+
+:root[data-theme='dark'] .dashboard-summary-card {
+  background: var(--surface-primary);
+}
+
+:root[data-theme='dark'] .dashboard-card {
+  background: var(--surface-primary);
+}
+
+:root[data-theme='dark'] .dashboard-card-header h2 {
+  color: var(--text-primary);
+}
+
+:root[data-theme='dark'] .dashboard-list-item {
+  background: var(--surface-secondary);
+}
+
+:root[data-theme='dark'] .dashboard-timeline-item {
+  background: var(--surface-secondary);
+}
+
+:root[data-theme='dark'] .dashboard-empty-state {
+  background: var(--surface-secondary);
+}
+
+:root[data-theme='dark'] .dashboard-secondary-button {
+  background: var(--surface-primary);
+  border-color: var(--border-soft);
+  color: var(--text-primary);
+}
+
+:root[data-theme='dark'] .dashboard-secondary-button:hover {
+  background: var(--surface-secondary);
+}
+
+:root[data-theme='dark'] .dashboard-calendar-container {
+  background: var(--surface-primary);
+}
+
+:root[data-theme='dark'] .dashboard-header {
+  border-bottom-color: var(--border-soft);
+}
+
+:root[data-theme='dark'] .dashboard-summary-grid {
+  border-bottom-color: var(--border-soft);
+}
+
+:root[data-theme='dark'] .dashboard-calendar-section {
+  border-bottom-color: var(--border-soft);
+}

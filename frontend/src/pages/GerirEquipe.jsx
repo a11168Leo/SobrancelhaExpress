@@ -45,6 +45,7 @@ function formFromProfessional(professional) {
   return {
     nome,
     sobrenome,
+    contactoPrincipal: professional?.contactName || '',
     email: professional?.email === 'nao informado' ? '' : professional?.email || '',
     telefone: professional?.phone === 'nao informado' ? '' : professional?.phone || '',
     dataInicio,
@@ -62,6 +63,7 @@ function payloadFromForm(formData) {
     name: `${formData.nome} ${formData.sobrenome}`.trim(),
     email: formData.email.trim(),
     phone: formData.telefone.trim(),
+    contactName: formData.contactoPrincipal.trim(),
     salonName: formData.locais.join(', '),
     specialties: formData.servicos,
     about: formData.sobreLivre.trim() ? `${workInfo}\n${formData.sobreLivre.trim()}` : workInfo,
@@ -92,8 +94,9 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
   const [serviceModalOpen, setServiceModalOpen] = useState(false)
   const [serviceSubmitting, setServiceSubmitting] = useState(false)
   const [serviceError, setServiceError] = useState(null)
+  const [copyFeedback, setCopyFeedback] = useState(null)
   const [serviceForm, setServiceForm] = useState({ name: '', description: '', price: '', durationMinutes: '', category: '' })
-  const [editForm, setEditForm] = useState({ nome: '', sobrenome: '', email: '', telefone: '', dataInicio: '', ano: '', servicos: [], locais: [], sobreLivre: '' })
+  const [editForm, setEditForm] = useState({ nome: '', sobrenome: '', contactoPrincipal: '', email: '', telefone: '', dataInicio: '', ano: '', servicos: [], locais: [], sobreLivre: '' })
 
   useEffect(() => {
     async function loadData() {
@@ -112,6 +115,7 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
           name: u.name ?? 'Sem nome',
           role: u.role ?? 'Profissional',
           unit: u.salonName ?? u.unit ?? 'Nao informado',
+          contactName: u.contactName ?? '',
           email: u.email ?? 'nao informado',
           phone: u.phone ?? 'nao informado',
           situation: u.active === false || u.status === 'inativo' ? 'Nao ativo' : 'Ativo',
@@ -175,6 +179,7 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
     setEditSuccess(null)
     setServiceModalOpen(false)
     setServiceError(null)
+    setCopyFeedback(null)
   }
 
   const closeProfessional = () => {
@@ -184,6 +189,7 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
     setEditSuccess(null)
     setServiceModalOpen(false)
     setServiceError(null)
+    setCopyFeedback(null)
   }
 
   const updateField = (event) => {
@@ -221,6 +227,21 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
     setServiceError(null)
   }
 
+  const copyText = async (label, value) => {
+    const normalized = String(value || '').trim()
+    if (!normalized || normalized === 'nao informado' || normalized === 'Nao informado') {
+      setCopyFeedback(`Nao ha ${label.toLowerCase()} disponivel para copiar.`)
+      return
+    }
+
+    try {
+      await navigator.clipboard.writeText(normalized)
+      setCopyFeedback(`${label} copiado com sucesso.`)
+    } catch (_error) {
+      setCopyFeedback(`Nao foi possivel copiar ${label.toLowerCase()}.`)
+    }
+  }
+
   const saveProfessional = async () => {
     if (!selectedProfessional) return
     if (!editForm.nome.trim() || !editForm.email.trim()) {
@@ -239,6 +260,7 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
         name: user.name ?? payload.name,
         role: user.role ?? selectedProfessional.role,
         unit: user.salonName ?? payload.salonName ?? 'Nao informado',
+        contactName: user.contactName ?? payload.contactName ?? '',
         email: user.email ?? payload.email,
         phone: user.phone ?? payload.phone,
         situation: user.active === false || user.status === 'inativo' ? 'Nao ativo' : selectedProfessional.situation,
@@ -357,7 +379,7 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
         <Offcanvas.Header closeButton className="team-offcanvas-header"><Offcanvas.Title>Filtros</Offcanvas.Title></Offcanvas.Header>
         <Offcanvas.Body className="team-offcanvas-body">
           <div className="filter-group"><label>Unidade:</label><select value={pendingUnit} onChange={(event) => setPendingUnit(event.target.value)}>{unitFilters.map((option) => <option key={option} value={option}>{option}</option>)}</select></div>
-          <div className="filter-group"><label>Situacao:</label><select value={pendingSituation} onChange={(event) => setPendingSituation(event.target.value)}>{situationFilters.map((option) => <option key={option} value={option}>{option}</option>)}</select></div>
+          <div className="filter-group"><label>Situação:</label><select value={pendingSituation} onChange={(event) => setPendingSituation(event.target.value)}>{situationFilters.map((option) => <option key={option} value={option}>{option}</option>)}</select></div>
           <button type="button" className="btn btn-primary" onClick={() => { setSelectedUnit(pendingUnit); setSelectedSituation(pendingSituation); setShowFilters(false) }}>Aplicar</button>
           <button type="button" className="btn btn-secondary" onClick={() => { setPendingUnit('Todos'); setPendingSituation('Todos'); setSelectedUnit('Todos'); setSelectedSituation('Todos') }}>Limpar</button>
         </Offcanvas.Body>
@@ -372,22 +394,36 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
                 <div className="team-professional-panel-header">
                   <div className="team-professional-panel-avatar">{selectedProfessional.avatar ? <img src={selectedProfessional.avatar} alt={selectedProfessional.name} onError={(event) => { event.currentTarget.style.display = 'none' }} /> : null}<div className="avatar-placeholder avatar-placeholder-fallback">{selectedProfessional.name.charAt(0).toUpperCase()}</div></div>
                   <div className="team-professional-panel-identity"><h2>{selectedProfessional.name}</h2><p>{selectedProfessional.role}</p></div>
+                  <div className="team-professional-highlights" aria-label="Resumo rapido">
+                    <div className="team-professional-highlight-card"><strong>{selectedProfessional.specialties.length}</strong><span>Servicos</span></div>
+                    <div className="team-professional-highlight-card"><strong>{selectedProfessional.unit.split(',').map((item) => item.trim()).filter(Boolean).length || 1}</strong><span>Unidades</span></div>
+                    <div className="team-professional-highlight-card"><strong>{selectedProfessional.situation}</strong><span>Status</span></div>
+                  </div>
                 </div>
-                <div className="team-professional-divider" aria-hidden="true" />
-                <div className="team-professional-summary"><span className="team-professional-panel-label">Resumo</span><p>{selectedProfessional.about || 'Veja abaixo as informacoes completas desta profissional.'}</p></div>
                 <div className="team-professional-divider" aria-hidden="true" />
                 <div className="team-professional-layout">
                   <aside className="team-professional-sidebar" aria-label="Secoes de detalhes"><button type="button" className="team-professional-nav-item is-active"><span>Pessoal</span></button></aside>
                   <div className="team-professional-content">
+                    <div className="team-professional-quick-actions">
+                      <button type="button" className="team-professional-quick-action" onClick={() => copyText('E-mail', selectedProfessional.email)}>
+                        <strong>Copiar e-mail</strong>
+                        <span>{selectedProfessional.email}</span>
+                      </button>
+                      <button type="button" className="team-professional-quick-action" onClick={() => copyText('Telefone', selectedProfessional.phone)}>
+                        <strong>Copiar telefone</strong>
+                        <span>{selectedProfessional.phone}</span>
+                      </button>
+                    </div>
                     <div className="team-professional-content-header">
                       <span className="team-professional-panel-label">Pessoal</span>
                       {isEditing ? <div className="team-professional-edit-actions"><button type="button" className="team-professional-secondary-button" onClick={() => { setEditForm(formFromProfessional(selectedProfessional)); setIsEditing(false); setEditError(null); setEditSuccess(null) }}>Cancelar</button><button type="button" className="team-professional-edit-button" onClick={saveProfessional} disabled={editSubmitting}><span>{editSubmitting ? 'Salvando...' : 'Salvar'}</span></button></div> : <button type="button" className="team-professional-edit-button" onClick={() => { setEditForm(formFromProfessional(selectedProfessional)); setIsEditing(true); setEditError(null); setEditSuccess(null) }}><span>Editar</span></button>}
                     </div>
+                    {copyFeedback && <p className="team-form-feedback is-info">{copyFeedback}</p>}
                     {editError && <p className="team-form-feedback is-error">{editError}</p>}
                     {editSuccess && <p className="team-form-feedback is-success">{editSuccess}</p>}
                     {isEditing ? (
                       <div className="team-edit-form">
-                        <section className="team-edit-section"><div className="team-edit-section-header"><h3>Perfil</h3><p>Edite os dados principais da profissional.</p></div><div className="team-edit-grid two-columns"><label className="team-edit-field"><span>Nome</span><input type="text" name="nome" value={editForm.nome} onChange={updateField} /></label><label className="team-edit-field"><span>Sobrenome</span><input type="text" name="sobrenome" value={editForm.sobrenome} onChange={updateField} /></label></div><label className="team-edit-field"><span>E-mail</span><input type="email" name="email" value={editForm.email} onChange={updateField} /></label><label className="team-edit-field"><span>Telefone</span><input type="tel" name="telefone" value={editForm.telefone} onChange={updateField} /></label><div className="team-edit-grid two-columns"><label className="team-edit-field"><span>Data de inicio</span><input type="date" name="dataInicio" value={editForm.dataInicio} onChange={updateField} /></label><label className="team-edit-field"><span>Ano</span><input type="number" min="2000" max="2035" name="ano" value={editForm.ano} onChange={updateField} /></label></div><label className="team-edit-field"><span>Sobre</span><textarea name="sobreLivre" rows="4" value={editForm.sobreLivre} onChange={updateField} /></label></section>
+                        <section className="team-edit-section"><div className="team-edit-section-header"><h3>Perfil</h3><p>Edite os dados principais da profissional.</p></div><div className="team-edit-grid two-columns"><label className="team-edit-field"><span>Nome</span><input type="text" name="nome" value={editForm.nome} onChange={updateField} /></label><label className="team-edit-field"><span>Sobrenome</span><input type="text" name="sobrenome" value={editForm.sobrenome} onChange={updateField} /></label></div><div className="team-edit-grid two-columns"><label className="team-edit-field"><span>Contacto principal</span><input type="text" name="contactoPrincipal" value={editForm.contactoPrincipal} onChange={updateField} /></label><label className="team-edit-field"><span>Telefone</span><input type="tel" name="telefone" value={editForm.telefone} onChange={updateField} /></label></div><label className="team-edit-field"><span>E-mail</span><input type="email" name="email" value={editForm.email} onChange={updateField} /></label><div className="team-edit-grid two-columns"><label className="team-edit-field"><span>Data de inicio</span><input type="date" name="dataInicio" value={editForm.dataInicio} onChange={updateField} /></label><label className="team-edit-field"><span>Ano</span><input type="number" min="2000" max="2035" name="ano" value={editForm.ano} onChange={updateField} /></label></div><label className="team-edit-field"><span>Sobre</span><textarea name="sobreLivre" rows="4" value={editForm.sobreLivre} onChange={updateField} /></label></section>
                         <section className="team-edit-section"><div className="team-edit-section-header"><h3>Servicos</h3><p>Atualize os servicos associados a esta profissional.</p></div><div className="team-service-tools"><button type="button" className="team-professional-edit-button" onClick={openServiceModal}><span>Adicionar novo servico</span></button></div><div className="team-services-categories">{Object.entries(groupedCatalogServices).map(([category, services]) => <div key={category} className="team-services-category"><h4>{category}</h4><div className="team-services-options">{services.map((service) => <label key={service} className="team-check-option"><input type="checkbox" checked={editForm.servicos.includes(service)} onChange={() => toggleServico(service)} /><span>{service}</span></label>)}</div></div>)}</div></section>
                         <section className="team-edit-section"><div className="team-edit-section-header"><h3>Locais</h3><p>Defina em quais unidades a profissional trabalha.</p></div><div className="team-location-options">{unitOptions.map((location) => <label key={location.id} className="team-location-card"><input type="checkbox" checked={editForm.locais.includes(location.value)} onChange={() => toggleLocal(location.value)} /><div className="team-location-card-content"><strong>{location.label}</strong><span>{location.description}</span></div></label>)}</div></section>
                       </div>
@@ -395,6 +431,7 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
                       <>
                         <div className="team-professional-panel-section"><span className="team-professional-panel-label">Nome</span><p>{selectedProfessional.name}</p></div>
                         <div className="team-professional-panel-section"><span className="team-professional-panel-label">Funcao</span><p>{selectedProfessional.role}</p></div>
+                        <div className="team-professional-panel-section"><span className="team-professional-panel-label">Contacto principal</span><p>{selectedProfessional.contactName || 'Nao informado'}</p></div>
                         <div className="team-professional-panel-section"><span className="team-professional-panel-label">E-mail</span><p>{selectedProfessional.email}</p></div>
                         <div className="team-professional-panel-section"><span className="team-professional-panel-label">Telefone</span><p>{selectedProfessional.phone}</p></div>
                         <div className="team-professional-panel-section"><span className="team-professional-panel-label">Unidade</span><p>{selectedProfessional.unit}</p></div>
@@ -410,7 +447,7 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
               {serviceModalOpen && (
                 <div className="team-floating-service-backdrop" onClick={closeServiceModal}>
                   <div className="team-floating-service-modal" onClick={(event) => event.stopPropagation()}>
-                    <div className="team-floating-service-header"><div><h3>Novo servico</h3><p>Use a base de dados de servicos como referencia para criar um novo item.</p></div><button type="button" className="team-floating-close" onClick={closeServiceModal}>x</button></div>
+                    <div className="team-floating-service-header"><div><h3>Novo serviço</h3><p>Use a base de dados de servicos como referencia para criar um novo item.</p></div><button type="button" className="team-floating-close" onClick={closeServiceModal}>x</button></div>
                     {serviceError && <p className="team-form-feedback is-error">{serviceError}</p>}
                     <div className="team-edit-form">
                       <label className="team-edit-field"><span>Nome do servico</span><input type="text" name="name" value={serviceForm.name} onChange={updateServiceField} /></label>

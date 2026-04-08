@@ -21,6 +21,65 @@
     radial-gradient(circle at top right, rgba(255, 255, 255, 0.28), transparent 36%),
     linear-gradient(135deg, #f7aab9 0%, #f8c8a7 100%);
   box-shadow: 0 22px 40px rgba(204, 120, 149, 0.22);
+  isolation: isolate;
+}
+
+/* Seletor: .settings-hero::before */
+.settings-hero::before {
+  content: '';
+  position: absolute;
+  inset: auto auto -88px -48px;
+  width: 250px;
+  height: 250px;
+  border-radius: 44% 56% 53% 47%;
+  background:
+    radial-gradient(circle at 32% 30%, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0) 34%),
+    linear-gradient(145deg, rgba(255, 135, 166, 0.72), rgba(255, 189, 131, 0.18));
+  filter: blur(12px);
+  opacity: 0.88;
+  animation: settings-lava-drift 8s ease-in-out infinite alternate;
+}
+
+/* Seletor: .settings-hero::after */
+.settings-hero::after {
+  content: '';
+  position: absolute;
+  top: -78px;
+  right: 6%;
+  width: 228px;
+  height: 228px;
+  border-radius: 58% 42% 49% 51%;
+  background:
+    radial-gradient(circle at 40% 38%, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0) 30%),
+    linear-gradient(210deg, rgba(255, 241, 196, 0.44), rgba(255, 157, 162, 0.62));
+  filter: blur(14px);
+  opacity: 0.82;
+  animation: settings-lava-float 9s ease-in-out infinite;
+}
+
+/* Seletor: .settings-hero > div */
+.settings-hero > div {
+  position: relative;
+  z-index: 1;
+}
+
+/* Seletor: .settings-hero > div::after */
+.settings-hero > div::after {
+  content: '';
+  position: absolute;
+  right: 14%;
+  bottom: -118px;
+  width: 190px;
+  height: 190px;
+  border-radius: 52% 48% 61% 39%;
+  background:
+    radial-gradient(circle at 38% 35%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 34%),
+    linear-gradient(180deg, rgba(248, 203, 142, 0.56), rgba(255, 132, 165, 0.52));
+  filter: blur(18px);
+  opacity: 0.68;
+  pointer-events: none;
+  z-index: -1;
+  animation: settings-lava-rise 7s ease-in-out infinite;
 }
 
 /* Seletor: .settings-hero h1 */
@@ -224,6 +283,30 @@
   box-shadow: 0 22px 40px rgba(0, 0, 0, 0.24);
 }
 
+/* Seletor: :root[data-theme='dark'] .settings-hero::before */
+:root[data-theme='dark'] .settings-hero::before {
+  background:
+    radial-gradient(circle at 32% 30%, rgba(255, 236, 210, 0.34), rgba(255, 255, 255, 0) 34%),
+    linear-gradient(145deg, rgba(161, 69, 102, 0.74), rgba(226, 144, 102, 0.3));
+  opacity: 0.78;
+}
+
+/* Seletor: :root[data-theme='dark'] .settings-hero::after */
+:root[data-theme='dark'] .settings-hero::after {
+  background:
+    radial-gradient(circle at 40% 38%, rgba(255, 225, 191, 0.26), rgba(255, 255, 255, 0) 30%),
+    linear-gradient(210deg, rgba(221, 149, 89, 0.38), rgba(145, 74, 97, 0.68));
+  opacity: 0.7;
+}
+
+/* Seletor: :root[data-theme='dark'] .settings-hero > div::after */
+:root[data-theme='dark'] .settings-hero > div::after {
+  background:
+    radial-gradient(circle at 38% 35%, rgba(255, 219, 194, 0.28), rgba(255, 255, 255, 0) 34%),
+    linear-gradient(180deg, rgba(195, 121, 77, 0.48), rgba(159, 63, 97, 0.52));
+  opacity: 0.62;
+}
+
 /* Seletor: :root[data-theme='dark'] .settings-card */
 :root[data-theme='dark'] .settings-card {
   box-shadow: 0 18px 32px rgba(0, 0, 0, 0.24);
@@ -269,6 +352,29 @@
     border-radius: 22px;
   }
 
+/* Seletor: .settings-hero::before */
+  .settings-hero::before {
+    width: 188px;
+    height: 188px;
+    inset: auto auto -72px -46px;
+  }
+
+/* Seletor: .settings-hero::after */
+  .settings-hero::after {
+    top: -56px;
+    right: -18px;
+    width: 164px;
+    height: 164px;
+  }
+
+/* Seletor: .settings-hero > div::after */
+  .settings-hero > div::after {
+    right: -8px;
+    bottom: -92px;
+    width: 136px;
+    height: 136px;
+  }
+
 /* Seletor: .settings-hero h1 */
   .settings-hero h1 {
     font-size: 28px;
@@ -291,5 +397,69 @@
     grid-template-columns: 1fr;
     justify-items: flex-start;
     padding: 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+/* Seletor: .settings-hero::before, .settings-hero::after, .settings-hero > div::after */
+  .settings-hero::before,
+  .settings-hero::after,
+  .settings-hero > div::after {
+    animation: none;
+  }
+}
+
+/* Animacao: settings-lava-drift */
+@keyframes settings-lava-drift {
+  0% {
+    transform: translate3d(0, 18px, 0) scale(1) rotate(0deg);
+    border-radius: 44% 56% 53% 47%;
+  }
+
+  50% {
+    transform: translate3d(64px, -30px, 0) scale(1.18, 0.9) rotate(14deg);
+    border-radius: 58% 42% 39% 61%;
+  }
+
+  100% {
+    transform: translate3d(24px, -58px, 0) scale(0.92, 1.12) rotate(-12deg);
+    border-radius: 47% 53% 60% 40%;
+  }
+}
+
+/* Animacao: settings-lava-float */
+@keyframes settings-lava-float {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.96) rotate(0deg);
+    border-radius: 58% 42% 49% 51%;
+  }
+
+  50% {
+    transform: translate3d(-56px, 48px, 0) scale(1.12, 0.88) rotate(-16deg);
+    border-radius: 40% 60% 55% 45%;
+  }
+
+  100% {
+    transform: translate3d(-12px, 88px, 0) scale(0.9, 1.18) rotate(12deg);
+    border-radius: 54% 46% 42% 58%;
+  }
+}
+
+/* Animacao: settings-lava-rise */
+@keyframes settings-lava-rise {
+  0% {
+    transform: translate3d(0, 0, 0) scale(0.9) rotate(0deg);
+    border-radius: 52% 48% 61% 39%;
+  }
+
+  50% {
+    transform: translate3d(-42px, -66px, 0) scale(1.16, 0.92) rotate(10deg);
+    border-radius: 43% 57% 46% 54%;
+  }
+
+  100% {
+    transform: translate3d(20px, -32px, 0) scale(0.96, 1.12) rotate(-14deg);
+    border-radius: 59% 41% 53% 47%;
   }
 }

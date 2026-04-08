@@ -8,20 +8,20 @@ import '../styles/pages/Configuracoes.css'
 // Funcao: Configuracoes
 function Configuracoes({ darkMode, setDarkMode }) {
 
-// Manipuladores de eventos
+  // Manipuladores de eventos
   const handleThemeChange = () => {
     setDarkMode((prev) => !prev)
   }
 
-// Renderizacao principal
+  // Renderizacao principal
   return (
-    <section className="settings-page" aria-label="Configuracoes">
+    <section className="settings-page" aria-label="Configurações">
       <div className="settings-hero">
         <div>
-          <span className="settings-eyebrow">Preferencias do sistema</span>
-          <h1>Configuracoes</h1>
+          <span className="settings-eyebrow">Preferências do sistema</span>
+          <h1>Configurações</h1>
           <p>
-            Personalize a experiencia do profissional e ajuste a aparencia do painel
+            Personalize a experiência do profissional e ajuste a aparência do painel
             de forma simples.
           </p>
         </div>
@@ -31,7 +31,7 @@ function Configuracoes({ darkMode, setDarkMode }) {
         <article className="settings-card settings-card-highlight">
           <div className="settings-card-header">
             <div>
-              <span className="settings-card-kicker">Aparencia</span>
+              <span className="settings-card-kicker">Aparência</span>
               <h2>Modo escuro</h2>
             </div>
             <span className={`settings-theme-badge ${darkMode ? 'is-dark' : 'is-light'}`}>
@@ -40,7 +40,7 @@ function Configuracoes({ darkMode, setDarkMode }) {
           </div>
 
           <p className="settings-card-description">
-            Use a barrinha abaixo para alternar entre o visual claro e o visual escuro
+            Use a barra abaixo para alternar entre o visual claro e o visual escuro
             em todo o sistema.
           </p>
 
@@ -59,7 +59,7 @@ function Configuracoes({ darkMode, setDarkMode }) {
               <small>
                 {darkMode
                   ? 'Ideal para ambientes com pouca luz e uso noturno.'
-                  : 'Visual leve para uso diario e espacos bem iluminados.'}
+                  : 'Visual leve para uso diário e espaços bem iluminados.'}
               </small>
             </span>
           </label>
@@ -68,15 +68,15 @@ function Configuracoes({ darkMode, setDarkMode }) {
         <article className="settings-card">
           <div className="settings-card-header">
             <div>
-              <span className="settings-card-kicker">Organizacao</span>
-              <h2>Dicas rapidas</h2>
+              <span className="settings-card-kicker">Organização</span>
+              <h2>Dicas rápidas</h2>
             </div>
           </div>
 
           <ul className="settings-list">
-            <li>Abra o Calendario para acompanhar eventos e agendamentos em tempo real.</li>
-            <li>Use Gerir Equipe para atualizar profissionais, servicos e locais de atendimento.</li>
-            <li>O tema escolhido fica guardado automaticamente para a proxima visita.</li>
+            <li>Abra o Calendário para acompanhar eventos e agendamentos em tempo real.</li>
+            <li>Use "Gerir Equipa" para atualizar profissionais, serviços e locais de atendimento.</li>
+            <li>O tema escolhido fica guardado automaticamente para a próxima visita.</li>
           </ul>
         </article>
       </div>

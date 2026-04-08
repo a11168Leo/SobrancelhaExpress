@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react'
 import './styles/core/App.css'
 import Header from './components/Header/Header'
 import Sidebar from './components/Sidebar/Sidebar'
+import Dashboard from './pages/Dashboard'
 import GerirEquipe from './pages/GerirEquipe'
 import Clientes from './pages/Clientes'
 import Calendario from './pages/Calendario'
@@ -18,7 +19,7 @@ import Configuracoes from './pages/Configuracoes'
 function App() {
 
 // Estado do componente
-  const [currentPage, setCurrentPage] = useState('gerir-equipe')
+  const [currentPage, setCurrentPage] = useState('dashboard')
   const [reloadProfessionals, setReloadProfessionals] = useState(0)
   const [darkMode, setDarkMode] = useState(() => {
     if (typeof window === 'undefined') {
@@ -44,6 +45,8 @@ function App() {
 // Renderizadores auxiliares
   const renderPage = () => {
     switch (currentPage) {
+      case 'dashboard':
+        return <Dashboard onNavigate={navigate} />
       case 'agenda':
         return <Calendario onNavigate={navigate} />
       case 'cliente':
@@ -57,7 +60,7 @@ function App() {
       case 'config':
         return <Configuracoes darkMode={darkMode} setDarkMode={setDarkMode} />
       default:
-        return <GerirEquipe onNavigate={navigate} reloadKey={reloadProfessionals} />
+        return <Dashboard onNavigate={navigate} />
     }
   }
 
