@@ -10,6 +10,7 @@ import {
   me,
   adminOnly,
   updateAvatar,
+  updateProfessionalAvatar,
   adminCreateUser,
   publicCreateProfessional,
   adminDeleteUser,
@@ -47,6 +48,7 @@ router.post('/clients/temp', publicCreateClientWithTemporaryPassword);
 // rota pública para cadastro de profissional (sem autenticação, para admin/inicialização)
 router.post('/professionals', publicCreateProfessional);
 router.patch('/professionals/:id', updateProfessional);
+router.patch('/professionals/:id/avatar', uploadProfessionalAvatar, updateProfessionalAvatar);
 // ====================
 // Upload de avatar
 // ====================

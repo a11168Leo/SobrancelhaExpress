@@ -16,6 +16,20 @@ import {
 } from './user.service.js'
 import User from './user.model.js'
 
+function normalizeAvailability(input) {
+  if (!Array.isArray(input)) return undefined
+
+  return input
+    .map((item) => ({
+      day: String(item?.day || '').trim(),
+      enabled: Boolean(item?.enabled),
+      start: String(item?.start || '').trim(),
+      end: String(item?.end || '').trim(),
+    }))
+    .filter((item) => item.day)
+    .slice(0, 7)
+}
+
 // Funcao: generateTemporaryPassword
 function generateTemporaryPassword() {
   return `SE${crypto.randomBytes(4).toString('hex').toUpperCase()}!`
@@ -236,7 +250,7 @@ export const adminCreateUser = async (req, res) => {
 // Funcao exportada: publicCreateProfessional
 export const publicCreateProfessional = async (req, res) => {
   try {
-    const { name, email, password, phone, salonName, about, specialties } = req.body
+    const { name, email, password, phone, salonName, about, specialties, availability } = req.body
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Nome, email e senha sao obrigatorios' })
@@ -257,7 +271,8 @@ export const publicCreateProfessional = async (req, res) => {
       phone: phone || '',
       salonName: salonName || '',
       about: about || '',
-      specialties: Array.isArray(specialties) ? specialties : []
+      specialties: Array.isArray(specialties) ? specialties : [],
+      availability: normalizeAvailability(availability) ?? []
     })
 
     res.status(201).json({
@@ -269,7 +284,8 @@ export const publicCreateProfessional = async (req, res) => {
         phone: user.phone,
         salonName: user.salonName,
         about: user.about,
-        specialties: user.specialties
+        specialties: user.specialties,
+        availability: user.availability
       }
     })
   } catch (error) {
@@ -300,7 +316,8 @@ export const updateMe = async (req, res) => {
       about,
       contactName,
       salonName,
-      specialties
+      specialties,
+      availability
     } = req.body
 
     const updates = {
@@ -332,6 +349,11 @@ export const updateMe = async (req, res) => {
         .slice(0, 30)
     }
 
+    const normalizedAvailability = normalizeAvailability(availability)
+    if (normalizedAvailability !== undefined) {
+      updates.availability = normalizedAvailability
+    }
+
     const updated = await updateUserById(req.user.id, updates)
     res.json({ user: updated })
   } catch (error) {
@@ -343,11 +365,38 @@ export const updateMe = async (req, res) => {
 export const listProfessionalsPublic = async (_req, res) => {
   try {
     const users = await User.find({ role: 'profissional' })
-      .select('name email role avatar about phone contactName salonName specialties')
+      .select('name email role avatar about phone contactName salonName specialties availability')
       .sort({ name: 1 })
     res.json({ users })
   } catch (error) {
     res.status(500).json({ message: 'Erro ao listar profissionais' })
+  }
+}
+
+// Funcao exportada: updateProfessionalAvatar
+export const updateProfessionalAvatar = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    if (!req.file) {
+      return res.status(400).json({ message: 'Imagem nao enviada' })
+    }
+
+    const existing = await findUserById(id)
+    if (!existing) {
+      return res.status(404).json({ message: 'Usuario nao encontrado' })
+    }
+
+    if (existing.role !== 'profissional') {
+      return res.status(400).json({ message: 'Apenas perfis profissionais podem receber avatar aqui' })
+    }
+
+    const avatarUrl = `/uploads/professionals/${req.file.filename}`
+    const updated = await updateUserById(id, { avatar: avatarUrl })
+
+    res.json({ user: updated })
+  } catch (error) {
+    res.status(500).json({ message: 'Erro ao atualizar avatar da profissional' })
   }
 }
 
@@ -431,6 +480,7 @@ export const updateProfessional = async (req, res) => {
       contactName,
       salonName,
       specialties,
+      availability,
     } = req.body
 
     const existing = await findUserById(id)
@@ -460,6 +510,11 @@ export const updateProfessional = async (req, res) => {
         .map((item) => String(item || '').trim())
         .filter(Boolean)
         .slice(0, 30)
+    }
+
+    const normalizedAvailability = normalizeAvailability(availability)
+    if (normalizedAvailability !== undefined) {
+      updates.availability = normalizedAvailability
     }
 
     if (updates.email && updates.email !== existing.email) {

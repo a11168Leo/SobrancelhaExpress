@@ -547,6 +547,66 @@
   color: #666;
 }
 
+/* Seletor: .location-info */
+.location-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  gap: 20px;
+}
+
+/* Seletor: .availability-section */
+.availability-section {
+  flex-shrink: 0;
+  min-width: 250px;
+  padding: 12px;
+  background: rgba(238, 168, 188, 0.05);
+  border: 1px solid rgba(215, 126, 153, 0.18);
+  border-radius: 8px;
+}
+
+/* Seletor: .availability-section h5 */
+.availability-section h5 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #24181f;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Seletor: .days-list */
+.days-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+/* Seletor: .day-item */
+.day-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #24181f;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+/* Seletor: .day-item:hover */
+.day-item:hover {
+  background: rgba(238, 168, 188, 0.1);
+}
+
+/* Seletor: .day-item input[type="checkbox"] */
+.day-item input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: #eea8bc;
+}
+
 /* ======================================== */
 /* DARK MODE                               */
 /* ======================================== */

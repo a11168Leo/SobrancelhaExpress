@@ -1,0 +1,700 @@
+/* ======================================== */
+/* PAGINA PRINCIPAL - Layout geral da página */
+/* ======================================== */
+
+.profile-page {
+  min-height: 100%;
+  display: grid;
+  align-content: start;
+  gap: 24px;
+}
+
+/* ======================================== */
+/* CABECALHO DA PAGINA - Título e descrição */
+/* ======================================== */
+
+.profile-page-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.profile-page-heading h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #ff7a8c;
+}
+
+.profile-page-heading p,
+.profile-section-copy,
+.profile-location-card span,
+.profile-empty-copy,
+.profile-empty-state p {
+  margin: 8px 0 0;
+  color: #7d6571;
+}
+
+/* ======================================== */
+/* SELETOR DE PERFIL - Dropdowns e labels */
+/* ======================================== */
+
+.profile-picker {
+  display: grid;
+  gap: 8px;
+  min-width: min(100%, 280px);
+}
+
+.profile-picker label,
+.profile-field span,
+.profile-eyebrow,
+.profile-highlight-card span,
+.profile-service-group-header p {
+  color: #8f6e7d;
+}
+
+.profile-picker label,
+.profile-field span {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ======================================== */
+/* CAMPOS DE INPUT - Estilos para selects, inputs e textareas */
+/* ======================================== */
+
+.profile-picker select,
+.profile-field input,
+.profile-field textarea,
+.profile-service-search input {
+  width: 100%;
+  border: 1px solid rgba(215, 126, 153, 0.14);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.7);
+  color: #24181f;
+  padding: 13px 16px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.profile-picker select:focus,
+.profile-field input:focus,
+.profile-field textarea:focus,
+.profile-service-search input:focus {
+  border-color: #d77e99;
+  box-shadow: 0 0 0 4px rgba(238, 168, 188, 0.16);
+}
+
+/* ======================================== */
+/* CARTAO HERO - Avatar e informacoes principais */
+/* ======================================== */
+
+.profile-hero-card {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  gap: 28px;
+  padding: 0 0 22px;
+  border-bottom: 1px solid rgba(215, 126, 153, 0.24);
+}
+
+.profile-avatar-stack {
+  display: grid;
+  justify-items: start;
+  gap: 14px;
+}
+
+/* Avatar - Imagem de perfil circular */
+.profile-avatar-shell {
+  position: relative;
+  width: 164px;
+  height: 164px;
+  border-radius: 36px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #eea8bc, #d77e99);
+}
+
+.profile-avatar-shell img,
+.profile-avatar-fallback {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.profile-avatar-shell img {
+  object-fit: cover;
+  z-index: 1;
+}
+
+.profile-avatar-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 42px;
+  font-weight: 800;
+}
+
+.profile-avatar-input {
+  display: none;
+}
+
+/* ======================================== */
+/* BOTOES - Estilos para botoes de acao */
+/* ======================================== */
+
+.profile-avatar-button,
+.profile-inline-action,
+.profile-primary-action,
+.profile-tag {
+  border: 0;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.profile-avatar-button,
+.profile-primary-action {
+  min-height: 46px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.profile-avatar-button {
+  padding: 0 18px;
+  background: rgba(255, 255, 255, 0.72);
+  color: #a43a69;
+  border: 1px solid rgba(215, 126, 153, 0.18);
+}
+
+/* Conteudo do Hero - Nome, descricao e informacoes principais */
+.profile-hero-content {
+  display: grid;
+  gap: 18px;
+  align-content: center;
+}
+
+.profile-eyebrow {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.profile-hero-content h2,
+.profile-section-header h3,
+.profile-service-group h4,
+.profile-location-card strong,
+.profile-tag span {
+  margin: 0;
+  color: #24181f;
+}
+
+.profile-hero-content h2 {
+  font-size: 34px;
+}
+
+.profile-hero-content p {
+  margin: 0;
+  color: #5f4c55;
+  line-height: 1.65;
+  max-width: 760px;
+}
+
+/* ======================================== */
+/* GRADE DE DESTAQUES - Cards com estatisticas */
+/* ======================================== */
+
+.profile-highlight-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.profile-highlight-card {
+  display: grid;
+  gap: 6px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(215, 126, 153, 0.18);
+}
+
+.profile-highlight-card strong {
+  color: #24181f;
+  font-size: 18px;
+}
+
+/* ======================================== */
+/* FEEDBACK - Mensagens de sucesso/erro */
+/* ======================================== */
+
+.profile-feedback {
+  margin: 0;
+  padding: 14px 0;
+  border-top: 1px solid rgba(215, 126, 153, 0.2);
+  border-bottom: 1px solid rgba(215, 126, 153, 0.2);
+  font-weight: 600;
+}
+
+.profile-feedback.is-success {
+  color: #1d6f45;
+}
+
+.profile-feedback.is-error {
+  color: #b42334;
+}
+
+/* ======================================== */
+/* LAYOUT PRINCIPAL - Colunas principal e lateral */
+/* ======================================== */
+
+.profile-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.7fr);
+  gap: 28px;
+}
+
+.profile-main-column,
+.profile-side-column,
+.profile-location-list,
+.profile-selected-tags,
+.profile-service-groups,
+.profile-service-options,
+.profile-availability-list {
+  display: grid;
+  gap: 20px;
+}
+
+/* ======================================== */
+/* SECOES - Containers de conteudo */
+/* ======================================== */
+
+.profile-section {
+  display: grid;
+  gap: 18px;
+  padding: 0 0 22px;
+  border-bottom: 1px solid rgba(215, 126, 153, 0.2);
+}
+
+.profile-section-header,
+.profile-service-group-header,
+.profile-card-header-split {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.profile-section-header h3 {
+  font-size: 22px;
+  margin-top: 6px;
+}
+
+/* ======================================== */
+/* GRADE DE FORMULARIO - Layout dos campos */
+/* ======================================== */
+
+.profile-form-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.profile-form-grid.two-columns,
+.profile-availability-times {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* ======================================== */
+/* CAMPOS INDIVIDUAIS - Input, textarea, etc */
+/* ======================================== */
+
+.profile-field {
+  display: grid;
+  gap: 8px;
+}
+
+.profile-field textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+/* ======================================== */
+/* CARTOES DE LOCALIZACAO - Lista de unidades */
+/* ======================================== */
+
+.profile-location-card,
+.profile-service-option,
+.profile-tag,
+.profile-availability-row {
+  display: grid;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(215, 126, 153, 0.14);
+}
+
+.profile-location-card {
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  cursor: pointer;
+}
+
+.profile-location-card input,
+.profile-service-option input,
+.profile-availability-day input {
+  margin-top: 4px;
+  accent-color: #d77e99;
+}
+
+.profile-location-card div {
+  display: grid;
+  gap: 4px;
+}
+
+/* ======================================== */
+/* TAGS SELECIONADAS - Lista de tags ativas */
+/* ======================================== */
+
+.profile-selected-tags {
+  gap: 12px;
+}
+
+.profile-tag {
+  padding: 0 0 14px;
+  text-align: left;
+  background: transparent;
+}
+
+.profile-tag small {
+  color: #a43a69;
+  font-weight: 700;
+}
+
+/* ======================================== */
+/* BUSCA DE SERVICOS - Campo de pesquisa */
+/* ======================================== */
+
+.profile-service-search {
+  position: relative;
+  min-width: min(100%, 320px);
+}
+
+.profile-service-search svg {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: #b88b9b;
+}
+
+.profile-service-search input {
+  padding-left: 42px;
+}
+
+/* ======================================== */
+/* SECAO DE SERVICOS - Grupos e opcoes */
+/* ======================================== */
+
+.profile-services-section {
+  gap: 24px;
+}
+
+.profile-service-group {
+  display: grid;
+  gap: 16px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(215, 126, 153, 0.18);
+}
+
+.profile-service-group h4 {
+  font-size: 18px;
+}
+
+.profile-service-group-header p {
+  margin: 6px 0 0;
+  font-size: 13px;
+}
+
+/* ======================================== */
+/* ACOES INLINE - Botoes pequenos */
+/* ======================================== */
+
+.profile-inline-action {
+  min-height: 38px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(238, 168, 188, 0.14);
+  color: #a43a69;
+  font-weight: 700;
+}
+
+/* ======================================== */
+/* OPCOES DE SERVICO - Lista de servicos disponiveis */
+/* ======================================== */
+
+.profile-service-options {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.profile-service-option {
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  cursor: pointer;
+}
+
+.profile-service-option span,
+.profile-availability-day span {
+  color: #24181f;
+  font-weight: 600;
+}
+
+/* ======================================== */
+/* DISPONIBILIDADE - Horarios e dias */
+/* ======================================== */
+
+.profile-availability-row {
+  grid-template-columns: minmax(180px, 0.9fr) minmax(0, 1fr);
+  align-items: start;
+}
+
+.profile-availability-day {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 30px;
+}
+
+/* ======================================== */
+/* ESTADOS VAZIOS - Quando nao ha conteudo */
+/* ======================================== */
+
+.profile-empty-copy,
+.profile-empty-state p {
+  margin: 0;
+}
+
+.profile-empty-state {
+  padding: 20px 0;
+  border-bottom: 1px dashed rgba(215, 126, 153, 0.24);
+}
+
+/* ======================================== */
+/* ACOES PRINCIPAIS - Botoes de salvar/enviar */
+/* ======================================== */
+
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.profile-primary-action {
+  min-width: 220px;
+  padding: 0 22px;
+  background: linear-gradient(135deg, #ff8ca2 0%, #ff6f91 100%);
+  color: #ffffff;
+}
+
+.profile-primary-action:disabled,
+.profile-avatar-button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* ======================================== */
+/* RESPONSIVIDADE - Media queries para diferentes telas */
+/* ======================================== */
+
+@media (max-width: 1080px) {
+  .profile-hero-card,
+  .profile-layout,
+  .profile-availability-row {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-availability-day {
+    padding-top: 0;
+  }
+}
+
+@media (max-width: 820px) {
+  .profile-highlight-grid,
+  .profile-form-grid.two-columns,
+  .profile-availability-times {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .profile-page-heading,
+  .profile-card-header-split,
+  .profile-actions {
+    align-items: stretch;
+  }
+
+  .profile-highlight-grid,
+  .profile-form-grid.two-columns,
+  .profile-availability-times,
+  .profile-service-options {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-avatar-shell {
+    width: 132px;
+    height: 132px;
+    border-radius: 28px;
+  }
+
+  .profile-hero-content h2 {
+    font-size: 28px;
+  }
+
+  .profile-primary-action,
+  .profile-avatar-button {
+    width: 100%;
+  }
+}
+
+/* ======================================== */
+/* TEMA ESCURO - Estilos para modo dark */
+/* ======================================== */
+
+/* ======================================== */
+/* TEMA ESCURO - Estilos para modo dark */
+/* ======================================== */
+
+:root[data-theme='dark'] .profile-page-heading h1,
+:root[data-theme='dark'] .profile-hero-content h2,
+:root[data-theme='dark'] .profile-section-header h3,
+:root[data-theme='dark'] .profile-service-group h4,
+:root[data-theme='dark'] .profile-highlight-card strong,
+:root[data-theme='dark'] .profile-location-card strong,
+:root[data-theme='dark'] .profile-tag span,
+:root[data-theme='dark'] .profile-service-option span,
+:root[data-theme='dark'] .profile-availability-day span {
+  color: #f7edf2;
+}
+
+:root[data-theme='dark'] .profile-page-heading p,
+:root[data-theme='dark'] .profile-section-copy,
+:root[data-theme='dark'] .profile-hero-content p,
+:root[data-theme='dark'] .profile-location-card span,
+:root[data-theme='dark'] .profile-empty-copy,
+:root[data-theme='dark'] .profile-empty-state p {
+  color: #c9b7c1;
+}
+
+:root[data-theme='dark'] .profile-picker label,
+:root[data-theme='dark'] .profile-field span,
+:root[data-theme='dark'] .profile-eyebrow,
+:root[data-theme='dark'] .profile-highlight-card span,
+:root[data-theme='dark'] .profile-service-group-header p {
+  color: #d5c0ca;
+}
+
+:root[data-theme='dark'] .profile-picker select,
+:root[data-theme='dark'] .profile-field input,
+:root[data-theme='dark'] .profile-field textarea,
+:root[data-theme='dark'] .profile-service-search input,
+:root[data-theme='dark'] .profile-avatar-button {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f7edf2;
+}
+
+:root[data-theme='dark'] .profile-hero-card,
+:root[data-theme='dark'] .profile-feedback,
+:root[data-theme='dark'] .profile-section,
+:root[data-theme='dark'] .profile-highlight-card,
+:root[data-theme='dark'] .profile-location-card,
+:root[data-theme='dark'] .profile-tag,
+:root[data-theme='dark'] .profile-service-group,
+:root[data-theme='dark'] .profile-service-option,
+:root[data-theme='dark'] .profile-availability-row,
+:root[data-theme='dark'] .profile-empty-state {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+  .profile-primary-action,
+  .profile-avatar-button {
+    width: 100%;
+  }
+}
+
+/* ======================================== */
+/* TEMA ESCURO - Estilos para modo dark */
+/* ======================================== */
+
+:root[data-theme='dark'] .profile-page-heading h1,
+:root[data-theme='dark'] .profile-hero-content h2,
+:root[data-theme='dark'] .profile-section-header h3,
+:root[data-theme='dark'] .profile-service-group h4,
+:root[data-theme='dark'] .profile-highlight-card strong,
+:root[data-theme='dark'] .profile-location-card strong,
+:root[data-theme='dark'] .profile-tag span,
+:root[data-theme='dark'] .profile-service-option span,
+:root[data-theme='dark'] .profile-availability-day span {
+  color: #f7edf2;
+}
+
+:root[data-theme='dark'] .profile-page-heading p,
+:root[data-theme='dark'] .profile-section-copy,
+:root[data-theme='dark'] .profile-hero-content p,
+:root[data-theme='dark'] .profile-location-card span,
+:root[data-theme='dark'] .profile-empty-copy,
+:root[data-theme='dark'] .profile-empty-state p {
+  color: #c9b7c1;
+}
+
+:root[data-theme='dark'] .profile-picker label,
+:root[data-theme='dark'] .profile-field span,
+:root[data-theme='dark'] .profile-eyebrow,
+:root[data-theme='dark'] .profile-highlight-card span,
+:root[data-theme='dark'] .profile-service-group-header p {
+  color: #d5c0ca;
+}
+
+:root[data-theme='dark'] .profile-picker select,
+:root[data-theme='dark'] .profile-field input,
+:root[data-theme='dark'] .profile-field textarea,
+:root[data-theme='dark'] .profile-service-search input,
+:root[data-theme='dark'] .profile-avatar-button {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f7edf2;
+}
+
+:root[data-theme='dark'] .profile-hero-card,
+:root[data-theme='dark'] .profile-feedback,
+:root[data-theme='dark'] .profile-section,
+:root[data-theme='dark'] .profile-highlight-card,
+:root[data-theme='dark'] .profile-location-card,
+:root[data-theme='dark'] .profile-tag,
+:root[data-theme='dark'] .profile-service-group,
+:root[data-theme='dark'] .profile-service-option,
+:root[data-theme='dark'] .profile-availability-row,
+:root[data-theme='dark'] .profile-empty-state {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme='dark'] .profile-inline-action {
+  background: rgba(255, 183, 203, 0.12);
+  color: #ffb7cb;
+}
+
+:root[data-theme='dark'] .profile-tag small {
+  color: #ffb7cb;
+}
+
+/* ======================================== */
+/* ESTRUTURA GERAL DO CSS: */
+/* 1. Layout da página e componentes principais */
+/* 2. Campos de formulário e inputs */
+/* 3. Cartões e seções de conteúdo */
+/* 4. Responsividade para diferentes tamanhos de tela */
+/* 5. Tema escuro com variáveis CSS */
+/* ======================================== */

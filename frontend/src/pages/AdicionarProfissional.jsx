@@ -5,6 +5,7 @@
 // Importacoes
 import { useState } from 'react'
 import '../styles/pages/AdicionarProfissional.css'
+import { fetchJson } from '../services/api'
 
 // Bloco: AdicionarProfissional
 const AdicionarProfissional = ({ onNavigate }) => {
@@ -20,7 +21,8 @@ const AdicionarProfissional = ({ onNavigate }) => {
     dataInicio: '',
     ano: '',
     servicos: [],
-    locais: []
+    locais: [],
+    availability: {}
   })
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState(null)
@@ -53,6 +55,20 @@ const AdicionarProfissional = ({ onNavigate }) => {
     }))
   }
 
+  const handleAvailabilityToggle = (local, day) => {
+    setFormData(prev => {
+      const current = prev.availability[local] || []
+      const newAvail = current.includes(day) ? current.filter(d => d !== day) : [...current, day]
+      return {
+        ...prev,
+        availability: {
+          ...prev.availability,
+          [local]: newAvail
+        }
+      }
+    })
+  }
+
   const handleSubmit = async (event) => {
     event.preventDefault()
     setSubmitting(true)
@@ -74,7 +90,8 @@ const AdicionarProfissional = ({ onNavigate }) => {
         salonName: formData.locais.join(', '),
         specialties: formData.servicos,
         about: `Início: ${formData.dataInicio || 'N/A'} ${formData.ano || ''}`,
-        role: 'profissional'
+        role: 'profissional',
+        availability: formData.availability
       }
 
       await fetchJson('/auth/professionals', {
@@ -276,9 +293,26 @@ const AdicionarProfissional = ({ onNavigate }) => {
             <div className="store-placeholder">🏪</div>
           </div>
           <label htmlFor="cascais">
-            <div className="location-content">
-              <h4>Loja de Cascais</h4>
-              <p>Unidade principal em Cascais</p>
+            <div className="location-info">
+              <div className="location-content">
+                <h4>Loja de Cascais</h4>
+                <p>Unidade principal em Cascais</p>
+              </div>
+              <div className="availability-section">
+                <h5>Disponibilidades</h5>
+                <div className="days-list">
+                  {['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'].map(day => (
+                    <label key={day} className="day-item">
+                      <input
+                        type="checkbox"
+                        checked={(formData.availability['Cascais'] || []).includes(day)}
+                        onChange={() => handleAvailabilityToggle('Cascais', day)}
+                      />
+                      <span>{day}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
             </div>
           </label>
         </div>
@@ -295,9 +329,26 @@ const AdicionarProfissional = ({ onNavigate }) => {
             <div className="store-placeholder">🏪</div>
           </div>
           <label htmlFor="almada">
-            <div className="location-content">
-              <h4>Loja de Almada</h4>
-              <p>Unidade secundária em Almada</p>
+            <div className="location-info">
+              <div className="location-content">
+                <h4>Loja de Almada</h4>
+                <p>Unidade secundária em Almada</p>
+              </div>
+              <div className="availability-section">
+                <h5>Disponibilidades</h5>
+                <div className="days-list">
+                  {['Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado', 'Domingo'].map(day => (
+                    <label key={day} className="day-item">
+                      <input
+                        type="checkbox"
+                        checked={(formData.availability['Almada'] || []).includes(day)}
+                        onChange={() => handleAvailabilityToggle('Almada', day)}
+                      />
+                      <span>{day}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
             </div>
           </label>
         </div>

@@ -14,6 +14,7 @@ import Calendario from './pages/Calendario'
 import AdicionarProfissional from './pages/AdicionarProfissional'
 import CatalogoServicos from './pages/CatalogoServicos'
 import Configuracoes from './pages/Configuracoes'
+import Perfil from './pages/Perfil'
 
 // Funcao: App
 function App() {
@@ -59,6 +60,8 @@ function App() {
         return <CatalogoServicos onNavigate={navigate} />
       case 'config':
         return <Configuracoes darkMode={darkMode} setDarkMode={setDarkMode} />
+      case 'perfil':
+        return <Perfil />
       default:
         return <Dashboard onNavigate={navigate} />
     }

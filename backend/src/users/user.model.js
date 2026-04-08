@@ -50,6 +50,29 @@ const UserSchema = new mongoose.Schema(
       type: [String],
       default: []
     },
+    availability: {
+      type: [
+        {
+          day: {
+            type: String,
+            required: true
+          },
+          enabled: {
+            type: Boolean,
+            default: true
+          },
+          start: {
+            type: String,
+            default: ''
+          },
+          end: {
+            type: String,
+            default: ''
+          }
+        }
+      ],
+      default: []
+    },
     mustChangePassword: {
       type: Boolean,
       default: false
