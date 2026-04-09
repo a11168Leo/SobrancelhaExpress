@@ -133,6 +133,13 @@ function formatSince(dataInicio, ano) {
   return dataInicio || ano
 }
 
+function truncateText(value, maxLength = 100) {
+  const text = String(value || '').trim()
+  if (!text) return ''
+  if (text.length <= maxLength) return text
+  return `${text.slice(0, maxLength).trimEnd()}...`
+}
+
 // ========================================
 // COMPONENTE PRINCIPAL: PERFIL
 // ========================================
@@ -471,6 +478,10 @@ function Perfil() {
   // ========================================
 
   const initials = `${profileForm.nome.charAt(0)}${profileForm.sobrenome.charAt(0)}`.trim() || selectedProfessional.name.charAt(0)
+  const summaryText = truncateText(
+    profileForm.sobreLivre || 'Adicione uma descricao para apresentar experiencia, estilo de atendimento e especialidades.',
+    100
+  )
 
   return (
     <section className="profile-page" aria-label="Perfil">
@@ -514,6 +525,17 @@ function Perfil() {
             {avatarPreview ? <img src={avatarPreview} alt={selectedProfessional.name} /> : null}
             <div className="profile-avatar-fallback">{initials.slice(0, 2).toUpperCase()}</div>
           </div>
+          <button
+            type="button"
+            className="profile-avatar-edit-fab"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadingAvatar}
+            aria-label="Editar foto"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+              <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+            </svg>
+          </button>
 
           <input
             ref={fileInputRef}
@@ -522,39 +544,32 @@ function Perfil() {
             className="profile-avatar-input"
             onChange={handleAvatarInput}
           />
-
-          <button
-            type="button"
-            className="profile-avatar-button"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploadingAvatar}
-          >
-            {uploadingAvatar ? 'Enviando foto...' : 'Editar foto'}
-          </button>
         </div>
 
         <div className="profile-hero-content">
           <span className="profile-eyebrow">Resumo</span>
           <h2>{selectedProfessional.name}</h2>
-          <p>{profileForm.sobreLivre || 'Adicione uma descricao para apresentar experiencia, estilo de atendimento e especialidades.'}</p>
+          <div className="profile-hero-summary-row">
+            <p>{summaryText}</p>
 
-          <div className="profile-highlight-grid">
-            <article className="profile-highlight-card">
-              <strong>{profileForm.servicos.length}</strong>
-              <span>Servicos ativos</span>
-            </article>
-            <article className="profile-highlight-card">
-              <strong>{selectedCategories.length}</strong>
-              <span>Categorias</span>
-            </article>
-            <article className="profile-highlight-card">
-              <strong>{profileForm.locais.length || 0}</strong>
-              <span>Unidades</span>
-            </article>
-            <article className="profile-highlight-card">
-              <strong>{formatSince(profileForm.dataInicio, profileForm.ano)}</strong>
-              <span>Inicio</span>
-            </article>
+            <div className="profile-highlight-grid">
+              <article className="profile-highlight-card">
+                <strong>{profileForm.servicos.length}</strong>
+                <span>Servicos ativos</span>
+              </article>
+              <article className="profile-highlight-card">
+                <strong>{selectedCategories.length}</strong>
+                <span>Categorias</span>
+              </article>
+              <article className="profile-highlight-card">
+                <strong>{profileForm.locais.length || 0}</strong>
+                <span>Unidades</span>
+              </article>
+              <article className="profile-highlight-card">
+                <strong>{formatSince(profileForm.dataInicio, profileForm.ano)}</strong>
+                <span>Inicio</span>
+              </article>
+            </div>
           </div>
         </div>
       </div>
@@ -642,54 +657,6 @@ function Perfil() {
             </label>
           </section>
 
-          {/* Secao: Disponibilidade semanal */}
-          <section className="profile-section">
-            <div className="profile-section-header">
-              <div>
-                <span className="profile-eyebrow">Disponibilidade</span>
-                <h3>Agenda semanal da profissional</h3>
-              </div>
-              <p className="profile-section-copy">
-                Base inicial do salao: segunda a sexta das 09:00 as 18:00 e sabado ate as 13:00.
-              </p>
-            </div>
-
-            <div className="profile-availability-list">
-              {profileForm.disponibilidade.map((day) => (
-                <div key={day.day} className="profile-availability-row">
-                  <label className="profile-availability-day">
-                    <input
-                      type="checkbox"
-                      checked={day.enabled}
-                      onChange={(event) => updateAvailability(day.day, 'enabled', event.target.checked)}
-                    />
-                    <span>{day.label}</span>
-                  </label>
-
-                  <div className="profile-availability-times">
-                    <label className="profile-field">
-                      <span>Inicio</span>
-                      <input
-                        type="time"
-                        value={day.start}
-                        disabled={!day.enabled}
-                        onChange={(event) => updateAvailability(day.day, 'start', event.target.value)}
-                      />
-                    </label>
-                    <label className="profile-field">
-                      <span>Fim</span>
-                      <input
-                        type="time"
-                        value={day.end}
-                        disabled={!day.enabled}
-                        onChange={(event) => updateAvailability(day.day, 'end', event.target.value)}
-                      />
-                    </label>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
         </div>
 
         {/* Coluna lateral - Unidades e categorias */}
@@ -705,17 +672,76 @@ function Perfil() {
 
             <div className="profile-location-list">
               {unitOptions.map((location) => (
-                <label key={location.id} className={`profile-location-card ${profileForm.locais.includes(location.value) ? 'is-selected' : ''}`}>
-                  <input
-                    type="checkbox"
-                    checked={profileForm.locais.includes(location.value)}
-                    onChange={() => toggleLocal(location.value)}
-                  />
-                  <div>
-                    <strong>{location.label}</strong>
-                    <span>{location.description}</span>
-                  </div>
-                </label>
+                <div
+                  key={location.id}
+                  className={`profile-location-card ${profileForm.locais.includes(location.value) ? 'is-selected' : ''}`}
+                >
+                  <label className="profile-location-toggle">
+                    <input
+                      type="checkbox"
+                      checked={profileForm.locais.includes(location.value)}
+                      onChange={() => toggleLocal(location.value)}
+                    />
+                    <div>
+                      <strong>{location.label}</strong>
+                      <span>{location.description}</span>
+                    </div>
+                  </label>
+
+                  <details className="profile-availability-dropdown">
+                    <summary>
+                      <div className="profile-availability-summary-copy">
+                        <span className="profile-eyebrow">Disponibilidade</span>
+                        <strong>Editar agenda semanal</strong>
+                      </div>
+                      <span className="profile-availability-summary-icon" aria-hidden="true">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                          <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
+                        </svg>
+                      </span>
+                    </summary>
+
+                    <p className="profile-section-copy">
+                      Base inicial do salao: segunda a sexta das 09:00 as 18:00 e sabado ate as 13:00.
+                    </p>
+
+                    <div className="profile-availability-list">
+                      {profileForm.disponibilidade.map((day) => (
+                        <div key={`${location.id}-${day.day}`} className="profile-availability-row">
+                          <label className="profile-availability-day">
+                            <input
+                              type="checkbox"
+                              checked={day.enabled}
+                              onChange={(event) => updateAvailability(day.day, 'enabled', event.target.checked)}
+                            />
+                            <span>{day.label}</span>
+                          </label>
+
+                          <div className="profile-availability-times">
+                            <label className="profile-field">
+                              <span>Inicio</span>
+                              <input
+                                type="time"
+                                value={day.start}
+                                disabled={!day.enabled}
+                                onChange={(event) => updateAvailability(day.day, 'start', event.target.value)}
+                              />
+                            </label>
+                            <label className="profile-field">
+                              <span>Fim</span>
+                              <input
+                                type="time"
+                                value={day.end}
+                                disabled={!day.enabled}
+                                onChange={(event) => updateAvailability(day.day, 'end', event.target.value)}
+                              />
+                            </label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </details>
+                </div>
               ))}
             </div>
           </section>

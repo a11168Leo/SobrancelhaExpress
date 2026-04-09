@@ -105,6 +105,8 @@
   display: grid;
   justify-items: start;
   gap: 14px;
+  position: relative;
+  width: fit-content;
 }
 
 /* Avatar - Imagem de perfil circular */
@@ -112,9 +114,10 @@
   position: relative;
   width: 164px;
   height: 164px;
-  border-radius: 36px;
+  border-radius: 50%;
   overflow: hidden;
   background: linear-gradient(135deg, #eea8bc, #d77e99);
+  box-shadow: 0 18px 40px rgba(167, 58, 105, 0.18);
 }
 
 .profile-avatar-shell img,
@@ -148,6 +151,7 @@
 /* ======================================== */
 
 .profile-avatar-button,
+.profile-avatar-edit-fab,
 .profile-inline-action,
 .profile-primary-action,
 .profile-tag {
@@ -171,11 +175,50 @@
   border: 1px solid rgba(215, 126, 153, 0.18);
 }
 
+/* Botao flutuante com icone de lapis para editar a foto do perfil */
+.profile-avatar-edit-fab {
+  position: absolute;
+  right: -8px;
+  bottom: 56px;
+  z-index: 2;
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #d77e99;
+  color: #a43a69;
+  border: 2px solid #d77e99;
+  box-shadow: 0 10px 24px rgba(164, 58, 105, 0.2);
+}
+
+.profile-avatar-edit-fab:hover {
+  transform: translateY(-1px);
+  background: #ffb7cb;
+}
+
+.profile-avatar-edit-fab:disabled {
+  opacity: 0.72;
+  cursor: wait;
+}
+
 /* Conteudo do Hero - Nome, descricao e informacoes principais */
 .profile-hero-content {
   display: grid;
   gap: 18px;
   align-content: center;
+}
+
+.profile-hero-summary-row {
+  display: grid;
+  grid-template-columns: minmax(0, 320px) minmax(260px, 1fr);
+  gap: 24px;
+  align-items: start;
+}
+
+.profile-hero-summary-row p {
+  max-width: 32ch;
 }
 
 .profile-eyebrow {
@@ -211,8 +254,9 @@
 
 .profile-highlight-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
+  margin-top: -34px;
 }
 
 .profile-highlight-card {
@@ -337,9 +381,7 @@
 }
 
 .profile-location-card {
-  grid-template-columns: auto 1fr;
-  align-items: start;
-  cursor: pointer;
+  gap: 16px;
 }
 
 .profile-location-card input,
@@ -349,9 +391,82 @@
   accent-color: #d77e99;
 }
 
+.profile-location-toggle {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 12px;
+  cursor: pointer;
+}
+
 .profile-location-card div {
   display: grid;
   gap: 4px;
+}
+
+.profile-availability-dropdown {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid rgba(215, 126, 153, 0.14);
+  border-radius: 18px;
+  background: transparent;
+}
+
+.profile-availability-dropdown summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.profile-availability-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.profile-availability-summary-copy {
+  display: grid;
+  gap: 4px;
+}
+
+.profile-availability-list {
+  gap: 0;
+  border-top: 1px solid rgba(215, 126, 153, 0.14);
+}
+
+.profile-availability-dropdown summary strong {
+  color: #24181f;
+}
+
+.profile-availability-summary-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: #a43a69;
+  background: rgba(238, 168, 188, 0.16);
+  transition: transform 0.28s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.profile-availability-summary-icon svg {
+  transition: transform 0.28s ease;
+}
+
+.profile-availability-dropdown summary:hover .profile-availability-summary-icon {
+  background: rgba(238, 168, 188, 0.28);
+  transform: translateY(1px);
+}
+
+.profile-availability-dropdown[open] .profile-availability-summary-icon {
+  transform: translateY(-1px);
+}
+
+.profile-availability-dropdown[open] .profile-availability-summary-icon svg {
+  transform: rotate(180deg);
 }
 
 /* ======================================== */
@@ -460,6 +575,8 @@
 .profile-availability-row {
   grid-template-columns: minmax(180px, 0.9fr) minmax(0, 1fr);
   align-items: start;
+  padding: 18px 0;
+  border-bottom: 1px solid rgba(215, 126, 153, 0.14);
 }
 
 .profile-availability-day {
@@ -522,6 +639,7 @@
 }
 
 @media (max-width: 820px) {
+  .profile-hero-summary-row,
   .profile-highlight-grid,
   .profile-form-grid.two-columns,
   .profile-availability-times {
@@ -536,6 +654,7 @@
     align-items: stretch;
   }
 
+  .profile-hero-summary-row,
   .profile-highlight-grid,
   .profile-form-grid.two-columns,
   .profile-availability-times,
@@ -552,12 +671,6 @@
   .profile-hero-content h2 {
     font-size: 28px;
   }
-
-  .profile-primary-action,
-  .profile-avatar-button {
-    width: 100%;
-  }
-}
 
 /* ======================================== */
 /* TEMA ESCURO - Estilos para modo dark */
@@ -600,10 +713,24 @@
 :root[data-theme='dark'] .profile-field input,
 :root[data-theme='dark'] .profile-field textarea,
 :root[data-theme='dark'] .profile-service-search input,
-:root[data-theme='dark'] .profile-avatar-button {
-  background: rgba(255, 255, 255, 0.05);
+:root[data-theme='dark'] .profile-avatar-button,
+:root[data-theme='dark'] .profile-availability-dropdown {
   border-color: rgba(255, 255, 255, 0.1);
   color: #f7edf2;
+}
+
+:root[data-theme='dark'] .profile-picker select,
+:root[data-theme='dark'] .profile-field input,
+:root[data-theme='dark'] .profile-field textarea,
+:root[data-theme='dark'] .profile-service-search input,
+:root[data-theme='dark'] .profile-avatar-button {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+:root[data-theme='dark'] .profile-avatar-edit-fab {
+  background: transparent;
+  color: #ffb7cb;
+  border-color: #ffb7cb;
 }
 
 :root[data-theme='dark'] .profile-hero-card,
@@ -688,6 +815,15 @@
 
 :root[data-theme='dark'] .profile-tag small {
   color: #ffb7cb;
+}
+
+:root[data-theme='dark'] .profile-availability-dropdown summary strong {
+  color: #f7edf2;
+}
+
+:root[data-theme='dark'] .profile-availability-summary-icon {
+  color: #ffb7cb;
+  background: rgba(255, 183, 203, 0.14);
 }
 
 /* ======================================== */

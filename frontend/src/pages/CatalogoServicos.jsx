@@ -3,7 +3,7 @@
 /* ======================================== */
 
 // Importacoes
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import '../styles/pages/CatalogoServicos.css'
 import { fetchJson } from '../services/api'
 
@@ -29,11 +29,23 @@ const EMPTY_CATEGORY_FORM = {
   parentSubcategory: '',
   parentSubcategory2: '',
 }
+//Funcao De exibicao de duracao em horas e minutos
+function formatMinutesLabel(totalMinutes) {
+  const minutes = Number(totalMinutes) || 0
+  const hours = Math.floor(minutes / 60)
+  const remainder = minutes % 60
+
+  if (hours <= 0) return `${minutes} min`
+  if (remainder === 0) return `${hours}h`
+  return `${hours}h ${remainder}min`
+}
 
 // Funcao: CatalogoServicos
 function CatalogoServicos() {
 
 // Estado do componente
+  const categoryShellRef = useRef(null)
+  const categoriesScrollRef = useRef(null)
   const [categorias, setCategorias] = useState([])
   const [servicos, setServicos] = useState([])
   const [searchTerm, setSearchTerm] = useState('')
@@ -41,6 +53,7 @@ function CatalogoServicos() {
   const [activeMenu, setActiveMenu] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [currentUser, setCurrentUser] = useState(null)
   const [isAddServiceOpen, setIsAddServiceOpen] = useState(false)
   const [isAddServiceVisible, setIsAddServiceVisible] = useState(false)
   const [panelSection, setPanelSection] = useState('service')
@@ -50,27 +63,47 @@ function CatalogoServicos() {
   const [categoryForm, setCategoryForm] = useState(EMPTY_CATEGORY_FORM)
   const [categorySubmitting, setCategorySubmitting] = useState(false)
   const [categoryError, setCategoryError] = useState(null)
+  const [selectedNestedCategory, setSelectedNestedCategory] = useState(null)
+  const [isNestedDropdownOpen, setIsNestedDropdownOpen] = useState(false)
+  const [isNestedDropdownPinned, setIsNestedDropdownPinned] = useState(false)
+  const [previewCategoryId, setPreviewCategoryId] = useState(null)
+  const [hoveredLevelOneId, setHoveredLevelOneId] = useState(null)
+  const [hoveredLevelTwoId, setHoveredLevelTwoId] = useState(null)
+  const [dropdownOffset, setDropdownOffset] = useState(0)
 
   useEffect(() => {
     async function loadData() {
       setLoading(true)
       try {
-        const [categoriesData, servicesData] = await Promise.all([
+        const [categoriesData, servicesData, meData] = await Promise.all([
           fetchJson('/categories'),
           fetchJson('/services'),
+          fetchJson('/auth/me').catch(() => null),
         ])
 
         const categoriesList = Array.isArray(categoriesData) ? categoriesData : categoriesData?.categories || []
         const servicesList = Array.isArray(servicesData) ? servicesData : servicesData?.services || []
+        const me = meData?.user ?? meData ?? null
 
         setCategorias(categoriesList)
         setServicos(servicesList.map((service) => ({
           ...service,
+          id: String(service._id ?? service.id),
           nome: service.name ?? service.nome ?? 'Sem nome',
+          durationMinutesValue: Number(service.durationMinutes ?? service.duration ?? 0),
           duracao: `${service.durationMinutes ?? service.duration ?? 'N/A'} min`,
           preco: service.price !== undefined ? `${service.price} EUR` : service.preco ?? 'N/A',
-          categoriaId: service.category ?? service.categoryId ?? service.categoriaId ?? null,
+          categoriaId: String(service.category ?? service.categoryId ?? service.categoriaId ?? ''),
+          subcategoriaId: String(service.subcategory ?? service.subcategoria ?? ''),
+          subcategoria2Id: String(service.subcategory2 ?? service.subcategoria2 ?? ''),
+          subcategoria3Id: String(service.subcategory3 ?? service.subcategoria3 ?? ''),
+          professionalId: String(service.professional ?? service.professionalId ?? ''),
         })))
+        setCurrentUser(me ? {
+          id: String(me._id ?? me.id ?? ''),
+          role: me.role ?? 'admin',
+          specialties: Array.isArray(me.specialties) ? me.specialties : [],
+        } : null)
         setSelectedCategory((prev) => prev || (categoriesList[0]?._id ?? categoriesList[0]?.id ?? null))
         setError(null)
       } catch (fetchError) {
@@ -127,6 +160,22 @@ function CatalogoServicos() {
   const getChildrenByParent = (parentId) =>
     normalizedCategories.filter((categoria) => String(categoria.parentId ?? '') === String(parentId ?? ''))
 
+  const categoryMap = useMemo(
+    () => new Map(normalizedCategories.map((categoria) => [categoria.id, categoria])),
+    [normalizedCategories],
+  )
+
+  const categoryChildrenMap = useMemo(() => {
+    const map = new Map()
+    normalizedCategories.forEach((categoria) => {
+      const parentId = String(categoria.parentId ?? '')
+      const bucket = map.get(parentId) || []
+      bucket.push(categoria)
+      map.set(parentId, bucket)
+    })
+    return map
+  }, [normalizedCategories])
+
   const serviceLevel1Options = useMemo(
     () => getChildrenByParent(serviceForm.category),
     [normalizedCategories, serviceForm.category],
@@ -166,6 +215,65 @@ function CatalogoServicos() {
     return mapa
   }, [topLevelCategories, servicos])
 
+  const dropdownCategoryId = previewCategoryId || selectedCategory
+
+  const nestedCategoriesForSelected = useMemo(() => {
+    const selectedId = String(dropdownCategoryId ?? '')
+    if (!selectedId) return []
+
+    const levelOne = categoryChildrenMap.get(selectedId) || []
+
+    return levelOne.map((parent) => ({
+      parent,
+      children: categoryChildrenMap.get(parent.id) || [],
+      grandchildren: (categoryChildrenMap.get(parent.id) || []).flatMap((child) => categoryChildrenMap.get(child.id) || []),
+    }))
+  }, [categoryChildrenMap, dropdownCategoryId])
+
+  const levelOneCategories = useMemo(
+    () => nestedCategoriesForSelected.map(({ parent }) => parent),
+    [nestedCategoriesForSelected],
+  )
+
+  const activeLevelOneId = hoveredLevelOneId || levelOneCategories[0]?.id || null
+
+  const levelTwoCategories = useMemo(
+    () => categoryChildrenMap.get(String(activeLevelOneId ?? '')) || [],
+    [activeLevelOneId, categoryChildrenMap],
+  )
+
+  const activeLevelTwoId = hoveredLevelTwoId || levelTwoCategories[0]?.id || null
+
+  const levelThreeCategories = useMemo(
+    () => categoryChildrenMap.get(String(activeLevelTwoId ?? '')) || [],
+    [activeLevelTwoId, categoryChildrenMap],
+  )
+
+  const selectedNestedCategoryLabel = useMemo(
+    () => categoryMap.get(String(selectedNestedCategory ?? ''))?.label ?? '',
+    [categoryMap, selectedNestedCategory],
+  )
+
+  const catalogMetrics = useMemo(() => {
+    const visibleServices = currentUser?.role === 'profissional'
+      ? servicos.filter((servico) =>
+          servico.professionalId === currentUser.id ||
+          currentUser.specialties.includes(servico.nome)
+        )
+      : servicos
+
+    return {
+      totalServices: visibleServices.length,
+      totalMinutes: visibleServices.reduce(
+        (total, servico) => total + (Number(servico.durationMinutesValue) || 0),
+        0,
+      ),
+      roleLabel: currentUser?.role === 'profissional' ? 'Minha agenda de servicos' : 'Resumo do salao',
+      servicesLabel: currentUser?.role === 'profissional' ? 'servicos da profissional' : 'servicos do salao',
+      durationLabel: currentUser?.role === 'profissional' ? 'tempo total da profissional' : 'tempo total do salao',
+    }
+  }, [currentUser, servicos])
+
   const servicosFiltrados = useMemo(() => {
     const normalizedSearch = searchTerm.toLowerCase().trim()
     const resultado = {}
@@ -177,7 +285,15 @@ function CatalogoServicos() {
 
       const encontrados = servs.filter((servico) => {
         const name = (servico.nome ?? servico.name ?? '').toString().toLowerCase()
-        return normalizedSearch === '' || name.includes(normalizedSearch)
+        const matchesSearch = normalizedSearch === '' || name.includes(normalizedSearch)
+        const matchesNestedCategory = !selectedNestedCategory || [
+          servico.categoriaId,
+          servico.subcategoriaId,
+          servico.subcategoria2Id,
+          servico.subcategoria3Id,
+        ].includes(String(selectedNestedCategory))
+
+        return matchesSearch && matchesNestedCategory
       })
 
       if (encontrados.length > 0) {
@@ -189,7 +305,7 @@ function CatalogoServicos() {
     })
 
     return resultado
-  }, [searchTerm, selectedCategory, servicosPorCategoria])
+  }, [searchTerm, selectedCategory, selectedNestedCategory, servicosPorCategoria])
 
   const openAddServicePanel = () => {
     const firstTopLevelCategory = topLevelCategories[0]?.id ?? ''
@@ -276,6 +392,20 @@ function CatalogoServicos() {
     setActiveMenu(null)
   }
 
+  const updateDropdownPosition = (target) => {
+    if (!target || !categoryShellRef.current || !categoriesScrollRef.current) return
+
+    const shellWidth = categoryShellRef.current.clientWidth || 0
+    const scrollLeft = categoriesScrollRef.current.scrollLeft || 0
+    const panelWidth = Math.min(860, Math.max(320, shellWidth - 32))
+    const nextOffset = Math.max(
+      0,
+      Math.min(target.offsetLeft - scrollLeft, Math.max(0, shellWidth - panelWidth)),
+    )
+
+    setDropdownOffset(nextOffset)
+  }
+
   const handleCreateService = async (event) => {
     event.preventDefault()
 
@@ -332,6 +462,10 @@ function CatalogoServicos() {
         ),
       )
       setSelectedCategory(serviceForm.category)
+      setSelectedNestedCategory(null)
+      setIsNestedDropdownOpen(false)
+      setIsNestedDropdownPinned(false)
+      setPreviewCategoryId(null)
       setSearchTerm('')
       closeAddServicePanel()
     } catch (submitError) {
@@ -436,15 +570,31 @@ function CatalogoServicos() {
     <section className="catalog-page">
       <div className="catalog-header">
         <div>
-          <h1>Catalogo de servicos</h1>
-          <p>Visualize e gerencie os servicos conectados a base de dados</p>
+          <h1>Catálogo e serviços</h1>
+          <p>Visualize e gerencie os serviços conectados à base de dados.</p>
         </div>
-        <button className="catalog-add-service-button" type="button" onClick={openAddServicePanel}>
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
-          </svg>
-          <span>Adicionar</span>
-        </button>
+        <div className="catalog-header-actions">
+          <article className="catalog-summary-card" aria-label={catalogMetrics.roleLabel}>
+            <span>{catalogMetrics.roleLabel}</span>
+            <div className="catalog-summary-metrics">
+              <div>
+                <strong>{catalogMetrics.totalServices}</strong>
+                <small>{catalogMetrics.servicesLabel}</small>
+              </div>
+              <div>
+                <strong>{formatMinutesLabel(catalogMetrics.totalMinutes)}</strong>
+                <small>{catalogMetrics.durationLabel}</small>
+              </div>
+            </div>
+          </article>
+
+          <button className="catalog-add-service-button" type="button" onClick={openAddServicePanel}>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+              <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4" />
+            </svg>
+            <span>Adicionar</span>
+          </button>
+        </div>
       </div>
 
       <div className="catalog-toolbar">
@@ -468,25 +618,172 @@ function CatalogoServicos() {
         </button>
       </div>
 
-      <div className="categories-scroll">
-        <nav className="categories-nav">
-          {topLevelCategories.map((categoria) => {
-            const catId = categoria.id
-            const count = servicosPorCategoria[catId]?.servicos.length || 0
+      <div
+        className="catalog-categories-shell"
+        ref={categoryShellRef}
+        onMouseLeave={() => {
+          if (isNestedDropdownPinned) return
+          setIsNestedDropdownOpen(false)
+          setPreviewCategoryId(null)
+          setHoveredLevelOneId(null)
+          setHoveredLevelTwoId(null)
+        }}
+      >
+        <div className="categories-scroll" ref={categoriesScrollRef}>
+          <nav className="categories-nav">
+            {topLevelCategories.map((categoria) => {
+              const catId = categoria.id
+              const count = servicosPorCategoria[catId]?.servicos.length || 0
 
-            return (
-              <button
-                key={catId}
-                type="button"
-                className={`category-chip ${String(selectedCategory) === catId ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(catId)}
-              >
-                <span className="category-name">{categoria.label}</span>
-                <span className="category-count">{count}</span>
-              </button>
-            )
-          })}
-        </nav>
+              return (
+                <button
+                  key={catId}
+                  type="button"
+                  className={`category-chip ${String(selectedCategory) === catId ? 'active' : ''}`}
+                  onMouseEnter={(event) => {
+                    updateDropdownPosition(event.currentTarget)
+                    setPreviewCategoryId(catId)
+                    setSelectedNestedCategory(null)
+                    setIsNestedDropdownPinned(false)
+                    setIsNestedDropdownOpen(true)
+                    setHoveredLevelOneId(null)
+                    setHoveredLevelTwoId(null)
+                  }}
+                  onFocus={(event) => {
+                    updateDropdownPosition(event.currentTarget)
+                    setPreviewCategoryId(catId)
+                    setSelectedNestedCategory(null)
+                    setIsNestedDropdownPinned(false)
+                    setIsNestedDropdownOpen(true)
+                    setHoveredLevelOneId(null)
+                    setHoveredLevelTwoId(null)
+                  }}
+                  onClick={(event) => {
+                    updateDropdownPosition(event.currentTarget)
+                    const isSamePinnedCategory =
+                      isNestedDropdownPinned &&
+                      isNestedDropdownOpen &&
+                      String(previewCategoryId || selectedCategory || '') === String(catId)
+
+                    if (isSamePinnedCategory) {
+                      setIsNestedDropdownPinned(false)
+                      setIsNestedDropdownOpen(false)
+                      setPreviewCategoryId(null)
+                      setSelectedNestedCategory(null)
+                      setHoveredLevelOneId(null)
+                      setHoveredLevelTwoId(null)
+                      return
+                    }
+
+                    setSelectedCategory(catId)
+                    setPreviewCategoryId(catId)
+                    setSelectedNestedCategory(null)
+                    setIsNestedDropdownPinned(true)
+                    setIsNestedDropdownOpen(true)
+                  }}
+                >
+                  <span className="category-name">{categoria.label}</span>
+                  <span className="category-count">{count}</span>
+                </button>
+              )
+            })}
+          </nav>
+        </div>
+
+        {dropdownCategoryId && nestedCategoriesForSelected.length > 0 && isNestedDropdownOpen && (
+          <section
+            className="catalog-floating-dropdown"
+            aria-label="Subcategorias e categorias filhas"
+            onMouseEnter={() => setIsNestedDropdownOpen(true)}
+            style={{ left: `${dropdownOffset}px` }}
+          >
+            <div className="catalog-floating-cascade">
+              <section className="catalog-floating-column">
+                <header>
+                  <span>Subcategoria</span>
+                </header>
+                <div className="catalog-floating-column-list">
+                  {levelOneCategories.map((parent) => (
+                    <button
+                      key={parent.id}
+                      type="button"
+                      className={`catalog-floating-parent ${selectedNestedCategory === parent.id || activeLevelOneId === parent.id ? 'is-active' : ''}`}
+                      onMouseEnter={() => {
+                        setHoveredLevelOneId(parent.id)
+                        setHoveredLevelTwoId(null)
+                      }}
+                      onFocus={() => {
+                        setHoveredLevelOneId(parent.id)
+                        setHoveredLevelTwoId(null)
+                      }}
+                      onClick={() => setSelectedNestedCategory(parent.id)}
+                    >
+                      <span>{parent.label}</span>
+                      <strong className="catalog-floating-badge">
+                        {(categoryChildrenMap.get(parent.id) || []).length}
+                      </strong>
+                    </button>
+                  ))}
+                </div>
+              </section>
+
+              <section className="catalog-floating-column">
+                <header>
+                  <span>Subcategoria 1</span>
+                </header>
+                <div className="catalog-floating-column-list">
+                  {levelTwoCategories.length > 0 ? (
+                    levelTwoCategories.map((child) => (
+                      <button
+                        key={child.id}
+                        type="button"
+                        className={`catalog-floating-child ${selectedNestedCategory === child.id || activeLevelTwoId === child.id ? 'is-active' : ''}`}
+                        onMouseEnter={() => setHoveredLevelTwoId(child.id)}
+                        onFocus={() => setHoveredLevelTwoId(child.id)}
+                        onClick={() => setSelectedNestedCategory(child.id)}
+                      >
+                        <span>{child.label}</span>
+                        <strong className="catalog-floating-badge">
+                          {
+                            servicos.filter((servico) =>
+                              [
+                                servico.subcategoriaId,
+                                servico.subcategoria2Id,
+                                servico.subcategoria3Id,
+                              ].includes(child.id)
+                            ).length
+                          }
+                        </strong>
+                      </button>
+                    ))
+                  ) : (
+                    <p className="catalog-floating-empty">Sem itens neste nivel.</p>
+                  )}
+                </div>
+              </section>
+
+              {levelThreeCategories.length > 0 && (
+                <section className="catalog-floating-column">
+                  <header>
+                    <span>Subcategoria 2</span>
+                  </header>
+                  <div className="catalog-floating-column-list">
+                    {levelThreeCategories.map((child) => (
+                      <button
+                        key={child.id}
+                        type="button"
+                        className={`catalog-floating-child is-grandchild ${selectedNestedCategory === child.id ? 'is-active' : ''}`}
+                        onClick={() => setSelectedNestedCategory(child.id)}
+                      >
+                        <span>{child.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              )}
+            </div>
+          </section>
+        )}
       </div>
 
       <div className="services-list">

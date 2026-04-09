@@ -22,6 +22,14 @@
   gap: 20px;
 }
 
+.catalog-header-actions {
+  display: flex;
+  align-items: stretch;
+  justify-content: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
 /* Seletor: .catalog-header h1 */
 .catalog-header h1 {
   margin: 0;
@@ -69,6 +77,47 @@
 .catalog-add-service-button svg {
   width: 16px;
   height: 16px;
+}
+
+.catalog-summary-card {
+  min-width: 290px;
+  display: grid;
+  gap: 12px;
+  padding: 14px 18px;
+  border: 1px solid rgba(215, 126, 153, 0.16);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.78);
+  box-shadow: 0 16px 28px rgba(215, 126, 153, 0.12);
+}
+
+.catalog-summary-card > span {
+  color: #8e6b79;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.catalog-summary-metrics {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.catalog-summary-metrics div {
+  display: grid;
+  gap: 4px;
+}
+
+.catalog-summary-metrics strong {
+  color: #24181f;
+  font-size: 20px;
+}
+
+.catalog-summary-metrics small {
+  color: #7a6270;
+  font-size: 12px;
+  line-height: 1.4;
 }
 
 /* Seletor: .catalog-toolbar */
@@ -159,6 +208,12 @@
   box-sizing: border-box;
 }
 
+.catalog-categories-shell {
+  position: relative;
+  z-index: 6;
+  padding-bottom: 8px;
+}
+
 /* Seletor: .categories-scroll::-webkit-scrollbar */
 .categories-scroll::-webkit-scrollbar {
   height: 6px;
@@ -239,6 +294,124 @@
 .category-chip.active .category-count {
   background: rgba(255, 255, 255, 0.3);
 }
+
+/* Dropdown flutuante das subcategorias que abre ao passar o cursor na categoria pai */
+.catalog-floating-dropdown { /* Início do bloco do contêiner principal do dropdown */
+  position: absolute; /* Define o posicionamento como absoluto para flutuar na tela */
+  top: calc(100% + 8px); /* Posiciona o dropdown exatamente abaixo do elemento pai, com 8px de respiro */
+  left: 0; /* Alinha a lateral esquerda do dropdown à esquerda do pai */
+  width: min(860px, calc(100vw - 64px)); /* Define a largura como no máximo 860px ou se adapta a telas menores */
+  display: grid; /* Aplica o modelo de layout grid */
+  gap: 0; /* Remove qualquer espaço indesejado entre os elementos internos do grid principal */
+  padding: 0; /* Remove o espaçamento interno do contêiner */
+  border: 1px solid rgba(215, 126, 153, 0.16); /* Aplica uma borda fina rosa clara e transparente */
+  border-radius: 24px; /* Arredonda os cantos do contêiner para um visual moderno */
+  background: #fdf3f7; /* Define a cor de fundo do dropdown como um tom rosa/creme muito suave */
+  box-shadow: 0 18px 40px rgba(215, 126, 153, 0.12); /* Adiciona uma sombra esfumada para destacar o elemento flutuando */
+  overflow: hidden; /* Esconde qualquer conteúdo que ultrapasse os cantos arredondados */
+} /* Fim do bloco .catalog-floating-dropdown */
+
+/* Estrutura principal em colunas: Subcategoria | Subcategoria 1 | Subcategoria 2 */
+.catalog-floating-cascade { /* Início da classe que gerencia a disposição em cascata */
+  display: grid; /* Aplica o layout grid para gerir as colunas */
+  grid-template-columns: repeat(3, minmax(0, 1fr)); /* Divide o espaço total em 3 colunas exatamente iguais */
+  gap: 0; /* Remove o espaço entre estas colunas */
+  background: #fdf3f7; /* Aplica a mesma cor de fundo rosa/creme suave */
+} /* Fim do bloco .catalog-floating-cascade */
+
+/* Coluna individual dentro do dropdown flutuante */
+.catalog-floating-column { /* Início da classe de cada coluna individual (são 3 no total) */
+  display: grid; /* Aplica layout grid internamente para empilhar itens */
+  gap: 0; /* Garante que não haja espaçamentos nativos extras entre os itens empilhados */
+  align-content: start; /* Mantem todo o conteúdo preso ao topo da coluna */
+  min-height: 220px; /* Reduz a altura minima para evitar muito espaço vazio no meio */
+  padding: 8px 16px 14px; /* Aproxima o conteúdo do topo do container */
+  background: transparent; /* Deixa o fundo invisível para mostrar a cor definida na classe pai */
+} /* Fim do bloco .catalog-floating-column */
+
+.catalog-floating-column:not(:last-child) { /* Pseudo-seletor para colunas que NÃO são a última */
+  border-right: 1px solid rgba(215, 126, 153, 0.12); /* Adiciona uma divisória vertical à direita das colunas 1 e 2 */
+} /* Fim do bloco da divisória de colunas */
+
+/* Titulo da coluna, como Subcategoria e Subcategoria 1 */
+.catalog-floating-column header { /* Seleciona apenas a tag <header> dentro das colunas */
+  padding-bottom: 1px; /* Aproxima ainda mais o titulo do inicio da lista */
+  border-bottom: 1px solid rgba(215, 126, 153, 0.12); /* Linha horizontal que separa o título das opções */
+} /* Fim do bloco de espaçamento do título */
+
+.catalog-floating-column header span { /* Seleciona os textos (tags <span>) do cabeçalho */
+  color: #8e6b79; /* Define a cor do texto do título como um tom arroxeado/castanho acinzentado */
+  font-size: 11px; /* Define o tamanho da fonte bem pequena */
+  font-weight: 800; /* Define a espessura da fonte como extra-bold (muito negrito) */
+  letter-spacing: 0.08em; /* Aumenta ligeiramente o espaço entre as letras para dar destaque */
+  text-transform: uppercase; /* Força que todas as letras do título fiquem em MAIÚSCULAS */
+} /* Fim do bloco de estilo do texto do título */
+
+/* Lista interna de links/opcoes dentro de cada coluna */
+.catalog-floating-column-list { /* Início da classe que agrupa os itens da lista */
+  display: grid; /* Utiliza layout grid para empilhar as opções */
+  gap: 0; /* Remove os espaços em branco entre as opções */
+  align-content: start; /* Força todo o grupo de itens a ficar alinhado ao topo, não espalhado */
+  margin-top: -2px; /* Puxa a lista um pouco mais para cima dentro da coluna */
+} /* Fim do bloco do agrupamento de lista */
+
+/* Divisao horizontal entre os itens da lista */
+.catalog-floating-column-list > *:not(:last-child) { /* Seleciona todos os itens da lista, exceto o último */
+  border-bottom: 1px solid rgba(215, 126, 153, 0.12); /* Coloca uma linha divisória fina entre cada botão */
+} /* Fim do bloco de divisória de itens */
+
+/* Botoes/links clicaveis das subcategorias */
+.catalog-floating-parent, /* Seleciona o botão que tem subcategorias (pai) */
+.catalog-floating-child { /* Seleciona o botão final da categoria (filho) */
+  display: flex; /* Utiliza flexbox para alinhar texto e possível contador lado a lado */
+  align-items: center; /* Centraliza os itens verticalmente numa única linha */
+  justify-content: space-between; /* Mantém o texto de um lado e envia ícones/contadores totalmente para o oposto */
+  width: 100%; /* Força que as opções ocupem toda a largura da coluna para a zona de clique ser maior */
+  border: none; /* Remove bordas que o navegador possa adicionar por padrão em botões */
+  border-radius: 0; /* Remove cantos arredondados padrão de botões */
+  background: transparent; /* Deixa o fundo do botão transparente */
+  color: #6e5460; /* Define a cor do texto das opções para um roxo acinzentado */
+  padding: 5px 0; /* Compacta mais os links para eles começarem mais no topo */
+  font-size: 13px; /* Define o tamanho da fonte das opções */
+  font-weight: 700; /* Define o texto como negrito (bold) */
+  cursor: pointer; /* Transforma a seta do rato numa 'mãozinha' indicando que é clicável */
+  transition: color 0.2s ease; /* Cria um efeito de transição suave de 0.2s ao mudar a cor no hover */
+} /* Fim do bloco dos botões base */
+
+/* Estado hover/ativo dos links internos do dropdown */
+.catalog-floating-parent:hover, /* Quando passa o rato em cima da categoria pai */
+.catalog-floating-child:hover, /* Quando passa o rato em cima da categoria filha */
+.catalog-floating-parent.is-active, /* Quando a categoria pai está clicada/ativada via JS */
+.catalog-floating-child.is-active { /* Quando a categoria filha está clicada/ativada via JS */
+  color: #b13872; /* Muda a cor da fonte para um magenta escuro, dando feedback visual ao utilizador */
+} /* Fim do bloco de hover e estado ativo */
+
+/* Circulo com a contagem de subcategorias/servicos */
+.catalog-floating-badge { /* Início do bloco do contador de itens (aquela bolinha numerada) */
+  min-width: 24px; /* Garante que a bolinha nunca seja mais fina que 24px, mesmo com 1 dígito */
+  height: 24px; /* Fixa a altura da bolinha em 24px */
+  padding: 0 6px; /* Aplica espaço lateral interno para os números não tocarem nas bordas se passarem de 2 dígitos */
+  border-radius: 999px; /* Um valor extremo para garantir que fique totalmente arredondado em forma de pílula/círculo */
+  display: inline-flex; /* Permite o uso de flexbox respeitando a largura do conteúdo */
+  align-items: center; /* Centraliza o número verticalmente dentro do círculo */
+  justify-content: center; /* Centraliza o número horizontalmente dentro do círculo */
+  background: rgba(215, 126, 153, 0.16); /* Aplica um fundo rosa transparente */
+  color: #a0436f; /* Aplica a cor magenta mais vibrante para o número em si */
+  font-size: 11px; /* Tamanho pequeno para o número dentro do círculo */
+  font-weight: 800; /* Número extra-bold para ficar legível neste tamanho */
+} /* Fim do bloco de estilo do badge contador */
+
+/* Estado vazio quando nao existe proximo nivel de subcategoria */
+.catalog-floating-empty { /* Classe para o texto explicativo caso uma coluna não tenha categorias a mostrar */
+  margin: 0; /* Remove margens externas automáticas das tags de parágrafo */
+  color: #9a7d8b; /* Fica com uma cor mais desbotada/apagada que os links ativos */
+  font-size: 13px; /* Mantém o mesmo tamanho de texto das opções normais */
+  line-height: 1.5; /* Aumenta a distância entre linhas caso a mensagem de texto ocupe mais do que 1 linha */
+} /* Fim do bloco de estilo do estado vazio */
+
+.catalog-floating-child.is-grandchild { /* Classe que identifica se a categoria é um terceiro nível (neto) */
+  border-style: dashed; /* Se tiver borda ativada, a borda será num estilo tracejado em vez de sólido */
+} /* Fim do bloco is-grandchild */
 
 /* Seletor: .services-list */
 .services-list {
@@ -791,9 +964,26 @@
     align-items: stretch;
   }
 
+/* Seletor: .catalog-header-actions */
+  .catalog-header-actions {
+    width: 100%;
+  }
+
 /* Seletor: .catalog-add-service-button */
+  .catalog-summary-card,
   .catalog-add-service-button {
     justify-content: center;
+    width: 100%;
+  }
+
+/* Seletor: .catalog-summary-metrics */
+  .catalog-summary-metrics {
+    grid-template-columns: 1fr;
+  }
+
+/* Seletor: .catalog-floating-dropdown */
+  .catalog-floating-dropdown {
+    position: static;
   }
 
 /* Seletor: .catalog-toolbar */
@@ -834,8 +1024,14 @@
 /* Seletor: .panel-tabbar, .level-tabbar, .parent-category-nav */
   .panel-tabbar,
   .level-tabbar,
-  .parent-category-nav {
+  .parent-category-nav,
+  .catalog-floating-filter-row {
     display: grid;
+    grid-template-columns: 1fr;
+  }
+
+/* Seletor: .catalog-floating-cascade */
+  .catalog-floating-cascade {
     grid-template-columns: 1fr;
   }
 
@@ -860,7 +1056,8 @@
 :root[data-theme='dark'] .category-title,
 :root[data-theme='dark'] .service-info h3,
 :root[data-theme='dark'] .add-service-sheet-header h2,
-:root[data-theme='dark'] .panel-section-header h3 {
+:root[data-theme='dark'] .panel-section-header h3,
+:root[data-theme='dark'] .catalog-summary-metrics strong {
   color: #f7edf2;
 }
 
@@ -871,7 +1068,9 @@
 :root[data-theme='dark'] .price,
 :root[data-theme='dark'] .add-service-sheet-header p,
 :root[data-theme='dark'] .panel-section-header p,
-:root[data-theme='dark'] .empty-state {
+:root[data-theme='dark'] .empty-state,
+:root[data-theme='dark'] .catalog-summary-metrics small,
+:root[data-theme='dark'] .catalog-floating-selected {
   color: #c9b7c1;
 }
 
@@ -888,6 +1087,11 @@
 :root[data-theme='dark'] .context-menu,
 :root[data-theme='dark'] .add-service-sheet,
 :root[data-theme='dark'] .add-service-image-preview,
+:root[data-theme='dark'] .catalog-summary-card,
+:root[data-theme='dark'] .catalog-floating-dropdown,
+:root[data-theme='dark'] .catalog-floating-filter,
+:root[data-theme='dark'] .catalog-floating-parent,
+:root[data-theme='dark'] .catalog-floating-child,
 :root[data-theme='dark'] .panel-tab,
 :root[data-theme='dark'] .level-tab,
 :root[data-theme='dark'] .parent-category-pill,
@@ -897,6 +1101,40 @@
   background: transparent;
   border-color: rgba(255, 255, 255, 0.08);
   color: #f7edf2;
+}
+
+:root[data-theme='dark'] .catalog-floating-dropdown {
+  background: #2c1f29;
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-theme='dark'] .catalog-floating-cascade {
+  background: #2c1f29;
+}
+
+:root[data-theme='dark'] .catalog-floating-column:not(:last-child),
+:root[data-theme='dark'] .catalog-floating-column header,
+:root[data-theme='dark'] .catalog-floating-column-list > *:not(:last-child) {
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+:root[data-theme='dark'] .catalog-floating-column header span,
+:root[data-theme='dark'] .catalog-floating-parent,
+:root[data-theme='dark'] .catalog-floating-child,
+:root[data-theme='dark'] .catalog-floating-empty {
+  color: #f7edf2;
+}
+
+:root[data-theme='dark'] .catalog-floating-parent:hover,
+:root[data-theme='dark'] .catalog-floating-child:hover,
+:root[data-theme='dark'] .catalog-floating-parent.is-active,
+:root[data-theme='dark'] .catalog-floating-child.is-active {
+  color: #ffb7cb;
+}
+
+:root[data-theme='dark'] .catalog-floating-badge {
+  background: rgba(255, 183, 203, 0.14);
+  color: #ffb7cb;
 }
 
 /* Seletor: :root[data-theme='dark'] .search-icon, :root[data-theme='dark'] .menu-button */
@@ -925,7 +1163,8 @@
 /* Seletor: :root[data-theme='dark'] .add-service-field span, :root[data-theme='dark'] .add-service-image-preview span */
 :root[data-theme='dark'] .add-service-field span,
 :root[data-theme='dark'] .add-service-image-preview span,
-:root[data-theme='dark'] .add-service-insight span {
+:root[data-theme='dark'] .add-service-insight span,
+:root[data-theme='dark'] .catalog-summary-card > span {
   color: #f7edf2;
 }
 
