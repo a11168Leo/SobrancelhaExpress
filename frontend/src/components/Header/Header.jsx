@@ -8,8 +8,9 @@ import '../../styles/components/Header.css'
 import logo from '../../assets/logo/logo.svg'
 
 // Funcao: Header
-function Header({ onNavigate }) {
-  const userName = 'Maria'
+function Header({ onNavigate, user, onLogout }) {
+  const userName = user?.name || 'Bem-vindo'
+  const userRole = user?.role ? user.role.charAt(0).toUpperCase() + user.role.slice(1) : ''
 
 // Estado do componente
   const [notifications, setNotifications] = useState(3)
@@ -160,7 +161,10 @@ function Header({ onNavigate }) {
             <div className="panel-header">
               <div className="panel-profile">
                 <span className="profile-circle large">ME</span>
-                <span className="panel-name">{userName}</span>
+                <div>
+                  <span className="panel-name">{userName}</span>
+                  {userRole && <span className="panel-role">{userRole}</span>}
+                </div>
               </div>
               <button className="panel-close" type="button" onClick={closePanel}>
                 Fechar
@@ -176,7 +180,7 @@ function Header({ onNavigate }) {
 
             <div className="panel-divider"></div>
 
-            <button className="panel-logout" type="button" aria-label="Sair">
+            <button className="panel-logout" type="button" aria-label="Sair" onClick={onLogout}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"

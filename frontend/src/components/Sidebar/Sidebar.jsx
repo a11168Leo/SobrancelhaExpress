@@ -7,43 +7,54 @@ import { useEffect, useState } from 'react'
 import '../../styles/components/Sidebar.css'
 import logo from '../../assets/logo/logo.svg'
 
-// Bloco: itemsTop
-const itemsTop = [{ key: 'dashboard', label: 'Dashboard' }]
-
-// Bloco: itemsUpper
-const itemsUpper = [
-  { key: 'agenda', label: 'Agenda' },
-  { key: 'cliente', label: 'Cliente' },
-  { key: 'catalogo', label: 'Catálogo' },
-]
-
-// Bloco: itemsMiddle
-const itemsMiddle = [
-  { key: 'financeiro', label: 'Financeiro' },
-  { key: 'relatorio', label: 'Relatório' },
-  { key: 'equipe', label: 'Gerir Equipe' },
-]
-
-// Bloco: itemsBottom
-const itemsBottom = [
-  { key: 'perfil', label: 'Perfil' },
-  { key: 'config', label: 'Configurações' },
-]
-
-// Bloco: mobilePrimaryItems
-const mobilePrimaryItems = [
-  { key: 'dashboard', label: 'Dashboard' },
-  { key: 'agenda', label: 'Calendario' },
-  { key: 'catalogo', label: 'Catalogo' },
-  { key: 'relatorio', label: 'Relatorio' },
-]
-
 // Funcao: Sidebar
-function Sidebar({ onNavigate, currentPage }) {
+function Sidebar({ onNavigate, currentPage, user }) {
 
 // Estado do componente
   const [active, setActive] = useState(currentPage || 'dashboard')
   const [showMobileMenu, setShowMobileMenu] = useState(false)
+
+  const role = user?.role || 'admin'
+  const itemsTop = role === 'cliente' ? [{ key: 'agenda', label: 'Agenda' }] : [{ key: 'dashboard', label: 'Dashboard' }]
+  const itemsUpper = role === 'admin'
+    ? [
+        { key: 'agenda', label: 'Agenda' },
+        { key: 'cliente', label: 'Cliente' },
+        { key: 'catalogo', label: 'Catálogo' },
+      ]
+    : role === 'profissional'
+    ? [
+        { key: 'agenda', label: 'Agenda' },
+        { key: 'catalogo', label: 'Catálogo' },
+      ]
+    : [
+        { key: 'agenda', label: 'Agenda' },
+        { key: 'catalogo', label: 'Catálogo' },
+      ]
+  const itemsMiddle = role === 'admin'
+    ? [
+        { key: 'financeiro', label: 'Financeiro' },
+        { key: 'relatorio', label: 'Relatório' },
+        { key: 'equipe', label: 'Gerir Equipe' },
+      ]
+    : role === 'profissional'
+    ? [{ key: 'equipe', label: 'Gerir Equipe' }]
+    : []
+  const itemsBottom = [
+    { key: 'perfil', label: 'Perfil' },
+    { key: 'config', label: 'Configurações' },
+  ]
+  const mobilePrimaryItems = role === 'admin'
+    ? [
+        { key: 'dashboard', label: 'Dashboard' },
+        { key: 'agenda', label: 'Calendario' },
+        { key: 'catalogo', label: 'Catalogo' },
+        { key: 'relatorio', label: 'Relatorio' },
+      ]
+    : [
+        { key: 'agenda', label: 'Calendario' },
+        { key: 'catalogo', label: 'Catalogo' },
+      ]
 
 // Bloco: pageMap
   const pageMap = {

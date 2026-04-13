@@ -1,0 +1,202 @@
+/* ======================================== */
+/* ARQUIVO: FRONTEND/SRC/STYLES/PAGES/LOGIN.CSS */
+/* ======================================== */
+
+.login-page {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: var(--app-bg);
+  overflow: hidden;
+}
+
+.login-background {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 1;
+}
+
+.login-slide {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0;
+  transform: scale(1.08);
+  transition: opacity 1.2s ease, transform 5s ease;
+  will-change: opacity, transform;
+  filter: brightness(0.75);
+}
+
+.login-slide.is-active {
+  opacity: 1;
+  transform: scale(1.03);
+}
+
+.login-background::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(10, 14, 27, 0.25) 0%, rgba(10, 14, 27, 0.65) 100%);
+  pointer-events: none;
+}
+
+.login-card {
+  width: min(480px, 100%);
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 28px;
+  padding: 36px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.18);
+  position: relative;
+  z-index: 2;
+  border: 1px solid var(--border-soft);
+  border-radius: 28px;
+  padding: 36px;
+  box-shadow: 0 28px 70px rgba(0, 0, 0, 0.08);
+}
+
+.login-brand {
+  margin-bottom: 32px;
+}
+
+.login-title {
+  display: block;
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+.login-subtitle {
+  margin: 0;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.login-form {
+  display: grid;
+  gap: 18px;
+}
+
+.login-field {
+  display: grid;
+  gap: 8px;
+}
+
+.login-field label {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.login-field input {
+  width: 100%;
+  border: 1px solid var(--input-border);
+  border-radius: 14px;
+  background: var(--input-bg);
+  color: var(--text-primary);
+  padding: 14px 16px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.login-field input:focus {
+  outline: none;
+  border-color: var(--input-focus);
+  box-shadow: 0 0 0 4px var(--input-focus-ring);
+}
+
+.login-button {
+  width: 100%;
+  border: none;
+  border-radius: 14px;
+  padding: 16px 20px;
+  color: #ffffff;
+  background: #863bff;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.login-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.login-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.login-error {
+  color: #b54774;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.login-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-bottom: 24px;
+  background: var(--input-bg);
+  border: 1px solid var(--border-soft);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.login-tab {
+  background: transparent;
+  border: 0;
+  padding: 16px 0;
+  font-weight: 700;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.login-tab.is-active {
+  background: var(--surface-primary);
+  color: var(--text-primary);
+}
+
+.login-help {
+  margin-top: 24px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  display: grid;
+  gap: 8px;
+}
+
+.login-help--compact {
+  margin-top: 20px;
+}
+
+.login-link {
+  border: 0;
+  background: none;
+  color: #863bff;
+  cursor: pointer;
+  font-weight: 700;
+  padding: 0;
+}
+
+.login-success {
+  color: #2a7a3d;
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.login-sample {
+  margin-top: 12px;
+  color: var(--text-primary);
+  font-weight: 700;
+}

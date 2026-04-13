@@ -256,10 +256,19 @@
   gap: 12px;
 }
 
+.panel-profile div {
+  display: grid;
+}
+
 /* Seletor: .panel-name */
 .panel-name {
   font-weight: 600;
   color: var(--text-primary);
+}
+
+.panel-role {
+  font-size: 0.85rem;
+  color: var(--text-muted);
 }
 
 /* Seletor: .panel-close */

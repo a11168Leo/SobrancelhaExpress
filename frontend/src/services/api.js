@@ -9,10 +9,20 @@ export function getApiUrl(path) {
   return `${API_BASE_URL}${path}`
 }
 
+function getAuthToken() {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  return window.localStorage.getItem('sobrancelha-token')
+}
+
 export async function fetchJson(path, options = {}) {
+  const authToken = getAuthToken()
   const response = await fetch(getApiUrl(path), {
     headers: {
       'Content-Type': 'application/json',
+      ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
       ...(options.headers || {}),
     },
     ...options,
@@ -35,10 +45,14 @@ export async function fetchJson(path, options = {}) {
 }
 
 export async function fetchFormData(path, { method = 'POST', body, headers = {}, ...rest } = {}) {
+  const authToken = getAuthToken()
   const response = await fetch(getApiUrl(path), {
     method,
     body,
-    headers,
+    headers: {
+      ...(authToken ? { Authorization: `Bearer ${authToken}` } : {}),
+      ...headers,
+    },
     ...rest,
   })
 

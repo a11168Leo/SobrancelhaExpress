@@ -1,5 +1,5 @@
 /* ======================================== */
-/* ARQUIVO: BACKEND/SRC/APPOINTMENTS/APPOINTMENT.CONTROLLER.JS */
+/* BACKEND/SRC/APPOINTMENTS/APPOINTMENT.CONTROLLER.JS */
 /* ======================================== */
 
 // Importacoes
