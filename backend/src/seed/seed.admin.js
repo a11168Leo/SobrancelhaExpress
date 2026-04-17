@@ -12,10 +12,10 @@ import { connectDB } from '../config/db.js';
 import User from '../users/user.model.js';
 
 // Bloco: ADMIN_EMAIL
-const ADMIN_EMAIL = 'admin@leonardo.com';
+const ADMIN_EMAIL = 'admin@.com';
 
 // Bloco: ADMIN_PASSWORD
-const ADMIN_PASSWORD = 'admin1234';
+const ADMIN_PASSWORD = 'admin';
 
 // Bloco: seedAdmin
 const seedAdmin = async () => {

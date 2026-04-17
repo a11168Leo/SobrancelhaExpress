@@ -104,7 +104,7 @@ function CatalogoServicos() {
           role: me.role ?? 'admin',
           specialties: Array.isArray(me.specialties) ? me.specialties : [],
         } : null)
-        setSelectedCategory((prev) => prev || (categoriesList[0]?._id ?? categoriesList[0]?.id ?? null))
+        setSelectedCategory((prev) => prev ?? null)
         setError(null)
       } catch (fetchError) {
         setError(fetchError.message)
@@ -876,7 +876,13 @@ function CatalogoServicos() {
               </button>
             </div>
 
-            <div className="panel-tabbar" role="tablist" aria-label="Tipos de cadastro">
+            <div
+              className="panel-tabbar"
+              role="tablist"
+              aria-label="Tipos de cadastro"
+              data-active-tab={panelSection}
+            >
+              <span className="panel-tabbar-slider" aria-hidden="true" />
               <button
                 type="button"
                 className={`panel-tab ${panelSection === 'service' ? 'active' : ''}`}
@@ -1000,17 +1006,25 @@ function CatalogoServicos() {
                   </div>
                 </div>
 
-                <label className="add-service-field">
-                  <span>Foto do servico</span>
-                  <input type="url" name="imageUrl" placeholder="Cole a URL da foto" value={serviceForm.imageUrl} onChange={handleServiceFormChange} />
-                </label>
+                <div className="add-service-photo-card">
+                  <label className="add-service-field add-service-photo-field">
+                    <span>Foto do servico</span>
+                    <input type="url" name="imageUrl" placeholder="Cole a URL da foto de capa" value={serviceForm.imageUrl} onChange={handleServiceFormChange} />
+                    <small>Use uma imagem para facilitar a identificacao visual do servico no catalogo.</small>
+                  </label>
 
-                {serviceForm.imageUrl.trim() && (
-                  <div className="add-service-image-preview">
-                    <span>Pre-visualizacao da foto</span>
-                    <img src={serviceForm.imageUrl} alt="Pre-visualizacao do servico" />
-                  </div>
-                )}
+                  {serviceForm.imageUrl.trim() ? (
+                    <div className="add-service-image-preview">
+                      <span>Pre-visualizacao da foto</span>
+                      <img src={serviceForm.imageUrl} alt="Pre-visualizacao do servico" />
+                    </div>
+                  ) : (
+                    <div className="add-service-image-placeholder">
+                      <span>Capa do servico</span>
+                      <p>A imagem vai aparecer aqui assim que voce colar a URL.</p>
+                    </div>
+                  )}
+                </div>
 
                 {formError && <p className="add-service-feedback">{formError}</p>}
 
