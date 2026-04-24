@@ -4,8 +4,8 @@
 
 // Importacoes
 import { useState, useMemo, useEffect, useRef } from 'react'
-import '../styles/pages/CatalogoServicos.css'
-import { fetchJson } from '../services/api'
+import '../../styles/pages/Profissional/CatalogoServicos.css'
+import { fetchJson } from '../../services/api'
 
 // Bloco: EMPTY_SERVICE_FORM
 const EMPTY_SERVICE_FORM = {
@@ -14,12 +14,18 @@ const EMPTY_SERVICE_FORM = {
   price: '',
   durationMinutes: '',
   bufferMinutes: '10',
+  units: ['cascais'],
   category: '',
   subcategory: '',
   subcategory2: '',
   subcategory3: '',
   imageUrl: '',
 }
+
+const UNIT_OPTIONS = [
+  { value: 'cascais', label: 'Cascais' },
+  { value: 'almada', label: 'Almada' },
+]
 
 // Bloco: EMPTY_CATEGORY_FORM
 const EMPTY_CATEGORY_FORM = {
@@ -38,6 +44,16 @@ function formatMinutesLabel(totalMinutes) {
   if (hours <= 0) return `${minutes} min`
   if (remainder === 0) return `${hours}h`
   return `${hours}h ${remainder}min`
+}
+
+function toggleUnitSelection(currentUnits, unitValue) {
+  if (currentUnits.includes(unitValue)) {
+    return currentUnits.length > 1
+      ? currentUnits.filter((item) => item !== unitValue)
+      : currentUnits
+  }
+
+  return [...currentUnits, unitValue]
 }
 
 // Funcao: CatalogoServicos
@@ -98,6 +114,12 @@ function CatalogoServicos() {
           subcategoria2Id: String(service.subcategory2 ?? service.subcategoria2 ?? ''),
           subcategoria3Id: String(service.subcategory3 ?? service.subcategoria3 ?? ''),
           professionalId: String(service.professional ?? service.professionalId ?? ''),
+          unit: String(service.unit ?? ''),
+          units: Array.isArray(service.units) && service.units.length > 0
+            ? service.units
+            : service.unit
+              ? [String(service.unit)]
+              : [],
         })))
         setCurrentUser(me ? {
           id: String(me._id ?? me.id ?? ''),
@@ -350,6 +372,13 @@ function CatalogoServicos() {
     })
   }
 
+  const handleServiceUnitToggle = (unitValue) => {
+    setServiceForm((current) => ({
+      ...current,
+      units: toggleUnitSelection(current.units, unitValue),
+    }))
+  }
+
   const handleTopLevelCategorySelect = (categoryId) => {
     setServiceForm((current) => ({
       ...current,
@@ -414,6 +443,11 @@ function CatalogoServicos() {
       return
     }
 
+    if (!serviceForm.units.length) {
+      setFormError('Selecione pelo menos uma unidade para o servico.')
+      return
+    }
+
     const parsedDuration = Number(serviceForm.durationMinutes)
     const parsedBuffer = Number(serviceForm.bufferMinutes || 0)
 
@@ -439,6 +473,7 @@ function CatalogoServicos() {
           price: Number(serviceForm.price),
           durationMinutes: parsedDuration,
           maxDurationMinutes: parsedDuration + parsedBuffer,
+          units: serviceForm.units,
           category: serviceForm.category,
           subcategory: serviceForm.subcategory || undefined,
           subcategory2: serviceForm.subcategory2 || undefined,
@@ -454,6 +489,8 @@ function CatalogoServicos() {
         duracao: `${service.durationMinutes ?? service.duration ?? serviceForm.durationMinutes} min`,
         preco: service.price !== undefined ? `${service.price} EUR` : `${serviceForm.price} EUR`,
         categoriaId: service.category ?? service.categoryId ?? service.categoriaId ?? serviceForm.category,
+        unit: service.unit ?? serviceForm.units[0] ?? '',
+        units: Array.isArray(service.units) && service.units.length > 0 ? service.units : serviceForm.units,
       }
 
       setServicos((current) =>
@@ -987,6 +1024,23 @@ function CatalogoServicos() {
                     <span>Duracao em minutos</span>
                     <input type="number" min="1" step="1" name="durationMinutes" value={serviceForm.durationMinutes} onChange={handleServiceFormChange} />
                   </label>
+                </div>
+
+                <div className="add-service-field">
+                  <span>Unidades do servico</span>
+                  <div className="add-service-unit-grid">
+                    {UNIT_OPTIONS.map((unitOption) => (
+                      <button
+                        key={unitOption.value}
+                        type="button"
+                        className={`add-service-unit-card ${serviceForm.units.includes(unitOption.value) ? 'is-selected' : ''}`}
+                        onClick={() => handleServiceUnitToggle(unitOption.value)}
+                      >
+                        <strong>{unitOption.label}</strong>
+                        <small>{unitOption.value === 'cascais' ? 'Loja principal' : 'Nova unidade'}</small>
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="add-service-grid">

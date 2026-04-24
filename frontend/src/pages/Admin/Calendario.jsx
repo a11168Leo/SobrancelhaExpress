@@ -8,8 +8,8 @@ import FullCalendar from '@fullcalendar/react'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import ptLocale from '@fullcalendar/core/locales/pt'
-import '../styles/pages/Calendario.css'
-import { fetchJson } from '../services/api'
+import '../../styles/pages/Profissional/Calendario.css'
+import { fetchJson } from '../../services/api'
 
 // Constante: APPOINTMENT_BUFFER_MINUTES
 const APPOINTMENT_BUFFER_MINUTES = 10

@@ -3,8 +3,8 @@
  /* ======================================== */
 
 import { useEffect, useMemo, useState } from 'react'
-import '../styles/pages/Dashboard.css'
-import { fetchJson } from '../services/api'
+import '../../styles/pages/Profissional/Dashboard.css'
+import { fetchJson } from '../../services/api'
 import CalendarioEmbed from './CalendarioEmbed'
 
 /**

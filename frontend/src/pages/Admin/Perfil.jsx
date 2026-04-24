@@ -7,8 +7,8 @@
 // ========================================
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import '../styles/pages/Perfil.css'
-import { fetchFormData, fetchJson, getServiceUrl } from '../services/api'
+import '../../styles/pages/Profissional/Perfil.css'
+import { fetchFormData, fetchJson, getServiceUrl } from '../../services/api'
 
 // Constantes: Opcoes de unidades disponiveis
 const unitOptions = [

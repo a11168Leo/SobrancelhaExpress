@@ -7,8 +7,8 @@ import { useEffect, useState } from 'react'
 import FullCalendar from '@fullcalendar/react'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import ptLocale from '@fullcalendar/core/locales/pt'
-import { fetchJson } from '../services/api'
-import '../styles/pages/CalendarioEmbed.css'
+import { fetchJson } from '../../services/api'
+import '../../styles/pages/Profissional/CalendarioEmbed.css'
 
 /**
  * Componente de Calendário Simplificado

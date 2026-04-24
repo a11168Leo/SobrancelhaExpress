@@ -694,7 +694,7 @@
 /* Seletor: .add-service-form */
 .add-service-form {
   display: grid;
-  gap: 18px;
+  gap: 20px;
 }
 
 /* Seletor: .panel-tabbar, .level-tabbar */
@@ -787,10 +787,12 @@
 .panel-section-header {
   display: grid;
   gap: 8px;
-  padding: 18px 20px;
+  padding: 20px 22px;
   border: 1px solid rgba(215, 126, 153, 0.14);
-  border-radius: 22px;
-  background: linear-gradient(180deg, #fffafc 0%, #fdf1f5 100%);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at top right, rgba(238, 168, 188, 0.2), transparent 38%),
+    linear-gradient(180deg, #fffafc 0%, #fdf1f5 100%);
 }
 
 /* Seletor: .panel-section-header h3 */
@@ -832,8 +834,51 @@
   padding: 18px;
   border: 1px solid rgba(215, 126, 153, 0.14);
   border-radius: 20px;
-  background: #fffafb;
+  background: linear-gradient(180deg, #fffdfd 0%, #fff8fb 100%);
   box-shadow: 0 12px 28px rgba(215, 126, 153, 0.07);
+}
+
+.add-service-unit-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.add-service-unit-card {
+  border: 1px solid rgba(215, 126, 153, 0.18);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #fff6fa 100%);
+  padding: 16px;
+  text-align: left;
+  display: grid;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.add-service-unit-card strong {
+  color: #24181f;
+  font-size: 15px;
+}
+
+.add-service-unit-card small {
+  color: #8c6c79;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.add-service-unit-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(215, 126, 153, 0.34);
+  box-shadow: 0 14px 24px rgba(215, 126, 153, 0.12);
+}
+
+.add-service-unit-card.is-selected {
+  border-color: #d77e99;
+  background:
+    radial-gradient(circle at top right, rgba(238, 168, 188, 0.24), transparent 40%),
+    linear-gradient(180deg, #fff8fb 0%, #fdeef4 100%);
+  box-shadow: 0 0 0 3px rgba(215, 126, 153, 0.12);
 }
 
 /* Seletor: .add-service-field span */
@@ -967,7 +1012,7 @@
 .add-service-photo-card {
   display: grid;
   gap: 16px;
-  padding: 18px;
+  padding: 20px;
   border: 1px solid rgba(215, 126, 153, 0.14);
   border-radius: 24px;
   background: linear-gradient(180deg, #fff8fb 0%, #fdf0f5 100%);
@@ -1127,6 +1172,10 @@
     grid-template-columns: 1fr;
   }
 
+  .add-service-unit-grid {
+    grid-template-columns: 1fr;
+  }
+
 /* Seletor: .level-tabbar, .parent-category-nav */
   .level-tabbar,
   .parent-category-nav,
@@ -1239,6 +1288,22 @@
   background: #2a1d25;
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow: none;
+}
+
+:root[data-theme='dark'] .add-service-unit-card {
+  background: linear-gradient(180deg, #231821 0%, #1d141b 100%);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+:root[data-theme='dark'] .add-service-unit-card strong,
+:root[data-theme='dark'] .add-service-unit-card small {
+  color: #f7edf2;
+}
+
+:root[data-theme='dark'] .add-service-unit-card.is-selected {
+  background: linear-gradient(180deg, #3d2832 0%, #2f1e27 100%);
+  border-color: rgba(255, 183, 203, 0.38);
+  box-shadow: 0 0 0 3px rgba(255, 183, 203, 0.12);
 }
 
 :root[data-theme='dark'] .panel-tab,

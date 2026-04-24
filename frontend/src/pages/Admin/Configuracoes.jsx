@@ -3,7 +3,7 @@
 /* ======================================== */
 
 // Importacoes
-import '../styles/pages/Configuracoes.css'
+import '../../styles/pages/Profissional/Configuracoes.css'
 
 // Funcao: Configuracoes
 function Configuracoes({ darkMode, setDarkMode }) {

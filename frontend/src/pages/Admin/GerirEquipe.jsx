@@ -6,9 +6,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import Dropdown from 'react-bootstrap/Dropdown'
 import Offcanvas from 'react-bootstrap/Offcanvas'
-import adjustmentIcon from '../assets/icons/ajustamento.png'
-import '../styles/pages/GerirEquipe.css'
-import { fetchJson, getServiceUrl } from '../services/api'
+import adjustmentIcon from '../../assets/icons/ajustamento.png'
+import '../../styles/pages/Profissional/GerirEquipe.css'
+import { fetchJson, getServiceUrl } from '../../services/api'
 
 // Bloco: unitOptions
 const unitOptions = [
@@ -70,6 +70,22 @@ function payloadFromForm(formData) {
   }
 }
 
+function resolveDefaultServiceUnit(selectedProfessional) {
+  const normalized = String(selectedProfessional?.unit || '').toLowerCase()
+  if (normalized.includes('almada')) return 'almada'
+  return 'cascais'
+}
+
+function toggleServiceUnitSelection(currentUnits, unitValue) {
+  if (currentUnits.includes(unitValue)) {
+    return currentUnits.length > 1
+      ? currentUnits.filter((item) => item !== unitValue)
+      : currentUnits
+  }
+
+  return [...currentUnits, unitValue]
+}
+
 // Funcao: GerirEquipe
 function GerirEquipe({ onNavigate, reloadKey = 0 }) {
 
@@ -95,7 +111,7 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
   const [serviceSubmitting, setServiceSubmitting] = useState(false)
   const [serviceError, setServiceError] = useState(null)
   const [copyFeedback, setCopyFeedback] = useState(null)
-  const [serviceForm, setServiceForm] = useState({ name: '', description: '', price: '', durationMinutes: '', category: '' })
+  const [serviceForm, setServiceForm] = useState({ name: '', description: '', price: '', durationMinutes: '', category: '', units: ['cascais'] })
   const [editForm, setEditForm] = useState({ nome: '', sobrenome: '', contactoPrincipal: '', email: '', telefone: '', dataInicio: '', ano: '', servicos: [], locais: [], sobreLivre: '' })
 
   useEffect(() => {
@@ -202,6 +218,13 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
     setServiceForm((current) => ({ ...current, [name]: value }))
   }
 
+  const toggleServiceUnit = (unitValue) => {
+    setServiceForm((current) => ({
+      ...current,
+      units: toggleServiceUnitSelection(current.units, unitValue),
+    }))
+  }
+
   const toggleServico = (servico) => {
     setEditForm((current) => ({
       ...current,
@@ -217,7 +240,14 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
   }
 
   const openServiceModal = () => {
-    setServiceForm({ name: '', description: '', price: '', durationMinutes: '', category: topLevelCategories[0]?._id ?? topLevelCategories[0]?.id ?? '' })
+    setServiceForm({
+      name: '',
+      description: '',
+      price: '',
+      durationMinutes: '',
+      category: topLevelCategories[0]?._id ?? topLevelCategories[0]?.id ?? '',
+      units: [resolveDefaultServiceUnit(selectedProfessional)],
+    })
     setServiceError(null)
     setServiceModalOpen(true)
   }
@@ -285,6 +315,10 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
       setServiceError('Preencha nome, preco, duracao e categoria.')
       return
     }
+    if (!serviceForm.units.length) {
+      setServiceError('Selecione pelo menos uma unidade para o servico.')
+      return
+    }
     setServiceSubmitting(true)
     setServiceError(null)
     try {
@@ -296,6 +330,7 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
           price: Number(serviceForm.price),
           durationMinutes: Number(serviceForm.durationMinutes),
           category: serviceForm.category,
+          units: serviceForm.units,
         }),
       })
       const service = response?.service ?? response
@@ -453,6 +488,7 @@ function GerirEquipe({ onNavigate, reloadKey = 0 }) {
                       <label className="team-edit-field"><span>Nome do servico</span><input type="text" name="name" value={serviceForm.name} onChange={updateServiceField} /></label>
                       <label className="team-edit-field"><span>Descricao</span><textarea name="description" rows="4" value={serviceForm.description} onChange={updateServiceField} /></label>
                       <div className="team-edit-grid two-columns"><label className="team-edit-field"><span>Preco</span><input type="number" min="0" step="0.01" name="price" value={serviceForm.price} onChange={updateServiceField} /></label><label className="team-edit-field"><span>Duracao em minutos</span><input type="number" min="1" step="1" name="durationMinutes" value={serviceForm.durationMinutes} onChange={updateServiceField} /></label></div>
+                      <div className="team-edit-field team-service-unit-field"><span>Unidades</span><div className="team-service-unit-options">{unitOptions.map((location) => <button key={location.id} type="button" className={`team-service-unit-option ${serviceForm.units.includes(location.id) ? 'is-selected' : ''}`} onClick={() => toggleServiceUnit(location.id)}><strong>{location.value}</strong><small>{location.description}</small></button>)}</div></div>
                       <label className="team-edit-field"><span>Categoria</span><select name="category" value={serviceForm.category} onChange={updateServiceField}><option value="">Selecione uma categoria</option>{topLevelCategories.map((category) => <option key={category._id ?? category.id} value={category._id ?? category.id}>{category.name ?? category.nome}</option>)}</select></label>
                     </div>
                     <div className="team-floating-service-actions"><button type="button" className="team-professional-secondary-button" onClick={closeServiceModal}>Cancelar</button><button type="button" className="team-professional-edit-button" onClick={createService} disabled={serviceSubmitting}><span>{serviceSubmitting ? 'Criando...' : 'Criar servico'}</span></button></div>

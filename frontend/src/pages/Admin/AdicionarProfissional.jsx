@@ -4,8 +4,8 @@
 
 // Importacoes
 import { useState } from 'react'
-import '../styles/pages/AdicionarProfissional.css'
-import { fetchJson } from '../services/api'
+import '../../styles/pages/Profissional/AdicionarProfissional.css'
+import { fetchJson } from '../../services/api'
 
 // Bloco: AdicionarProfissional
 const AdicionarProfissional = ({ onNavigate }) => {

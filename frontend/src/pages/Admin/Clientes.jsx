@@ -4,8 +4,8 @@
 
 // Importacoes
 import { useEffect, useMemo, useState } from 'react'
-import '../styles/pages/Clientes.css'
-import { fetchJson } from '../services/api'
+import '../../styles/pages/Profissional/Clientes.css'
+import { fetchJson } from '../../services/api'
 
 // Bloco: EMPTY_CLIENT_FORM
 const EMPTY_CLIENT_FORM = {

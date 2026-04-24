@@ -69,6 +69,19 @@ const ServiceSchema = new mongoose.Schema(
       ref: 'User',
       default: null
     },
+    units: {
+      type: [
+        {
+          type: String,
+          enum: ['cascais', 'almada']
+        }
+      ],
+      default: []
+    },
+    unit: {
+      type: String,
+      enum: ['cascais', 'almada']
+    },
     imageUrl: String,
     active: {
       type: Boolean,

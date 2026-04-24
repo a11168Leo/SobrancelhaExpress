@@ -3,19 +3,19 @@
 /* ======================================== */
 
 import { useState, useEffect } from 'react'
-import { fetchJson } from '../services/api'
-import '../styles/pages/Login.css'
+import { fetchJson } from '../../services/api'
+import '../../styles/pages/Login/Login.css'
 
 const backgroundImages = [
-  new URL('../assets/interior/IMG-20251106-WA0017(2).jpg', import.meta.url).href,
-  new URL('../assets/interior/IMG-20251106-WA0019(2).jpg', import.meta.url).href,
-  new URL('../assets/interior/IMG-20251106-WA0021(2).jpg', import.meta.url).href,
-  new URL('../assets/interior/IMG-20251106-WA0023(2).jpg', import.meta.url).href,
-  new URL('../assets/interior/IMG-20251106-WA0025(2).jpg', import.meta.url).href,
-  new URL('../assets/interior/IMG-20251106-WA0027(2).jpg', import.meta.url).href,
-  new URL('../assets/interior/IMG-20251106-WA0029(2).jpg', import.meta.url).href,
-  new URL('../assets/interior/IMG-20251106-WA0031(2).jpg', import.meta.url).href,
-  new URL('../assets/interior/IMG-20251106-WA0033(2).jpg', import.meta.url).href,
+  new URL('../../assets/interior/IMG-20251106-WA0017(2).jpg', import.meta.url).href,
+  new URL('../../assets/interior/IMG-20251106-WA0019(2).jpg', import.meta.url).href,
+  new URL('../../assets/interior/IMG-20251106-WA0021(2).jpg', import.meta.url).href,
+  new URL('../../assets/interior/IMG-20251106-WA0023(2).jpg', import.meta.url).href,
+  new URL('../../assets/interior/IMG-20251106-WA0025(2).jpg', import.meta.url).href,
+  new URL('../../assets/interior/IMG-20251106-WA0027(2).jpg', import.meta.url).href,
+  new URL('../../assets/interior/IMG-20251106-WA0029(2).jpg', import.meta.url).href,
+  new URL('../../assets/interior/IMG-20251106-WA0031(2).jpg', import.meta.url).href,
+  new URL('../../assets/interior/IMG-20251106-WA0033(2).jpg', import.meta.url).href,
 ]
 
 function Login({ onLoginSuccess }) {

@@ -7,20 +7,21 @@ import { useEffect, useState } from 'react'
 import './styles/core/App.css'
 import Header from './components/Header/Header'
 import Sidebar from './components/Sidebar/Sidebar'
-import Dashboard from './pages/Dashboard'
-import GerirEquipe from './pages/GerirEquipe'
-import Clientes from './pages/Clientes'
-import Calendario from './pages/Calendario'
-import AdicionarProfissional from './pages/AdicionarProfissional'
-import CatalogoServicos from './pages/CatalogoServicos'
-import Configuracoes from './pages/Configuracoes'
-import Perfil from './pages/Perfil'
-import Login from './pages/Login'
+import Dashboard from './pages/Admin/Dashboard'
+import GerirEquipe from './pages/Admin/GerirEquipe'
+import Clientes from './pages/Admin/Clientes'
+import Calendario from './pages/Admin/Calendario'
+import AdicionarProfissional from './pages/Admin/AdicionarProfissional'
+import CatalogoServicos from './pages/Admin/CatalogoServicos'
+import Configuracoes from './pages/Admin/Configuracoes'
+import Perfil from './pages/Admin/Perfil'
+import Login from './pages/Login/Login'
+import ClientLayout from './layout/ClientLayout'
 
 const defaultPageByRole = {
   admin: 'dashboard',
   profissional: 'dashboard',
-  cliente: 'agenda',
+  cliente: 'client-servicos',
 }
 
 // Funcao: App
@@ -61,6 +62,12 @@ function App() {
     }
   }, [user, currentPage])
 
+  useEffect(() => {
+    if (!user && currentPage === 'dashboard') {
+      setCurrentPage('client-servicos')
+    }
+  }, [user, currentPage])
+
   const navigate = (page, options = {}) => {
     if (page === 'gerir-equipe' && options.refresh) {
       setReloadProfessionals((prev) => prev + 1)
@@ -80,7 +87,7 @@ function App() {
 
   const handleLogout = () => {
     setUser(null)
-    setCurrentPage('login')
+    setCurrentPage('client-servicos')
 
     if (typeof window !== 'undefined') {
       window.localStorage.removeItem('sobrancelha-user')
@@ -113,8 +120,30 @@ function App() {
   }
 
 // Renderizacao principal
-  if (!user) {
+  if (!user && currentPage === 'login') {
     return <Login onLoginSuccess={handleLoginSuccess} />
+  }
+
+  if (!user) {
+    return (
+      <ClientLayout
+        currentPage={currentPage}
+        onNavigate={navigate}
+        onLogout={handleLogout}
+        user={null}
+      />
+    )
+  }
+
+  if (user.role === 'cliente') {
+    return (
+      <ClientLayout
+        currentPage={currentPage}
+        onNavigate={navigate}
+        onLogout={handleLogout}
+        user={user}
+      />
+    )
   }
 
   return (

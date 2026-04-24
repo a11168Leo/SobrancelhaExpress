@@ -11,6 +11,31 @@ import {
   deleteService
 } from './service.service.js';
 import { findCategoryById } from '../categories/category.service.js';
+import { findUserById } from '../users/user.service.js';
+
+const VALID_UNITS = ['cascais', 'almada'];
+
+const normalizeUnit = (value = '') => {
+  const normalized = String(value || '').trim().toLowerCase();
+  if (!normalized) return '';
+  if (normalized.includes('almada')) return 'almada';
+  if (normalized.includes('cascais')) return 'cascais';
+  return normalized;
+};
+
+const normalizeUnits = (value) => {
+  const rawValues = Array.isArray(value)
+    ? value
+    : value === undefined || value === null || value === ''
+      ? []
+      : [value];
+
+  const normalized = rawValues
+    .map((item) => normalizeUnit(item))
+    .filter(Boolean);
+
+  return Array.from(new Set(normalized));
+};
 
 // Bloco: validateCategoryLevel
 const validateCategoryLevel = async (categoryId, expectedLevel) => {
@@ -43,7 +68,9 @@ export const create = async (req, res) => {
       subcategory,
       subcategory2,
       subcategory3,
-      imageUrl
+      imageUrl,
+      unit,
+      units
     } = req.body;
 
     if (!name || !price || !durationMinutes || !category) {
@@ -91,6 +118,28 @@ export const create = async (req, res) => {
       });
     }
 
+    let resolvedUnits = normalizeUnits(units);
+
+    if (resolvedUnits.length === 0) {
+      const fallbackUnit = normalizeUnit(unit);
+      if (fallbackUnit) {
+        resolvedUnits = [fallbackUnit];
+      }
+    }
+
+    if (resolvedUnits.length === 0 && req.user?.role === 'profissional') {
+      const professional = await findUserById(req.user.id);
+      resolvedUnits = normalizeUnits(String(professional?.salonName || '').split(','));
+    }
+
+    if (resolvedUnits.some((item) => !VALID_UNITS.includes(item))) {
+      return res.status(400).json({ message: 'units deve conter apenas cascais e/ou almada' });
+    }
+
+    if (resolvedUnits.length === 0) {
+      return res.status(400).json({ message: 'Selecione pelo menos uma unidade para o servico' });
+    }
+
     const service = await createService({
       name,
       description,
@@ -102,7 +151,13 @@ export const create = async (req, res) => {
       subcategory2: subcategory2 || null,
       subcategory3: subcategory3 || null,
       imageUrl,
-      professional: req.user?.role === 'profissional' ? req.user.id : null
+      professional: req.user?.role === 'profissional' ? req.user.id : null,
+      ...(resolvedUnits.length > 0
+        ? {
+            units: resolvedUnits,
+            ...(resolvedUnits.length === 1 ? { unit: resolvedUnits[0] } : { unit: undefined }),
+          }
+        : {})
     });
 
     res.status(201).json({ service });
@@ -114,7 +169,7 @@ export const create = async (req, res) => {
 // Funcao exportada: list
 export const list = async (req, res) => {
   try {
-    const { category, subcategory, subcategory2, subcategory3, professionalId } = req.query;
+    const { category, subcategory, subcategory2, subcategory3, professionalId, unit } = req.query;
 
     const filters = {};
     if (category) filters.category = category;
@@ -122,6 +177,17 @@ export const list = async (req, res) => {
     if (subcategory2) filters.subcategory2 = subcategory2;
     if (subcategory3) filters.subcategory3 = subcategory3;
     if (professionalId) filters.professional = professionalId;
+    if (unit) {
+      const normalizedUnit = normalizeUnit(unit);
+      if (!VALID_UNITS.includes(normalizedUnit)) {
+        return res.status(400).json({ message: 'unit deve ser cascais ou almada' });
+      }
+      filters.$or = [
+        { units: normalizedUnit },
+        { units: { $exists: false }, unit: normalizedUnit },
+        { units: { $size: 0 }, unit: normalizedUnit },
+      ];
+    }
 
     const services = await listServices(filters);
     res.json({ services });
@@ -134,7 +200,7 @@ export const list = async (req, res) => {
 export const update = async (req, res) => {
   try {
     const { id } = req.params;
-    const { name, description, price, durationMinutes, maxDurationMinutes, active } = req.body;
+    const { name, description, price, durationMinutes, maxDurationMinutes, active, unit, units } = req.body;
 
     const existing = await findServiceById(id);
     if (!existing) {
@@ -165,13 +231,30 @@ export const update = async (req, res) => {
       });
     }
 
+    const normalizedUnits =
+      units !== undefined
+        ? normalizeUnits(units)
+        : unit !== undefined
+          ? normalizeUnits(unit)
+          : undefined;
+
+    if (normalizedUnits && normalizedUnits.some((item) => !VALID_UNITS.includes(item))) {
+      return res.status(400).json({ message: 'units deve conter apenas cascais e/ou almada' });
+    }
+
     const updated = await updateService(id, {
       ...(name ? { name } : {}),
       ...(description !== undefined ? { description } : {}),
       ...(price !== undefined ? { price } : {}),
       durationMinutes: parsedDurationMinutes,
       maxDurationMinutes: parsedMaxDurationMinutes,
-      ...(active !== undefined ? { active } : {})
+      ...(active !== undefined ? { active } : {}),
+      ...(normalizedUnits !== undefined
+        ? {
+            units: normalizedUnits,
+            unit: normalizedUnits.length === 1 ? normalizedUnits[0] : undefined,
+          }
+        : {})
     });
 
     res.json({ service: updated });
