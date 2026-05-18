@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install *)",
+      "Bash(npm audit *)",
+      "Bash(node -e \"const crypto = require\\('crypto'\\); console.log\\(crypto.randomBytes\\(64\\).toString\\('hex'\\)\\);\")",
+      "Bash(node --input-type=module)",
+      "Bash(timeout 3)",
+      "Bash(taskkill /F /IM node.exe /T)"
+    ]
+  }
+}

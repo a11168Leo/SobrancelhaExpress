@@ -24,7 +24,7 @@ router.post('/public', create);
 router.patch('/public/:id', update);
 router.post('/', authMiddleware, allowRoles('admin', 'cliente', 'profissional'), create);
 // ====================
-// Admin vÃª qualquer agenda; profissional vÃª apenas a sua
+// Admin ve qualquer agenda; profissional ve apenas a sua
 // ====================
 router.get(
   '/professional/:professionalId',
@@ -33,11 +33,11 @@ router.get(
   listByProfessional
 );
 // ====================
-// Admin vÃª todos os agendamentos
+// Admin ve todos os agendamentos
 // ====================
 router.get('/all', authMiddleware, allowRoles('admin'), listAll);
 // ====================
-// Admin vÃª qualquer cliente; cliente vÃª apenas o prÃ³prio
+// Admin ve qualquer cliente; cliente ve apenas o proprio
 // ====================
 router.get('/client/:clientId', authMiddleware, allowRoles('admin', 'cliente'), listByClient);
 // ====================

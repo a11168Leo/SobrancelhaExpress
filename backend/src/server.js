@@ -17,7 +17,7 @@ const startServer = async () => {
   await connectDB();
 
   app.listen(PORT, () => {
-    console.log(`ðŸ”¥ Servidor rodando na porta ${PORT}`);
+    console.log(` Servidor rodando na porta ${PORT}`);
   });
 };
 

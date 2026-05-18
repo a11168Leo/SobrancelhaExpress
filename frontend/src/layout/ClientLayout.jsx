@@ -225,7 +225,7 @@ function ClientLayout({ currentPage, onNavigate, onLogout, user }) {
                   }}
                 >
                   <GeoIcon />
-                  <span>Localizacao</span>
+                  <span>Localização</span>
                   <CaretDownIcon isOpen={isServicesOpen} />
                 </button>
 

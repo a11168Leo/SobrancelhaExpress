@@ -37,6 +37,7 @@ function ClientServicos({ onNavigate, isGuest = false }) {
   const [categoryNameById, setCategoryNameById] = useState({})
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
+  const [selectedService, setSelectedService] = useState(null)
 
   useEffect(() => {
     const load = async () => {
@@ -75,6 +76,19 @@ function ClientServicos({ onNavigate, isGuest = false }) {
   useEffect(() => {
     setCategoryFilter('all')
   }, [selectedUnit])
+
+  useEffect(() => {
+    if (!selectedService) return undefined
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setSelectedService(null)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedService])
 
   const professionalsByUnit = useMemo(() => {
     const unitMatch = unitOptions.find((item) => item.id === selectedUnit)?.matcher || 'cascais'
@@ -201,8 +215,52 @@ function ClientServicos({ onNavigate, isGuest = false }) {
     return () => window.clearInterval(interval)
   }, [portfolioImages.length])
 
+  const openServiceSpotlight = (service) => {
+    setSelectedService(service)
+  }
+
+  const closeServiceSpotlight = () => {
+    setSelectedService(null)
+  }
+
   return (
     <section className="page">
+      {selectedService && (
+        <div
+          className="client-service-spotlight"
+          role="dialog"
+          aria-modal="false"
+          aria-labelledby="client-service-spotlight-title"
+        >
+          <button
+            type="button"
+            className="client-service-spotlight-close"
+            onClick={closeServiceSpotlight}
+            aria-label="Fechar destaque do servico"
+          >
+            ×
+          </button>
+
+          <div className="client-service-spotlight-lava" aria-hidden="true">
+            <span />
+            <span />
+            <span />
+          </div>
+
+          <div className="client-service-spotlight-content">
+            <div className="client-service-spotlight-summary">
+              <h2 id="client-service-spotlight-title">{selectedService.name || 'Servico'}</h2>
+              <p>{categoryNameById[selectedService.category] || selectedService.category || 'Categoria livre'}</p>
+            </div>
+
+            <div className="client-service-spotlight-meta">
+              <span>{selectedService.maxDurationMinutes || selectedService.durationMinutes || 0} min</span>
+              <span>EUR {Number(selectedService.price || 0).toFixed(2)}</span>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="client-services-hero">
         <div>
           <h1>Serviços</h1>
@@ -267,7 +325,7 @@ function ClientServicos({ onNavigate, isGuest = false }) {
               <button
                 className="btn"
                 type="button"
-                onClick={() => onNavigate?.(isGuest ? 'login' : 'client-agendamentos')}
+                onClick={() => openServiceSpotlight(item)}
               >
                 {isGuest ? 'Entrar para agendar' : 'Quero este servico'}
               </button>

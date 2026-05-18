@@ -62,7 +62,7 @@ const ServiceSchema = new mongoose.Schema(
       default: null
     },
     // ====================
-    // Profissional dono do serviÃ§o (opcional)
+    // Profissional dono do servico (opcional)
     // ====================
     professional: {
       type: mongoose.Schema.Types.ObjectId,

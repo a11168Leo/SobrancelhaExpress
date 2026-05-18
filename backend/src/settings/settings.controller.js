@@ -14,7 +14,7 @@ export const getBusinessHours = async (_req, res) => {
     }
     res.json(settings.data);
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao buscar configuraÃ§Ãµes' });
+    res.status(500).json({ message: 'Erro ao buscar configuracoes' });
   }
 };
 
@@ -24,7 +24,7 @@ export const updateBusinessHours = async (req, res) => {
     const { startTime, endTime } = req.body;
 
     if (!startTime || !endTime) {
-      return res.status(400).json({ message: 'startTime e endTime sÃ£o obrigatÃ³rios' });
+      return res.status(400).json({ message: 'startTime e endTime sao obrigatorios' });
     }
 
     if (startTime >= endTime) {
@@ -40,7 +40,6 @@ export const updateBusinessHours = async (req, res) => {
 
     res.json(updated.data);
   } catch (error) {
-    res.status(500).json({ message: 'Erro ao salvar configuraÃ§Ãµes' });
+    res.status(500).json({ message: 'Erro ao salvar configuracoes' });
   }
 };
-

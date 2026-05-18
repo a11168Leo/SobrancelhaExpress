@@ -21,17 +21,17 @@ export const create = async (req, res) => {
     if (!appointmentId || !professionalId || amount === undefined) {
       return res
         .status(400)
-        .json({ message: 'appointmentId, professionalId e amount sÃ£o obrigatÃ³rios' });
+        .json({ message: 'appointmentId, professionalId e amount sao obrigatorios' });
     }
 
     const appointment = await findAppointmentById(appointmentId);
     if (!appointment) {
-      return res.status(404).json({ message: 'Agendamento nÃ£o encontrado' });
+      return res.status(404).json({ message: 'Agendamento nao encontrado' });
     }
 
     const existing = await findFinancialByAppointment(appointmentId);
     if (existing) {
-      return res.status(409).json({ message: 'Financeiro jÃ¡ existe para este agendamento' });
+      return res.status(409).json({ message: 'Financeiro ja existe para este agendamento' });
     }
 
     const financial = await createFinancial({
@@ -70,12 +70,12 @@ export const updateStatus = async (req, res) => {
     const { status } = req.body;
 
     if (!['open', 'paid', 'cancelled'].includes(status)) {
-      return res.status(400).json({ message: 'Status invÃ¡lido' });
+      return res.status(400).json({ message: 'Status invalido' });
     }
 
     const existing = await findFinancialById(id);
     if (!existing) {
-      return res.status(404).json({ message: 'LanÃ§amento nÃ£o encontrado' });
+      return res.status(404).json({ message: 'Lancamento nao encontrado' });
     }
 
     const updated = await updateFinancialStatus(id, status);
@@ -142,4 +142,3 @@ export const reportCompare = async (req, res) => {
     res.status(500).json({ message: 'Erro ao gerar relatorio comparativo' });
   }
 };
-

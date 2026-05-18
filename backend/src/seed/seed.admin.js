@@ -23,7 +23,7 @@ const seedAdmin = async () => {
 
   const existing = await User.findOne({ email: ADMIN_EMAIL });
   if (existing) {
-    console.log('Admin jÃ¡ existe:', ADMIN_EMAIL);
+    console.log('Admin ja existe:', ADMIN_EMAIL);
     await mongoose.disconnect();
     return;
   }

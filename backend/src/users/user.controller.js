@@ -16,6 +16,22 @@ import {
 } from './user.service.js'
 import User from './user.model.js'
 
+function validatePasswordStrength(password) {
+  if (!password || password.length < 8) {
+    return 'A senha deve ter no minimo 8 caracteres';
+  }
+  if (!/[A-Z]/.test(password)) {
+    return 'A senha deve conter pelo menos uma letra maiuscula';
+  }
+  if (!/[a-z]/.test(password)) {
+    return 'A senha deve conter pelo menos uma letra minuscula';
+  }
+  if (!/[0-9]/.test(password)) {
+    return 'A senha deve conter pelo menos um numero';
+  }
+  return null;
+}
+
 function normalizeAvailability(input) {
   if (!Array.isArray(input)) return undefined
 
@@ -91,6 +107,11 @@ export const register = async (req, res) => {
 
     if (!name || !email || !password) {
       return res.status(400).json({ message: 'Nome, email e senha sao obrigatorios' })
+    }
+
+    const passwordError = validatePasswordStrength(password)
+    if (passwordError) {
+      return res.status(400).json({ message: passwordError })
     }
 
     const userExists = await findUserByEmail(email)
@@ -448,7 +469,6 @@ export const publicCreateClientWithTemporaryPassword = async (req, res) => {
         phone: user.phone,
         mustChangePassword: user.mustChangePassword
       },
-      temporaryPassword,
       emailSent
     })
   } catch (error) {
@@ -570,6 +590,11 @@ export const updatePassword = async (req, res) => {
       return res.status(400).json({ message: 'Senha atual e nova senha sao obrigatorias' })
     }
 
+    const passwordError = validatePasswordStrength(newPassword)
+    if (passwordError) {
+      return res.status(400).json({ message: passwordError })
+    }
+
     const user = await findUserByEmail(req.user.email)
     if (!user) {
       return res.status(404).json({ message: 'Usuario nao encontrado' })
@@ -675,6 +700,11 @@ export const resetPassword = async (req, res) => {
     const { token, newPassword } = req.body
     if (!token || !newPassword) {
       return res.status(400).json({ message: 'Token e nova senha sao obrigatorios' })
+    }
+
+    const passwordError = validatePasswordStrength(newPassword)
+    if (passwordError) {
+      return res.status(400).json({ message: passwordError })
     }
 
     const tokenHash = crypto.createHash('sha256').update(token).digest('hex')

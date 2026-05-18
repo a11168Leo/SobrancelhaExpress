@@ -17,7 +17,7 @@ export const create = async (req, res) => {
     const { name, parentId, level } = req.body;
 
     if (!name || level === undefined) {
-      return res.status(400).json({ message: 'name e level sÃ£o obrigatÃ³rios' });
+      return res.status(400).json({ message: 'name e level sao obrigatorios' });
     }
 
     const normalizedLevel = Number(level);
@@ -26,22 +26,22 @@ export const create = async (req, res) => {
     }
 
     if (normalizedLevel === 0 && parentId) {
-      return res.status(400).json({ message: 'Categoria nÃ­vel 0 nÃ£o pode ter pai' });
+      return res.status(400).json({ message: 'Categoria nivel 0 nao pode ter pai' });
     }
 
     if (normalizedLevel > 0) {
       if (!parentId) {
-        return res.status(400).json({ message: 'parentId Ã© obrigatÃ³rio para nÃ­veis 1 a 3' });
+        return res.status(400).json({ message: 'parentId e obrigatorio para niveis 1 a 3' });
       }
 
       const parent = await findCategoryById(parentId);
       if (!parent) {
-        return res.status(404).json({ message: 'Categoria pai nÃ£o encontrada' });
+        return res.status(404).json({ message: 'Categoria pai nao encontrada' });
       }
 
       if (parent.level !== normalizedLevel - 1) {
         return res.status(400).json({
-          message: 'O nÃ­vel do pai deve ser exatamente level - 1'
+          message: 'O nivel do pai deve ser exatamente level - 1'
         });
       }
     }
@@ -86,22 +86,22 @@ export const update = async (req, res) => {
 
     const category = await findCategoryById(id);
     if (!category) {
-      return res.status(404).json({ message: 'Categoria nÃ£o encontrada' });
+      return res.status(404).json({ message: 'Categoria nao encontrada' });
     }
 
     if (parentId !== undefined) {
       if (category.level === 0 && parentId) {
-        return res.status(400).json({ message: 'Categoria nÃ­vel 0 nÃ£o pode ter pai' });
+        return res.status(400).json({ message: 'Categoria nivel 0 nao pode ter pai' });
       }
 
       if (category.level > 0) {
         const parent = await findCategoryById(parentId);
         if (!parent) {
-          return res.status(404).json({ message: 'Categoria pai nÃ£o encontrada' });
+          return res.status(404).json({ message: 'Categoria pai nao encontrada' });
         }
         if (parent.level !== category.level - 1) {
           return res.status(400).json({
-            message: 'O nÃ­vel do pai deve ser exatamente level - 1'
+            message: 'O nivel do pai deve ser exatamente level - 1'
           });
         }
       }
@@ -125,7 +125,7 @@ export const remove = async (req, res) => {
 
     const category = await deleteCategory(id);
     if (!category) {
-      return res.status(404).json({ message: 'Categoria nÃ£o encontrada' });
+      return res.status(404).json({ message: 'Categoria nao encontrada' });
     }
 
     res.json({ message: 'Categoria removida' });
@@ -133,4 +133,3 @@ export const remove = async (req, res) => {
     res.status(500).json({ message: 'Erro ao remover categoria' });
   }
 };
-
