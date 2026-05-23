@@ -5,8 +5,32 @@ SECAO INTERNA PADRAO
 ====================
 */
 
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { fetchJson, getServiceUrl } from '../../services/api'
+
+function SearchIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+    </svg>
+  )
+}
+
+function SlidersIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+      <path fillRule="evenodd" d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1z" />
+    </svg>
+  )
+}
+
+function CaretRightIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+      <path d="M6 12.796V3.204L11.481 8zm.659.753 5.48-4.796a1 1 0 0 0 0-1.506L6.66 2.451C6.011 1.885 5 2.345 5 3.204v9.592a1 1 0 0 0 1.659.753" />
+    </svg>
+  )
+}
 
 const cascaisMapsLink =
   'https://www.google.com/maps/search/?api=1&query=R.%20do%20Mercado%2051%20loja%202%2C%202785-630%20Sao%20Domingos%20de%20Rana'
@@ -38,6 +62,10 @@ function ClientServicos({ onNavigate, isGuest = false }) {
   const [search, setSearch] = useState('')
   const [categoryFilter, setCategoryFilter] = useState('all')
   const [selectedService, setSelectedService] = useState(null)
+  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [expandedCatId, setExpandedCatId] = useState(null)
+  const [allCategories, setAllCategories] = useState([])
+  const filterRef = useRef(null)
 
   useEffect(() => {
     const load = async () => {
@@ -49,9 +77,9 @@ function ClientServicos({ onNavigate, isGuest = false }) {
       setServices(servicesRes?.services || [])
       const professionalList = professionalsRes?.users || []
       setProfessionals(professionalList)
-      const categoryMap = Object.fromEntries(
-        (categoriesRes?.categories || []).map((item) => [item._id, item.name])
-      )
+      const rawCategories = categoriesRes?.categories || []
+      setAllCategories(rawCategories)
+      const categoryMap = Object.fromEntries(rawCategories.map((item) => [item._id, item.name]))
       setCategoryNameById(categoryMap)
     }
     load().catch(() => {})
@@ -89,6 +117,18 @@ function ClientServicos({ onNavigate, isGuest = false }) {
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [selectedService])
+
+  useEffect(() => {
+    if (!isFilterOpen) return undefined
+    const handleOutside = (event) => {
+      if (filterRef.current && !filterRef.current.contains(event.target)) {
+        setIsFilterOpen(false)
+        setExpandedCatId(null)
+      }
+    }
+    document.addEventListener('mousedown', handleOutside)
+    return () => document.removeEventListener('mousedown', handleOutside)
+  }, [isFilterOpen])
 
   const professionalsByUnit = useMemo(() => {
     const unitMatch = unitOptions.find((item) => item.id === selectedUnit)?.matcher || 'cascais'
@@ -138,6 +178,41 @@ function ClientServicos({ onNavigate, isGuest = false }) {
     )
     return list.sort((a, b) => a.localeCompare(b, 'pt-BR'))
   }, [services, professionalsByUnit, selectedUnit])
+
+  const serviceCategoryCount = useMemo(() => {
+    const professionalIds = new Set(professionalsByUnit.map((item) => String(item._id || item.id)))
+    const counts = { all: 0 }
+
+    for (const item of services) {
+      const serviceUnits = Array.isArray(item.units)
+        ? item.units.map((u) => String(u || '').toLowerCase()).filter(Boolean)
+        : []
+      const serviceUnit = String(item.unit || '').toLowerCase()
+
+      let inUnit
+      if (serviceUnits.length > 0) inUnit = serviceUnits.includes(selectedUnit)
+      else if (serviceUnit) inUnit = serviceUnit === selectedUnit
+      else inUnit = professionalIds.has(String(item.professional || ''))
+
+      if (!inUnit) continue
+      counts.all++
+      if (item.category) counts[item.category] = (counts[item.category] || 0) + 1
+    }
+
+    return counts
+  }, [services, professionalsByUnit, selectedUnit])
+
+  const childrenByParent = useMemo(() => {
+    const map = {}
+    for (const cat of allCategories) {
+      if (cat.parent) {
+        const pid = String(cat.parent)
+        if (!map[pid]) map[pid] = []
+        map[pid].push(cat)
+      }
+    }
+    return map
+  }, [allCategories])
 
   const filtered = useMemo(() => {
     const term = search.trim().toLowerCase()
@@ -270,7 +345,93 @@ function ClientServicos({ onNavigate, isGuest = false }) {
 
       <div className="card client-services-toolbar-card">
         <div className="client-services-toolbar">
-          <div className="client-services-toolbar-spacer" aria-hidden="true" />
+          <div className="client-services-search-filter" ref={filterRef}>
+            <div className="client-services-search-wrap">
+              <span className="client-search-icon"><SearchIcon /></span>
+              <input
+                className="search client-services-search"
+                type="search"
+                placeholder="Buscar serviço"
+                value={search}
+                onChange={(event) => setSearch(event.target.value)}
+              />
+            </div>
+
+            <button
+              type="button"
+              className={`client-filter-btn${categoryFilter !== 'all' ? ' active' : ''}`}
+              onClick={() => setIsFilterOpen((prev) => !prev)}
+              aria-label="Filtrar por categoria"
+              aria-expanded={isFilterOpen}
+            >
+              <SlidersIcon />
+              {categoryFilter !== 'all' && <span className="client-filter-dot" aria-hidden="true" />}
+            </button>
+
+            {isFilterOpen && (
+              <div className="client-filter-panel" role="listbox" aria-label="Filtrar por categoria">
+                <div className={`client-filter-row${categoryFilter === 'all' ? ' active' : ''}`}>
+                  <button
+                    type="button"
+                    className="client-filter-row-label"
+                    onClick={() => { setCategoryFilter('all'); setExpandedCatId(null); setIsFilterOpen(false) }}
+                  >
+                    <span>Todos os serviços</span>
+                    <span className="client-filter-count">{serviceCategoryCount.all ?? 0}</span>
+                  </button>
+                </div>
+
+                {categories.map((catId) => {
+                  const children = childrenByParent[catId] || []
+                  const hasChildren = children.length > 0
+                  const isExpanded = expandedCatId === catId
+                  return (
+                    <div key={catId} className={`client-filter-row${categoryFilter === catId ? ' active' : ''}`}>
+                      <button
+                        type="button"
+                        className="client-filter-row-label"
+                        onClick={() => { setCategoryFilter(catId); setExpandedCatId(null); setIsFilterOpen(false) }}
+                      >
+                        <span>{categoryNameById[catId] || catId}</span>
+                        <span className="client-filter-count">{serviceCategoryCount[catId] ?? 0}</span>
+                      </button>
+                      {hasChildren && (
+                        <button
+                          type="button"
+                          className={`client-filter-caret-btn${isExpanded ? ' expanded' : ''}`}
+                          onClick={() => setExpandedCatId(isExpanded ? null : catId)}
+                          aria-label="Ver subcategorias"
+                          aria-expanded={isExpanded}
+                        >
+                          <CaretRightIcon />
+                        </button>
+                      )}
+                    </div>
+                  )
+                })}
+
+                {expandedCatId && (
+                  <div className="client-filter-subpanel">
+                    {(childrenByParent[expandedCatId] || []).map((child) => {
+                      const childId = String(child._id)
+                      return (
+                        <div key={childId} className={`client-filter-row${categoryFilter === childId ? ' active' : ''}`}>
+                          <button
+                            type="button"
+                            className="client-filter-row-label"
+                            onClick={() => { setCategoryFilter(childId); setExpandedCatId(null); setIsFilterOpen(false) }}
+                          >
+                            <span>{child.name}</span>
+                            <span className="client-filter-count">{serviceCategoryCount[childId] ?? 0}</span>
+                          </button>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           <div className="client-unit-tabs" role="tablist" aria-label="Selecionar unidade do salao">
             {unitOptions.map((unit) => (
@@ -287,15 +448,7 @@ function ClientServicos({ onNavigate, isGuest = false }) {
             ))}
           </div>
 
-          <div className="client-services-search-wrap">
-            <input
-              className="search client-services-search"
-              type="search"
-              placeholder="Buscar servico"
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-            />
-          </div>
+          <div aria-hidden="true" />
         </div>
       </div>
 
@@ -313,21 +466,25 @@ function ClientServicos({ onNavigate, isGuest = false }) {
         <div className="client-catalog-grid">
           {filtered.map((item) => (
             <article key={item._id} className="client-service-card">
-              <h3>{item.name}</h3>
-              <p style={{ margin: 0, color: 'var(--client-muted)', fontSize: '0.92rem' }}>
-                {item.description || 'Atendimento personalizado para seu estilo.'}
-              </p>
-              <div className="client-service-meta">
-                <span>{item.category || 'Categoria livre'}</span>
-                <span>{item.maxDurationMinutes || item.durationMinutes || 0} min</span>
+              <h3 className="client-service-name">{item.name}</h3>
+              <div className="client-service-info">
+                <span className="client-service-badge client-service-badge--price">
+                  {Number(item.price || 0).toFixed(2)} €
+                </span>
+                <span className="client-service-badge client-service-badge--duration">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                  {item.maxDurationMinutes || item.durationMinutes || 0} min
+                </span>
               </div>
-              <div className="client-service-price">EUR {Number(item.price || 0).toFixed(2)}</div>
               <button
-                className="btn"
+                className="btn client-service-book-btn"
                 type="button"
                 onClick={() => openServiceSpotlight(item)}
               >
-                {isGuest ? 'Entrar para agendar' : 'Quero este servico'}
+                {isGuest ? 'Entrar para agendar' : 'Agendar'}
               </button>
             </article>
           ))}

@@ -8,6 +8,17 @@ import ClientNotificacoes from '../pages/Clients/ClientNotificacoes'
 import ClientPerfil from '../pages/Clients/ClientPerfil'
 import ClientConfiguracoes from '../pages/Clients/ClientConfiguracoes'
 
+const cascaisMapsLink = 'https://www.google.com/maps/search/?api=1&query=R.%20do%20Mercado%2051%20loja%202%2C%202785-630%20Sao%20Domingos%20de%20Rana'
+const almadaMapsLink = 'https://www.google.com/maps/search/?api=1&query=Avenida%20da%20Fundacao%2008%20Loja7%2C%202805-180%20Almada'
+
+function NavArrowIcon() {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true">
+      <path fillRule="evenodd" d="M14 2.5a.5.5 0 0 0-.5-.5h-6a.5.5 0 0 0 0 1h4.793L2.146 13.146a.5.5 0 0 0 .708.708L13 3.707V8.5a.5.5 0 0 0 1 0z"/>
+    </svg>
+  )
+}
+
 const heroImages = [
   new URL('../assets/interior/IMG-20251106-WA0017(2).jpg', import.meta.url).href,
   new URL('../assets/interior/IMG-20251106-WA0019(2).jpg', import.meta.url).href,
@@ -232,10 +243,12 @@ function ClientLayout({ currentPage, onNavigate, onLogout, user }) {
                 {isServicesOpen && (
                   <div className="client-dropdown-panel">
                     <button type="button" className="client-dropdown-item" onClick={() => scrollToSection('localizacao-cascais')}>
-                      Cascais
+                      <GeoIcon />
+                      <span>Cascais</span>
                     </button>
                     <button type="button" className="client-dropdown-item" onClick={() => scrollToSection('localizacao-almada')}>
-                      Almada
+                      <GeoIcon />
+                      <span>Almada</span>
                     </button>
                   </div>
                 )}
@@ -270,7 +283,7 @@ function ClientLayout({ currentPage, onNavigate, onLogout, user }) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+            <div className="client-topnav-actions">
               <button
                 className="client-schedule-btn"
                 type="button"
@@ -279,13 +292,107 @@ function ClientLayout({ currentPage, onNavigate, onLogout, user }) {
                 Agendar horario
               </button>
             </div>
+
+            <button
+              type="button"
+              className="client-mobile-header-btn"
+              onClick={() => (user ? goTo('client-perfil') : openLogin())}
+              aria-label={user ? 'Ver perfil' : 'Entrar'}
+            >
+              {user ? (
+                <span className="client-mobile-greeting">
+                  Olá, {(user.name || user.email || 'U').split(' ')[0]}
+                </span>
+              ) : (
+                'Entrar'
+              )}
+            </button>
           </nav>
 
-          <div className="client-salon-status">
+          <div className={`client-salon-status${isOpen ? ' is-open' : ' is-closed'}`}>
             {isOpen ? 'Aberto' : 'Fechado'}
           </div>
         </div>
       </header>
+
+      <nav className="client-mobile-subnav" aria-label="Navegação principal">
+        <button type="button" className="client-bottom-nav-item" onClick={() => scrollToSection('sobre')}>
+          <PeopleIcon />
+          <span>Sobre</span>
+        </button>
+
+        <div className="client-mobile-subnav-item-wrap">
+          <button
+            type="button"
+            className="client-bottom-nav-item"
+            onClick={() => { setIsServicesOpen((p) => !p); setIsContactOpen(false) }}
+          >
+            <GeoIcon />
+            <span className="client-subnav-label">
+              Local
+              <CaretDownIcon isOpen={isServicesOpen} />
+            </span>
+          </button>
+          {isServicesOpen && (
+            <div className="client-mobile-subnav-panel">
+              <a
+                className="client-mobile-subnav-option"
+                href={cascaisMapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMenus}
+              >
+                <GeoIcon />
+                <span>Cascais</span>
+                <NavArrowIcon />
+              </a>
+              <a
+                className="client-mobile-subnav-option"
+                href={almadaMapsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMenus}
+              >
+                <GeoIcon />
+                <span>Almada</span>
+                <NavArrowIcon />
+              </a>
+            </div>
+          )}
+        </div>
+
+        <div className="client-mobile-subnav-item-wrap">
+          <button
+            type="button"
+            className="client-bottom-nav-item"
+            onClick={() => { setIsContactOpen((p) => !p); setIsServicesOpen(false) }}
+          >
+            <PhoneIcon />
+            <span className="client-subnav-label">
+              Contato
+              <CaretDownIcon isOpen={isContactOpen} />
+            </span>
+          </button>
+          {isContactOpen && (
+            <div className="client-mobile-subnav-panel">
+              <a className="client-mobile-subnav-option" href="tel:+351938332778" onClick={closeMenus}>
+                <PhoneIcon />
+                <span className="client-subnav-option-info">
+                  <strong>Cascais</strong>
+                  <small>938 332 778</small>
+                </span>
+              </a>
+              <a className="client-mobile-subnav-option" href="tel:+351964045871" onClick={closeMenus}>
+                <PhoneIcon />
+                <span className="client-subnav-option-info">
+                  <strong>Almada</strong>
+                  <small>964 045 871</small>
+                </span>
+              </a>
+            </div>
+          )}
+        </div>
+      </nav>
 
       <main className="client-main">
         {renderPage()}
