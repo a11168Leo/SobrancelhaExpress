@@ -1,0 +1,65 @@
+/* ======================================== */
+/* ARQUIVO: FRONTEND/SRC/INDEX.CSS */
+/* ======================================== */
+
+/* Seletor: :root */
+:root {
+  font-family: "Poppins", "Segoe UI", sans-serif;
+  color: #1f1b1d;
+  background: #fff7fb;
+  --app-bg: #fff7fb;
+  --surface-primary: #ffffff;
+  --surface-secondary: #fff7fb;
+  --text-primary: #1f1b1d;
+  --text-muted: #7a6f77;
+  --border-soft: #f1e6ee;
+  --header-bg: #e39eb8;
+  --header-foreground: #ffffff;
+  --input-bg: #ffffff;
+  --input-border: rgba(0, 0, 0, 0.12);
+  --input-focus: rgba(0, 0, 0, 0.3);
+  --input-focus-ring: rgba(255, 255, 255, 0.4);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Seletor: :root[data-theme='dark'] */
+:root[data-theme='dark'] {
+  color: #f7edf2;
+  background: #161116;
+  --app-bg: #161116;
+  --surface-primary: #241b23;
+  --surface-secondary: #1c151c;
+  --text-primary: #f7edf2;
+  --text-muted: #cbb8c2;
+  --border-soft: rgba(255, 255, 255, 0.08);
+  --header-bg: #2a2028;
+  --header-foreground: #fff7fb;
+  --input-bg: rgba(255, 255, 255, 0.06);
+  --input-border: rgba(255, 255, 255, 0.14);
+  --input-focus: rgba(255, 255, 255, 0.28);
+  --input-focus-ring: rgba(255, 255, 255, 0.12);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Seletor: body */
+body {
+  margin: 0;
+  background: var(--app-bg);
+  color: var(--text-primary);
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Seletor: #root */
+#root {
+  min-height: 100vh;
+}
+
+/* Seletor: input, button */
+input,
+button {
+  font-family: inherit;
+}

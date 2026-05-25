@@ -1,0 +1,239 @@
+/* ======================================== */
+/* CALENDARIO EMBED — DASHBOARD            */
+/* ======================================== */
+
+.calendar-embed-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-soft);
+  padding: 20px;
+}
+
+.calendar-embed-loading,
+.calendar-embed-error {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 14px;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-soft);
+}
+
+.calendar-embed-error {
+  color: #c95184;
+}
+
+/* ======================================== */
+/* FULLCALENDAR — VARIAVEIS BASE           */
+/* ======================================== */
+
+.calendar-embed-wrapper .fc {
+  --fc-border-color: var(--border-soft);
+  --fc-page-bg-color: var(--surface-primary);
+  --fc-neutral-bg-color: var(--surface-secondary);
+  --fc-today-bg-color: rgba(201, 81, 132, 0.06);
+  --fc-button-bg-color: #c95184;
+  --fc-button-border-color: #c95184;
+  --fc-button-hover-bg-color: #ad385a;
+  --fc-button-hover-border-color: #ad385a;
+  --fc-button-active-bg-color: #ad385a;
+  --fc-button-active-border-color: #ad385a;
+  --fc-button-text-color: #ffffff;
+  --fc-event-border-color: transparent;
+  --fc-event-text-color: #ffffff;
+  --fc-non-business-color: rgba(0, 0, 0, 0.02);
+  font-family: inherit;
+  font-size: 13px;
+}
+
+/* ======================================== */
+/* TOOLBAR                                 */
+/* ======================================== */
+
+.calendar-embed-wrapper .fc .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.calendar-embed-wrapper .fc .fc-toolbar-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.calendar-embed-wrapper .fc .fc-button {
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 13px;
+  box-shadow: none;
+  text-transform: none;
+  letter-spacing: 0;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.calendar-embed-wrapper .fc .fc-button:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+.calendar-embed-wrapper .fc .fc-button:hover {
+  transform: translateY(-1px);
+}
+
+/* ======================================== */
+/* CABECALHOS DOS DIAS                     */
+/* ======================================== */
+
+.calendar-embed-wrapper .fc .fc-col-header {
+  background: var(--surface-secondary);
+}
+
+.calendar-embed-wrapper .fc .fc-col-header-cell {
+  border-color: var(--border-soft);
+  padding: 10px 4px;
+  background: var(--surface-secondary);
+}
+
+/* IMPORTANTE: Remove a cor azul dos links dos dias */
+.calendar-embed-wrapper .fc .fc-col-header-cell-cushion,
+.calendar-embed-wrapper .fc .fc-col-header-cell-cushion:link,
+.calendar-embed-wrapper .fc .fc-col-header-cell-cushion:visited {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Celula vazia do canto superior esquerdo */
+.calendar-embed-wrapper .fc .fc-timegrid-axis {
+  background: var(--surface-secondary);
+  border-color: var(--border-soft);
+}
+
+/* ======================================== */
+/* GRID DE TEMPO                           */
+/* ======================================== */
+
+.calendar-embed-wrapper .fc .fc-scrollgrid {
+  border-color: var(--border-soft);
+}
+
+.calendar-embed-wrapper .fc .fc-scrollgrid td,
+.calendar-embed-wrapper .fc .fc-scrollgrid th {
+  border-color: var(--border-soft);
+}
+
+.calendar-embed-wrapper .fc .fc-timegrid-slot {
+  height: 2.2rem;
+  border-color: var(--border-soft);
+}
+
+.calendar-embed-wrapper .fc .fc-timegrid-slot-minor {
+  border-top-style: dashed;
+  border-color: var(--border-soft);
+  opacity: 0.5;
+}
+
+.calendar-embed-wrapper .fc .fc-timegrid-col {
+  background: var(--surface-primary);
+}
+
+.calendar-embed-wrapper .fc .fc-timegrid-col.fc-day-today {
+  background: var(--fc-today-bg-color) !important;
+}
+
+/* Labels de hora */
+.calendar-embed-wrapper .fc .fc-timegrid-axis-cushion,
+.calendar-embed-wrapper .fc .fc-timegrid-slot-label-cushion {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding-right: 8px;
+}
+
+/* ======================================== */
+/* EVENTOS                                 */
+/* ======================================== */
+
+.calendar-embed-wrapper .fc .fc-event {
+  border-radius: 8px;
+  border: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.calendar-embed-wrapper .fc .fc-event:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.calendar-embed-wrapper .fc .fc-event-main {
+  padding: 3px 6px;
+}
+
+.calendar-embed-wrapper .fc .fc-event-title {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: normal;
+  overflow: hidden;
+}
+
+.calendar-embed-wrapper .fc .fc-event-time {
+  font-size: 10px;
+  font-weight: 500;
+  opacity: 0.88;
+}
+
+/* ======================================== */
+/* INDICADOR ATUAL                         */
+/* ======================================== */
+
+.calendar-embed-wrapper .fc .fc-now-indicator-line {
+  border-color: #c95184;
+  border-width: 2px;
+}
+
+.calendar-embed-wrapper .fc .fc-now-indicator-arrow {
+  border-color: #c95184;
+}
+
+/* ======================================== */
+/* RESPONSIVO                              */
+/* ======================================== */
+
+@media (max-width: 768px) {
+  .calendar-embed-wrapper {
+    padding: 12px;
+  }
+
+  .calendar-embed-wrapper .fc .fc-toolbar-title {
+    font-size: 14px;
+  }
+
+  .calendar-embed-wrapper .fc .fc-button {
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .calendar-embed-wrapper .fc .fc-timegrid-slot {
+    height: 2.2rem;
+  }
+
+  .calendar-embed-wrapper .fc .fc-col-header-cell-cushion {
+    font-size: 10px;
+  }
+}

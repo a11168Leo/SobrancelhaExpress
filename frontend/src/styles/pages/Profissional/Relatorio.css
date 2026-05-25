@@ -1,0 +1,283 @@
+/* ======================================== */
+/* ARQUIVO: FRONTEND/SRC/STYLES/PAGES/RELATORIO.CSS */
+/* ======================================== */
+
+/* Página principal */
+.relatorio-page {
+  display: grid;
+  gap: 24px;
+  align-content: start;
+  background: var(--app-bg);
+}
+
+/* Cabeçalho */
+.relatorio-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.relatorio-header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: var(--text-primary);
+}
+
+.relatorio-header p {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Tabs de período */
+.relatorio-period-tabs {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+  align-items: center;
+}
+
+.relatorio-period-btn {
+  min-height: 40px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border-soft);
+  background: var(--surface-primary);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.relatorio-period-btn:hover {
+  background: var(--surface-secondary);
+  color: var(--text-primary);
+}
+
+.relatorio-period-btn.is-active {
+  background: linear-gradient(135deg, #ffa3b0 0%, #c95184 100%);
+  color: #ffffff;
+  border-color: transparent;
+}
+
+/* Grid de KPIs */
+.relatorio-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+/* Card de KPI */
+.relatorio-kpi-card {
+  display: grid;
+  gap: 10px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  background: var(--surface-primary);
+}
+
+.relatorio-kpi-label {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.relatorio-kpi-value {
+  display: block;
+  font-size: 30px;
+  font-weight: 800;
+  color: #c95184;
+  line-height: 1;
+}
+
+.relatorio-kpi-sub {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Linha de gráficos (2 colunas) */
+.relatorio-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 16px;
+}
+
+/* Card de gráfico base */
+.relatorio-chart-card {
+  display: grid;
+  gap: 16px;
+  padding: 22px;
+  border-radius: 22px;
+  background: var(--surface-primary);
+  align-content: start;
+}
+
+/* Card pequeno (pie charts) */
+.relatorio-chart-card--sm {
+  grid-template-columns: unset;
+}
+
+/* Card que ocupa largura total */
+.relatorio-chart-card--full {
+  grid-column: 1 / -1;
+}
+
+/* Cabeçalho interno do card */
+.relatorio-chart-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: var(--text-primary);
+}
+
+.relatorio-chart-header p {
+  margin: 6px 0 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* Tooltip personalizado */
+.relatorio-tooltip {
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-soft);
+  font-size: 13px;
+  color: var(--text-primary);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  line-height: 1.7;
+}
+
+.relatorio-tooltip-label {
+  margin: 0 0 6px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+/* Wrapper do Pie + Legenda */
+.relatorio-pie-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Legenda do Pie */
+.relatorio-pie-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 0 4px;
+}
+
+.relatorio-pie-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+.relatorio-pie-legend-item strong {
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.relatorio-pie-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Estados de carregamento e erro */
+.relatorio-loading,
+.relatorio-error {
+  padding: 48px 24px;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 22px;
+  background: var(--surface-primary);
+}
+
+.relatorio-loading {
+  color: var(--text-muted);
+}
+
+.relatorio-error {
+  color: #c95184;
+}
+
+/* ======================================== */
+/* RESPONSIVIDADE                          */
+/* ======================================== */
+
+@media (max-width: 1100px) {
+  .relatorio-row {
+    grid-template-columns: 1fr;
+  }
+
+  .relatorio-kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .relatorio-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .relatorio-period-tabs {
+    justify-content: stretch;
+  }
+
+  .relatorio-period-btn {
+    flex: 1;
+  }
+
+  .relatorio-kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .relatorio-chart-card {
+    padding: 16px;
+  }
+}
+
+/* ======================================== */
+/* DARK MODE                               */
+/* ======================================== */
+
+:root[data-theme='dark'] .relatorio-kpi-card,
+:root[data-theme='dark'] .relatorio-chart-card {
+  background: var(--surface-primary);
+}
+
+:root[data-theme='dark'] .relatorio-tooltip {
+  background: var(--surface-primary);
+  border-color: var(--border-soft);
+}
+
+:root[data-theme='dark'] .relatorio-period-btn {
+  background: var(--surface-primary);
+  border-color: var(--border-soft);
+}
+
+:root[data-theme='dark'] .relatorio-period-btn:hover {
+  background: var(--surface-secondary);
+}

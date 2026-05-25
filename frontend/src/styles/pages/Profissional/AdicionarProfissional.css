@@ -1,0 +1,683 @@
+/* ======================================== */
+/* PAGINA PRINCIPAL                         */
+/* ======================================== */
+
+/* Seletor: .add-professional-page */
+.add-professional-page {
+  min-height: 100%;
+  display: grid;
+  align-content: start;
+  gap: 20px;
+  background: transparent;
+  padding: 20px;
+}
+
+/* ======================================== */
+/* CABECALHO DA PAGINA                      */
+/* ======================================== */
+
+/* Seletor: .page-header */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+/* Seletor: .page-header h1 */
+.page-header h1 {
+  margin: 0;
+  font-size: 32px;
+  color: #24181f;
+}
+
+/* ======================================== */
+/* RODAPE DA PAGINA                         */
+/* ======================================== */
+
+/* Seletor: .page-footer */
+.page-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(215, 126, 153, 0.3);
+}
+
+/* ======================================== */
+/* BOTAO DE VOLTAR                          */
+/* ======================================== */
+
+/* Seletor: .back-icon-button */
+.back-icon-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(215, 126, 153, 0.3);
+  background: transparent;
+  color: #24181f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Seletor: .back-icon-button:hover */
+.back-icon-button:hover {
+  background: #dc3545;
+  border-color: #dc3545;
+  color: white;
+}
+
+/* Seletor: .back-icon-button svg */
+.back-icon-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ======================================== */
+/* BOTAO ADICIONAR                          */
+/* ======================================== */
+
+/* Seletor: .add-button */
+.add-button {
+  width: 90%;
+  max-width: 600px;
+  padding: 16px 48px;
+  border: none;
+  border-radius: 8px;
+  background: white;
+  color: #24181f;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.5s ease, border-color 0.5s ease;
+  border: 1px solid rgba(215, 126, 153, 0.3);
+}
+
+/* Seletor: .add-button:hover */
+.add-button:hover {
+  background: #ead79b;
+  border-color: #ead79b;
+}
+
+/* ======================================== */
+/* CONTEUDO E ABAS                          */
+/* ======================================== */
+
+/* Seletor: .content-container */
+.content-container {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 24px;
+  padding: 0;
+}
+
+/* Seletor: .tab-navigation */
+.tab-navigation {
+  display: flex;
+  gap: 0;
+  margin-bottom: 32px;
+  border-bottom: 1px solid rgba(215, 126, 153, 0.3);
+}
+
+/* Seletor: .tab-button */
+.tab-button {
+  padding: 12px 24px;
+  border: none;
+  background: transparent;
+  color: #24181f;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+/* Seletor: .tab-button:hover */
+.tab-button:hover {
+  background: rgba(255, 95, 178, 0.06);
+}
+
+/* Seletor: .tab-button.active */
+.tab-button.active {
+  color: #d77e99;
+  border-bottom-color: #d77e99;
+}
+
+/* Seletor: .tab-content-container */
+.tab-content-container {
+  min-height: 400px;
+}
+
+/* Seletor: .tab-content */
+.tab-content {
+  display: grid;
+  gap: 24px;
+}
+
+/* ======================================== */
+/* CABECALHO DAS SECOES                     */
+/* ======================================== */
+
+/* Seletor: .section-header h2 */
+.section-header h2 {
+  margin: 0;
+  font-size: 24px;
+  color: #24181f;
+}
+
+/* Seletor: .section-header p */
+.section-header p {
+  margin: 8px 0 0 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* ======================================== */
+/* FOTO DE PERFIL                           */
+/* ======================================== */
+
+/* Seletor: .profile-picture-section */
+.profile-picture-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+/* Seletor: .profile-picture */
+.profile-picture {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: #f8f9fa;
+  border: 2px solid #eea8bc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #b88b9b;
+}
+
+/* Seletor: .person-icon */
+.person-icon {
+  width: 48px;
+  height: 48px;
+}
+
+/* Seletor: .edit-picture-btn */
+.edit-picture-btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #eea8bc;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Seletor: .edit-picture-btn:hover */
+.edit-picture-btn:hover {
+  background: #d77e99;
+}
+
+/* Seletor: .edit-picture-btn svg */
+.edit-picture-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ======================================== */
+/* FORMULARIO                               */
+/* ======================================== */
+
+/* Seletor: .form-section */
+.form-section {
+  display: grid;
+  gap: 20px;
+}
+
+/* Seletor: .form-row */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+/* Seletor: .form-group */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Seletor: .form-group label */
+.form-group label {
+  font-weight: 500;
+  color: #24181f;
+  font-size: 14px;
+}
+
+/* Seletor: .form-group input */
+.form-group input {
+  padding: 12px 16px;
+  border: 1px solid rgba(215, 126, 153, 0.18);
+  border-radius: 12px;
+  background: white;
+  font-size: 15px;
+  color: #24181f;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Seletor: .form-group input:hover */
+.form-group input:hover {
+  border-color: #ff5fb2;
+  box-shadow: 0 0 10px rgba(255, 95, 178, 0.24), 0 0 18px rgba(255, 95, 178, 0.12);
+}
+
+/* Seletor: .form-group input:focus */
+.form-group input:focus {
+  border-color: #ff4ea1;
+  box-shadow: 0 0 0 3px rgba(255, 78, 161, 0.16), 0 0 14px rgba(255, 78, 161, 0.28), 0 0 26px rgba(255, 78, 161, 0.14);
+}
+
+/* ======================================== */
+/* CAMPO DE TELEFONE                        */
+/* ======================================== */
+
+/* Seletor: .phone-input */
+.phone-input {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(215, 126, 153, 0.18);
+  border-radius: 12px;
+  background: white;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Seletor: .phone-input:hover */
+.phone-input:hover {
+  border-color: #ff5fb2;
+  box-shadow: 0 0 10px rgba(255, 95, 178, 0.24), 0 0 18px rgba(255, 95, 178, 0.12);
+}
+
+/* Seletor: .phone-prefix */
+.phone-prefix {
+  padding: 12px 16px;
+  background: rgba(238, 168, 188, 0.1);
+  border-right: 1px solid rgba(215, 126, 153, 0.18);
+  color: #24181f;
+  font-weight: 500;
+}
+
+/* Seletor: .phone-input input */
+.phone-input input {
+  border: none;
+  background: transparent;
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 15px;
+  color: #24181f;
+  outline: none;
+}
+
+/* Seletor: .phone-input input:focus */
+.phone-input input:focus {
+  box-shadow: none;
+}
+
+/* Seletor: .phone-input:focus-within */
+.phone-input:focus-within {
+  border-color: #ff4ea1;
+  box-shadow: 0 0 0 3px rgba(255, 78, 161, 0.16), 0 0 14px rgba(255, 78, 161, 0.28), 0 0 26px rgba(255, 78, 161, 0.14);
+}
+
+/* ======================================== */
+/* DETALHES DE TRABALHO                     */
+/* ======================================== */
+
+/* Seletor: .work-details-section */
+.work-details-section {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(215, 126, 153, 0.3);
+}
+
+/* Seletor: .work-details-section h3 */
+.work-details-section h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  color: #24181f;
+}
+
+/* Seletor: .work-details-section p */
+.work-details-section p {
+  margin: 0 0 20px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+/* ======================================== */
+/* BUSCA                                    */
+/* ======================================== */
+
+/* Seletor: .search-section */
+.search-section {
+  margin-bottom: 24px;
+}
+
+/* Seletor: .search-input */
+.search-input {
+  position: relative;
+  max-width: 400px;
+}
+
+/* Seletor: .search-input input */
+.search-input input {
+  width: 100%;
+  padding: 12px 16px 12px 44px;
+  border: 1px solid rgba(215, 126, 153, 0.18);
+  border-radius: 12px;
+  background: white;
+  font-size: 15px;
+  color: #24181f;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Seletor: .search-input input:hover */
+.search-input input:hover {
+  border-color: #ff5fb2;
+  box-shadow: 0 0 10px rgba(255, 95, 178, 0.24), 0 0 18px rgba(255, 95, 178, 0.12);
+}
+
+/* Seletor: .search-input input:focus */
+.search-input input:focus {
+  border-color: #ff4ea1;
+  box-shadow: 0 0 0 3px rgba(255, 78, 161, 0.16), 0 0 14px rgba(255, 78, 161, 0.28), 0 0 26px rgba(255, 78, 161, 0.14);
+}
+
+/* Seletor: .search-icon */
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  color: #b88b9b;
+}
+
+/* ======================================== */
+/* SERVICOS                                 */
+/* ======================================== */
+
+/* Seletor: .services-section */
+.services-section {
+  display: grid;
+  gap: 24px;
+}
+
+/* Seletor: .service-category h4 */
+.service-category h4 {
+  margin: 0 0 12px 0;
+  font-size: 16px;
+  color: #24181f;
+  font-weight: 600;
+}
+
+/* Seletor: .services-list */
+.services-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 12px;
+}
+
+/* Seletor: .service-item */
+.service-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: white;
+  border: 1px solid rgba(215, 126, 153, 0.18);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Seletor: .service-item:hover */
+.service-item:hover {
+  background: rgba(238, 168, 188, 0.05);
+  border-color: #eea8bc;
+}
+
+/* Seletor: .service-item input[type="checkbox"] */
+.service-item input[type="checkbox"] {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  accent-color: #eea8bc;
+}
+
+/* Seletor: .service-item span */
+.service-item span {
+  font-size: 14px;
+  color: #24181f;
+}
+
+/* ======================================== */
+/* LOCAIS DE ATENDIMENTO                    */
+/* ======================================== */
+
+/* Seletor: .locations-section */
+.locations-section {
+  display: grid;
+  gap: 16px;
+}
+
+/* Seletor: .location-item */
+.location-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px;
+  background: white;
+  border: 1px solid rgba(215, 126, 153, 0.18);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Seletor: .location-item:hover */
+.location-item:hover {
+  background: rgba(238, 168, 188, 0.05);
+  border-color: #eea8bc;
+}
+
+/* Seletor: .location-item input[type="checkbox"] */
+.location-item input[type="checkbox"] {
+  margin: 4px 0 0 0;
+  width: 16px;
+  height: 16px;
+  accent-color: #eea8bc;
+}
+
+/* Seletor: .store-image */
+.store-image {
+  width: 60px;
+  height: 60px;
+  border-radius: 8px;
+  background: rgba(238, 168, 188, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(215, 126, 153, 0.18);
+  flex-shrink: 0;
+}
+
+/* Seletor: .store-placeholder */
+.store-placeholder {
+  font-size: 24px;
+}
+
+/* Seletor: .location-content h4 */
+.location-content h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  color: #24181f;
+}
+
+/* Seletor: .location-content p */
+.location-content p {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+}
+
+/* Seletor: .location-info */
+.location-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  gap: 20px;
+}
+
+/* Seletor: .availability-section */
+.availability-section {
+  flex-shrink: 0;
+  min-width: 250px;
+  padding: 12px;
+  background: rgba(238, 168, 188, 0.05);
+  border: 1px solid rgba(215, 126, 153, 0.18);
+  border-radius: 8px;
+}
+
+/* Seletor: .availability-section h5 */
+.availability-section h5 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  color: #24181f;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Seletor: .days-list */
+.days-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+/* Seletor: .day-item */
+.day-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #24181f;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+/* Seletor: .day-item:hover */
+.day-item:hover {
+  background: rgba(238, 168, 188, 0.1);
+}
+
+/* Seletor: .day-item input[type="checkbox"] */
+.day-item input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: #eea8bc;
+}
+
+/* ======================================== */
+/* DARK MODE                               */
+/* ======================================== */
+
+/* Seletor: :root[data-theme='dark'] .page-header h1, :root[data-theme='dark'] .section-header h2, :root[data-theme='dark'] .work-details-section h3, :root[data-theme='dark'] .service-category h4, :root[data-theme='dark'] .location-content h4 */
+:root[data-theme='dark'] .page-header h1,
+:root[data-theme='dark'] .section-header h2,
+:root[data-theme='dark'] .work-details-section h3,
+:root[data-theme='dark'] .service-category h4,
+:root[data-theme='dark'] .location-content h4 {
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .section-header p, :root[data-theme='dark'] .work-details-section p, :root[data-theme='dark'] .location-content p */
+:root[data-theme='dark'] .section-header p,
+:root[data-theme='dark'] .work-details-section p,
+:root[data-theme='dark'] .location-content p {
+  color: #c9b7c1;
+}
+
+/* Seletor: :root[data-theme='dark'] .page-footer, :root[data-theme='dark'] .tab-navigation, :root[data-theme='dark'] .work-details-section */
+:root[data-theme='dark'] .page-footer,
+:root[data-theme='dark'] .tab-navigation,
+:root[data-theme='dark'] .work-details-section {
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Seletor: :root[data-theme='dark'] .back-icon-button */
+:root[data-theme='dark'] .back-icon-button {
+  border-color: rgba(255, 255, 255, 0.12);
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .add-button, :root[data-theme='dark'] .form-group input, :root[data-theme='dark'] .phone-input, :root[data-theme='dark'] .search-input input, :root[data-theme='dark'] .service-item, :root[data-theme='dark'] .location-item */
+:root[data-theme='dark'] .add-button,
+:root[data-theme='dark'] .form-group input,
+:root[data-theme='dark'] .phone-input,
+:root[data-theme='dark'] .search-input input,
+:root[data-theme='dark'] .service-item,
+:root[data-theme='dark'] .location-item {
+  background: #241b23;
+  border-color: rgba(255, 255, 255, 0.1);
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .form-group label, :root[data-theme='dark'] .phone-prefix, :root[data-theme='dark'] .service-item span */
+:root[data-theme='dark'] .form-group label,
+:root[data-theme='dark'] .phone-prefix,
+:root[data-theme='dark'] .service-item span {
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .phone-prefix, :root[data-theme='dark'] .store-image */
+:root[data-theme='dark'] .phone-prefix,
+:root[data-theme='dark'] .store-image {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+/* Seletor: :root[data-theme='dark'] .phone-input input */
+:root[data-theme='dark'] .phone-input input {
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .tab-button */
+:root[data-theme='dark'] .tab-button {
+  color: #f7edf2;
+}
+
+/* Seletor: :root[data-theme='dark'] .profile-picture */
+:root[data-theme='dark'] .profile-picture {
+  background: #241b23;
+  color: #d8bfd0;
+}
