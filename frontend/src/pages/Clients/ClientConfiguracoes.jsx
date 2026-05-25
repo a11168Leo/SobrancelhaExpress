@@ -22,19 +22,19 @@ function ClientConfiguracoes() {
 
   const save = () => {
     localStorage.setItem('clientPreferences', JSON.stringify(preferences))
-    setMessage('Configuracoes salvas.')
+    setMessage('Configurações salvas.')
     setTimeout(() => setMessage(''), 2500)
   }
 
   return (
     <section className="page">
       <div>
-        <h1>Configuracoes</h1>
-        <p className="page-subtitle">Preferencias da sua experiencia no painel.</p>
+        <h1>Configurações</h1>
+        <p className="page-subtitle">Preferências da sua experiência no painel.</p>
       </div>
 
       <div className="card" style={{ display: 'grid', gap: '0.8rem' }}>
-        <h3>Notificacoes</h3>
+        <h3>Notificações</h3>
         <label style={{ display: 'flex', gap: '0.6rem', alignItems: 'center' }}>
           <input
             type="checkbox"

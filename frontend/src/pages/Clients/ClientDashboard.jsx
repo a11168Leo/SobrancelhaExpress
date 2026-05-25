@@ -41,43 +41,43 @@ function ClientDashboard() {
     <section className="page">
       <div>
         <h1>Dashboard</h1>
-        <p className="page-subtitle">Resumo dos seus atendimentos no salao.</p>
+        <p className="page-subtitle">Resumo dos seus atendimentos no salão.</p>
       </div>
 
       <div className="stats-grid">
         <article className="card">
           <h3>Total de agendamentos</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{stats.total}</div>
-          <p>Historico completo</p>
+          <p>Histórico completo</p>
         </article>
         <article className="card">
-          <h3>Proximos agendamentos</h3>
+          <h3>Próximos agendamentos</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{stats.upcoming}</div>
           <p>Itens futuros</p>
         </article>
         <article className="card">
           <h3>Finalizados</h3>
           <div style={{ fontSize: '1.6rem', fontWeight: 700 }}>{stats.completed}</div>
-          <p>Atendimentos concluidos</p>
+          <p>Atendimentos concluídos</p>
         </article>
       </div>
 
       <div className="card">
-        <h3>Proximo horario</h3>
+        <h3>Próximo horário</h3>
         {stats.next ? (
           <div style={{ display: 'grid', gap: '0.4rem' }}>
             <p style={{ margin: 0 }}>
               <strong>Data:</strong> {new Date(stats.next.startTime).toLocaleString('pt-PT')}
             </p>
             <p style={{ margin: 0 }}>
-              <strong>Servico:</strong> {stats.next.service?.name || 'Servico'}
+              <strong>Serviço:</strong> {stats.next.service?.name || 'Serviço'}
             </p>
             <p style={{ margin: 0 }}>
               <strong>Profissional:</strong> {stats.next.professional?.name || 'Profissional'}
             </p>
           </div>
         ) : (
-          <p style={{ margin: 0, color: 'var(--client-muted)' }}>Voce nao possui horarios futuros.</p>
+          <p style={{ margin: 0, color: 'var(--client-muted)' }}>Você não possui horários futuros.</p>
         )}
       </div>
 

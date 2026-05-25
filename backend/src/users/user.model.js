@@ -50,28 +50,35 @@ const UserSchema = new mongoose.Schema(
       type: [String],
       default: []
     },
+    instagram: {
+      type: String,
+      default: ''
+    },
     availability: {
       type: [
         {
-          day: {
-            type: String,
-            required: true
-          },
-          enabled: {
-            type: Boolean,
-            default: true
-          },
-          start: {
-            type: String,
-            default: ''
-          },
-          end: {
-            type: String,
-            default: ''
-          }
+          day: { type: String, required: true },
+          enabled: { type: Boolean, default: true },
+          start: { type: String, default: '' },
+          end: { type: String, default: '' },
+          unit: { type: String, default: '' }
         }
       ],
       default: []
+    },
+    vacationPeriods: {
+      type: [
+        {
+          startDate: { type: Date, required: true },
+          endDate: { type: Date, required: true },
+          label: { type: String, default: '' }
+        }
+      ],
+      default: []
+    },
+    rewardPoints: {
+      type: Number,
+      default: 0
     },
     mustChangePassword: {
       type: Boolean,

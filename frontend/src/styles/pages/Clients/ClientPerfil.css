@@ -1,0 +1,646 @@
+/* ======================================== */
+/* PERFIL DO CLIENTE                        */
+/* ======================================== */
+
+.cperfil-page {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+/* ── HERO / CABEÇALHO ── */
+.cperfil-hero {
+  border-radius: 24px;
+  background: linear-gradient(135deg, #ffa3b0 0%, #c95184 60%, #ad385a 100%);
+  padding: 2rem 2rem 1.5rem;
+  color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.cperfil-hero::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  pointer-events: none;
+}
+
+.cperfil-hero::after {
+  content: '';
+  position: absolute;
+  bottom: -60px;
+  left: 30%;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.05);
+  pointer-events: none;
+}
+
+.cperfil-hero-top {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Avatar */
+.cperfil-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.cperfil-avatar {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid rgba(255,255,255,0.5);
+}
+
+.cperfil-avatar-fallback {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.22);
+  border: 3px solid rgba(255,255,255,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #fff;
+}
+
+.cperfil-avatar-overlay {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.cperfil-avatar-wrap:hover .cperfil-avatar-overlay {
+  opacity: 1;
+}
+
+.cperfil-avatar-overlay svg {
+  width: 22px;
+  height: 22px;
+  color: #fff;
+}
+
+.cperfil-avatar-input {
+  display: none;
+}
+
+.cperfil-hero-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cperfil-hero-name {
+  margin: 0 0 4px;
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+}
+
+.cperfil-hero-email {
+  margin: 0 0 10px;
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.75);
+}
+
+.cperfil-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.2);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.cperfil-points-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255,220,100,0.25);
+  border: 1px solid rgba(255,220,100,0.4);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #ffe680;
+}
+
+/* Stats */
+.cperfil-hero-stats {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  position: relative;
+  z-index: 1;
+}
+
+.cperfil-stat {
+  flex: 1;
+  text-align: center;
+}
+
+.cperfil-stat-value {
+  display: block;
+  font-size: 1.6rem;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1;
+}
+
+.cperfil-stat-label {
+  display: block;
+  font-size: 0.75rem;
+  color: rgba(255,255,255,0.72);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.cperfil-stat-divider {
+  width: 1px;
+  background: rgba(255,255,255,0.2);
+  align-self: stretch;
+}
+
+/* ── TABS ── */
+.cperfil-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--client-surface, #fff);
+  border: 1.5px solid var(--client-line, rgba(201,114,160,0.18));
+  border-radius: 16px;
+}
+
+.cperfil-tab {
+  flex: 1;
+  padding: 10px 8px;
+  border: none;
+  border-radius: 12px;
+  background: transparent;
+  font-size: 0.87rem;
+  font-weight: 700;
+  color: var(--client-muted, #8d7b83);
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.cperfil-tab svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+}
+
+.cperfil-tab.is-active {
+  background: linear-gradient(135deg, #ffa3b0 0%, #c95184 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(201, 81, 132, 0.28);
+}
+
+/* ── CONTEÚDO ── */
+.cperfil-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── PRÓXIMO AGENDAMENTO (destaque) ── */
+.cperfil-next-card {
+  border-radius: 20px;
+  border: 1.5px solid var(--client-line, rgba(201,114,160,0.18));
+  background: var(--client-surface, #fff);
+  overflow: hidden;
+}
+
+.cperfil-next-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--client-line, rgba(201,114,160,0.12));
+}
+
+.cperfil-next-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #27ae60;
+  box-shadow: 0 0 0 3px rgba(39,174,96,0.2);
+}
+
+.cperfil-next-header span {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--client-muted, #8d7b83);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.cperfil-next-body {
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.cperfil-next-service {
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: var(--client-ink, #2b1b2a);
+  margin: 0 0 4px;
+}
+
+.cperfil-next-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.cperfil-next-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(201,81,132,0.08);
+  color: #c95184;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.cperfil-next-chip svg {
+  width: 12px;
+  height: 12px;
+}
+
+.cperfil-next-date {
+  text-align: right;
+}
+
+.cperfil-next-date-day {
+  display: block;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #c95184;
+  line-height: 1;
+}
+
+.cperfil-next-date-rest {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--client-muted, #8d7b83);
+  font-weight: 600;
+  margin-top: 2px;
+}
+
+/* ── LISTA DE AGENDAMENTOS ── */
+.cperfil-appt-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.cperfil-filter-btn {
+  padding: 7px 16px;
+  border-radius: 999px;
+  border: 1.5px solid var(--client-line, rgba(201,114,160,0.18));
+  background: var(--client-surface, #fff);
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--client-muted, #8d7b83);
+  cursor: pointer;
+  transition: border-color 0.15s ease, background 0.15s ease, color 0.15s ease;
+}
+
+.cperfil-filter-btn.is-active {
+  background: linear-gradient(135deg, #ffa3b0, #c95184);
+  border-color: #c95184;
+  color: #fff;
+}
+
+.cperfil-appt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cperfil-appt-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  border: 1.5px solid var(--client-line, rgba(201,114,160,0.18));
+  background: var(--client-surface, #fff);
+  transition: box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.cperfil-appt-card:hover {
+  box-shadow: 0 6px 24px rgba(201,81,132,0.1);
+  transform: translateY(-1px);
+}
+
+.cperfil-appt-date-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 52px;
+  width: 52px;
+  height: 56px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(255,163,176,0.15), rgba(201,81,132,0.1));
+  flex-shrink: 0;
+}
+
+.cperfil-appt-day {
+  font-size: 1.25rem;
+  font-weight: 900;
+  color: #c95184;
+  line-height: 1;
+}
+
+.cperfil-appt-month {
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: var(--client-muted, #8d7b83);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.cperfil-appt-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cperfil-appt-service {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: var(--client-ink, #2b1b2a);
+  margin: 0 0 3px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cperfil-appt-sub {
+  font-size: 0.78rem;
+  color: var(--client-muted, #8d7b83);
+  font-weight: 600;
+}
+
+.cperfil-appt-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.cperfil-appt-time {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--client-ink, #2b1b2a);
+}
+
+.cperfil-status-badge {
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+
+.cperfil-status-badge--scheduled {
+  background: rgba(39,174,96,0.1);
+  color: #27ae60;
+}
+
+.cperfil-status-badge--completed {
+  background: rgba(201,81,132,0.1);
+  color: #c95184;
+}
+
+.cperfil-status-badge--cancelled {
+  background: rgba(180,180,180,0.15);
+  color: #8d7b83;
+  text-decoration: line-through;
+}
+
+.cperfil-appt-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--client-muted, #8d7b83);
+  font-size: 0.9rem;
+}
+
+.cperfil-appt-empty svg {
+  width: 48px;
+  height: 48px;
+  color: rgba(201,81,132,0.2);
+  margin-bottom: 1rem;
+}
+
+/* ── FORMULÁRIO DE EDIÇÃO ── */
+.cperfil-section-title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--client-ink, #2b1b2a);
+  margin: 0 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.cperfil-section-title svg {
+  width: 18px;
+  height: 18px;
+  color: #c95184;
+}
+
+.cperfil-card {
+  border-radius: 20px;
+  border: 1.5px solid var(--client-line, rgba(201,114,160,0.18));
+  background: var(--client-surface, #fff);
+  padding: 1.5rem;
+}
+
+.cperfil-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.cperfil-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.cperfil-field--full {
+  grid-column: 1 / -1;
+}
+
+.cperfil-field label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--client-muted, #8d7b83);
+}
+
+.cperfil-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cperfil-input-icon {
+  position: absolute;
+  left: 13px;
+  width: 15px;
+  height: 15px;
+  color: var(--client-muted, #8d7b83);
+  pointer-events: none;
+}
+
+.cperfil-input-wrap input {
+  width: 100%;
+  height: 46px;
+  padding: 0 14px 0 38px;
+  border: 1.5px solid var(--client-line, rgba(201,114,160,0.22));
+  border-radius: 13px;
+  background: var(--client-surface, #fff);
+  color: var(--client-ink, #2b1b2a);
+  font-size: 0.92rem;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.cperfil-input-wrap input:focus {
+  border-color: #c95184;
+  box-shadow: 0 0 0 3px rgba(201,81,132,0.1);
+}
+
+.cperfil-save-btn {
+  margin-top: 1rem;
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ffa3b0 0%, #c95184 100%);
+  color: #fff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(201,81,132,0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.cperfil-save-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 26px rgba(201,81,132,0.38);
+}
+
+.cperfil-save-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cperfil-feedback {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.86rem;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+.cperfil-feedback--ok {
+  background: rgba(39,174,96,0.1);
+  color: #27ae60;
+}
+
+.cperfil-feedback--err {
+  background: rgba(201,81,132,0.08);
+  color: #c95184;
+}
+
+/* ── RESPONSIVO ── */
+@media (max-width: 600px) {
+  .cperfil-page {
+    padding: 1.25rem 0.75rem 4rem;
+  }
+
+  .cperfil-hero-top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .cperfil-hero-stats {
+    justify-content: center;
+  }
+
+  .cperfil-tabs {
+    gap: 2px;
+  }
+
+  .cperfil-tab {
+    font-size: 0.78rem;
+    padding: 9px 6px;
+  }
+
+  .cperfil-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cperfil-next-body {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cperfil-next-date {
+    text-align: left;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+}

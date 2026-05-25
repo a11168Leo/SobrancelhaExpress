@@ -22,15 +22,15 @@ function ClientNotificacoes() {
   return (
     <section className="page">
       <div>
-        <h1>Notificacoes</h1>
+        <h1>Notificações</h1>
         <p className="page-subtitle">Mensagens importantes da sua conta.</p>
       </div>
 
       <div className="card" style={{ display: 'grid', gap: '0.8rem' }}>
         {notificacoes.length === 0 && (
           <div className="notify-item">
-            <h5>Sem notificacoes</h5>
-            <p>Nao ha novidades no momento.</p>
+            <h5>Sem notificações</h5>
+            <p>Não há novidades no momento.</p>
           </div>
         )}
 

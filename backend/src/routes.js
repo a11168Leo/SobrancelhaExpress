@@ -12,6 +12,7 @@ import financialRoutes from './financial/financial.routes.js';
 import notificationRoutes from './notifications/notification.routes.js';
 import teamRoutes from './team/team.routes.js';
 import settingsRoutes from './settings/settings.routes.js';
+import reviewRoutes from './reviews/review.routes.js';
 
 // Bloco: routes
 const routes = Router();
@@ -24,6 +25,7 @@ routes.use('/financial', financialRoutes);
 routes.use('/notifications', notificationRoutes);
 routes.use('/team', teamRoutes);
 routes.use('/settings', settingsRoutes);
+routes.use('/reviews', reviewRoutes);
 
 // Exportacao principal
 export default routes;

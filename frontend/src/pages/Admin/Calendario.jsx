@@ -22,7 +22,7 @@ const UNIT_OPTIONS = [
 
 // Funcao: formatStatusLabel
 function formatStatusLabel(status) {
-  if (status === 'completed') return 'Concluido'
+  if (status === 'completed') return 'Concluído'
   if (status === 'cancelled') return 'Cancelado'
   return 'Agendado'
 }
@@ -255,7 +255,7 @@ function Calendario() {
     event.preventDefault()
 
     if (!scheduleForm.clientId || !scheduleForm.professionalId || !scheduleForm.serviceId || !scheduleForm.startDate || !scheduleForm.startTime) {
-      setSubmitError('Preencha cliente, profissional, servico, data e hora.')
+      setSubmitError('Preencha cliente, profissional, serviço, data e hora.')
       return
     }
 
@@ -293,19 +293,19 @@ function Calendario() {
   }
 
   if (loading) {
-    return <section className="calendar-page"><p>A carregar eventos do calendario...</p></section>
+    return <section className="calendar-page"><p>A carregar eventos do calendário...</p></section>
   }
 
   if (error) {
-    return <section className="calendar-page"><p>Erro ao carregar o calendario: {error}</p></section>
+    return <section className="calendar-page"><p>Erro ao carregar o calendário: {error}</p></section>
   }
 
 // Renderizacao principal
   return (
-    <section className="calendar-page" aria-label="Calendario">
+    <section className="calendar-page" aria-label="Calendário">
       <div className="calendar-header">
         <div>
-          <h1>Calendario</h1>
+          <h1>Calendário</h1>
           <p>Visualize os agendamentos e acompanhe os eventos da equipa em tempo real.</p>
         </div>
         <button type="button" className="calendar-schedule-button" onClick={openCreateScheduleModal}>
@@ -333,9 +333,9 @@ function Calendario() {
           <div className="calendar-board-topbar">
             <div>
               <h2>Agenda visual</h2>
-              <p>Ao clicar num agendamento, voce pode rever e editar os dados imediatamente.</p>
+              <p>Ao clicar num agendamento, pode rever e editar os dados imediatamente.</p>
             </div>
-            <span className="calendar-buffer-chip">Intervalo minimo de {APPOINTMENT_BUFFER_MINUTES} min</span>
+            <span className="calendar-buffer-chip">Intervalo mínimo de {APPOINTMENT_BUFFER_MINUTES} min</span>
           </div>
 
           <div className="calendar-board">
@@ -347,9 +347,10 @@ function Calendario() {
               contentHeight="auto"
               expandRows
               nowIndicator
+              hiddenDays={[0]}
               allDaySlot={false}
-              slotMinTime="07:00:00"
-              slotMaxTime="23:00:00"
+              slotMinTime="08:00:00"
+              slotMaxTime="20:00:00"
               slotDuration="00:30:00"
               slotLabelInterval="01:00"
               dayHeaderFormat={{ weekday: 'short', omitCommas: true }}
@@ -388,22 +389,22 @@ function Calendario() {
         <aside className="calendar-details-card" aria-label="Detalhes do evento">
           <div className="calendar-details-header">
             <h2>Detalhes do agendamento</h2>
-            <p>Selecione um evento para ver cliente, profissional, horario e observacoes.</p>
+            <p>Selecione um evento para ver cliente, profissional, horário e observações.</p>
           </div>
 
           {selectedAppointment ? (
             <div className="calendar-details-content">
               <div className="calendar-detail-block">
                 <span className="calendar-detail-label">Cliente</span>
-                <strong>{selectedAppointment?.client?.name || 'Cliente nao definido'}</strong>
+                <strong>{selectedAppointment?.client?.name || 'Cliente não definido'}</strong>
               </div>
               <div className="calendar-detail-block">
                 <span className="calendar-detail-label">Profissional</span>
-                <strong>{selectedAppointment?.professional?.name || 'Profissional nao definido'}</strong>
+                <strong>{selectedAppointment?.professional?.name || 'Profissional não definido'}</strong>
               </div>
               <div className="calendar-detail-block">
-                <span className="calendar-detail-label">Servico</span>
-                <strong>{selectedAppointment?.service?.name || 'Servico nao definido'}</strong>
+                <span className="calendar-detail-label">Serviço</span>
+                <strong>{selectedAppointment?.service?.name || 'Serviço não definido'}</strong>
               </div>
               <div className="calendar-detail-block">
                 <span className="calendar-detail-label">Estado</span>
@@ -414,16 +415,16 @@ function Calendario() {
                 <strong>{formatUnitLabel(selectedAppointment.unit)}</strong>
               </div>
               <div className="calendar-detail-block">
-                <span className="calendar-detail-label">Inicio</span>
-                <strong>{selectedAppointment.startTime ? new Date(selectedAppointment.startTime).toLocaleString('pt-PT') : 'Nao definido'}</strong>
+                <span className="calendar-detail-label">Início</span>
+                <strong>{selectedAppointment.startTime ? new Date(selectedAppointment.startTime).toLocaleString('pt-PT') : 'Não definido'}</strong>
               </div>
               <div className="calendar-detail-block">
                 <span className="calendar-detail-label">Fim</span>
-                <strong>{selectedAppointment.endTime ? new Date(selectedAppointment.endTime).toLocaleString('pt-PT') : 'Nao definido'}</strong>
+                <strong>{selectedAppointment.endTime ? new Date(selectedAppointment.endTime).toLocaleString('pt-PT') : 'Não definido'}</strong>
               </div>
               <div className="calendar-detail-block">
-                <span className="calendar-detail-label">Observacoes</span>
-                <p>{selectedAppointment.notes || 'Sem observacoes adicionais.'}</p>
+                <span className="calendar-detail-label">Observações</span>
+                <p>{selectedAppointment.notes || 'Sem observações adicionais.'}</p>
               </div>
               <button type="button" className="calendar-edit-button" onClick={() => openEditScheduleModal(selectedAppointment)}>
                 Editar agendamento
@@ -431,7 +432,7 @@ function Calendario() {
             </div>
           ) : (
             <div className="calendar-empty-state">
-              <p>Clique num evento para abrir a edicao e visualizar as informacoes com mais detalhe.</p>
+              <p>Clique num evento para abrir a edição e visualizar as informações com mais detalhe.</p>
             </div>
           )}
         </aside>
@@ -445,8 +446,8 @@ function Calendario() {
                 <h2>{scheduleModalMode === 'edit' ? 'Editar agendamento' : 'Criar agendamento'}</h2>
                 <p>
                   {scheduleModalMode === 'edit'
-                    ? `Atualize os dados do atendimento. O sistema respeita um intervalo minimo de ${APPOINTMENT_BUFFER_MINUTES} minutos entre agendamentos.`
-                    : `Registe um novo evento com um intervalo minimo de ${APPOINTMENT_BUFFER_MINUTES} minutos entre atendimentos.`}
+                    ? `Atualize os dados do atendimento. O sistema respeita um intervalo mínimo de ${APPOINTMENT_BUFFER_MINUTES} minutos entre agendamentos.`
+                    : `Registe um novo evento com um intervalo mínimo de ${APPOINTMENT_BUFFER_MINUTES} minutos entre atendimentos.`}
                 </p>
               </div>
               <button type="button" className="calendar-modal-close" onClick={closeScheduleModal} aria-label="Fechar">
@@ -505,13 +506,13 @@ function Calendario() {
               </label>
 
               <label className="calendar-field">
-                <span>Servico</span>
+                <span>Serviço</span>
                 <input
                   type="search"
                   name="serviceSearch"
                   value={scheduleForm.serviceSearch}
                   onChange={updateScheduleField}
-                  placeholder="Pesquisar servico por nome"
+                  placeholder="Pesquisar serviço por nome"
                 />
                 <div className="calendar-search-results">
                   {filteredServices.slice(0, 6).map((service) => (
@@ -533,7 +534,7 @@ function Calendario() {
                   <span>Estado</span>
                   <select name="status" value={scheduleForm.status} onChange={updateScheduleField}>
                     <option value="scheduled">Agendado</option>
-                    <option value="completed">Concluido</option>
+                    <option value="completed">Concluído</option>
                     <option value="cancelled">Cancelado</option>
                   </select>
                 </label>
@@ -556,7 +557,7 @@ function Calendario() {
               <div className="calendar-form-actions">
                 <button type="button" className="calendar-secondary-button" onClick={closeScheduleModal}>Cancelar</button>
                 <button type="submit" className="calendar-primary-button" disabled={submitting}>
-                  <span>{submitting ? 'A guardar...' : scheduleModalMode === 'edit' ? 'Guardar alteracoes' : 'Guardar agendamento'}</span>
+                  <span>{submitting ? 'A guardar...' : scheduleModalMode === 'edit' ? 'Guardar alterações' : 'Guardar agendamento'}</span>
                 </button>
               </div>
             </form>

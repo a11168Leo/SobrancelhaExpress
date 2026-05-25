@@ -1,12 +1,15 @@
 /* ======================================== */
-/* ARQUIVO: FRONTEND/SRC/STYLES/PAGES/CALENDARIOEMBED.CSS */
+/* CALENDARIO EMBED — DASHBOARD            */
 /* ======================================== */
-/* Estilos para o componente CalendarioEmbed */
 
 .calendar-embed-wrapper {
   position: relative;
   width: 100%;
+  border-radius: 18px;
   overflow: hidden;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-soft);
+  padding: 20px;
 }
 
 .calendar-embed-loading,
@@ -15,142 +18,190 @@
   text-align: center;
   color: var(--text-muted);
   font-size: 14px;
-  min-height: 400px;
+  min-height: 300px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 18px;
+  background: var(--surface-primary);
+  border: 1px solid var(--border-soft);
 }
 
 .calendar-embed-error {
   color: #c95184;
 }
 
-/* FullCalendar Core Overrides */
+/* ======================================== */
+/* FULLCALENDAR — VARIAVEIS BASE           */
+/* ======================================== */
+
 .calendar-embed-wrapper .fc {
+  --fc-border-color: var(--border-soft);
+  --fc-page-bg-color: var(--surface-primary);
+  --fc-neutral-bg-color: var(--surface-secondary);
+  --fc-today-bg-color: rgba(201, 81, 132, 0.06);
+  --fc-button-bg-color: #c95184;
+  --fc-button-border-color: #c95184;
+  --fc-button-hover-bg-color: #ad385a;
+  --fc-button-hover-border-color: #ad385a;
+  --fc-button-active-bg-color: #ad385a;
+  --fc-button-active-border-color: #ad385a;
+  --fc-button-text-color: #ffffff;
+  --fc-event-border-color: transparent;
+  --fc-event-text-color: #ffffff;
+  --fc-non-business-color: rgba(0, 0, 0, 0.02);
   font-family: inherit;
-  background: transparent;
-}
-
-.calendar-embed-wrapper .fc .fc-button-group {
-  gap: 8px;
-}
-
-.calendar-embed-wrapper .fc .fc-button-primary {
-  background-color: #c95184;
-  border-color: #c95184;
-  padding: 6px 14px;
   font-size: 13px;
-  font-weight: 600;
-  border-radius: 12px;
-  text-transform: none;
-  box-shadow: none;
-  transition: all 0.2s ease;
 }
 
-.calendar-embed-wrapper .fc .fc-button-primary:hover,
-.calendar-embed-wrapper .fc .fc-button-primary:focus {
-  background-color: #ad385a;
-  border-color: #ad385a;
-  box-shadow: 0 4px 12px rgba(201, 81, 132, 0.25);
+/* ======================================== */
+/* TOOLBAR                                 */
+/* ======================================== */
+
+.calendar-embed-wrapper .fc .fc-toolbar.fc-header-toolbar {
+  margin-bottom: 16px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.calendar-embed-wrapper .fc .fc-button-primary.fc-button-active,
-.calendar-embed-wrapper .fc .fc-button-primary:active {
-  background-color: #ad385a;
-  border-color: #ad385a;
-}
-
-.calendar-embed-wrapper .fc .fc-button-primary:disabled {
-  opacity: 0.5;
-}
-
-/* Header Title */
 .calendar-embed-wrapper .fc .fc-toolbar-title {
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: var(--text-primary);
-  margin: 0 16px;
 }
 
-/* Week Header */
-.calendar-embed-wrapper .fc .fc-col-header-cell {
-  padding: 12px 2px;
+.calendar-embed-wrapper .fc .fc-button {
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 13px;
+  box-shadow: none;
+  text-transform: none;
+  letter-spacing: 0;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.calendar-embed-wrapper .fc .fc-button:focus {
+  box-shadow: none;
+  outline: none;
+}
+
+.calendar-embed-wrapper .fc .fc-button:hover {
+  transform: translateY(-1px);
+}
+
+/* ======================================== */
+/* CABECALHOS DOS DIAS                     */
+/* ======================================== */
+
+.calendar-embed-wrapper .fc .fc-col-header {
   background: var(--surface-secondary);
+}
+
+.calendar-embed-wrapper .fc .fc-col-header-cell {
   border-color: var(--border-soft);
+  padding: 10px 4px;
+  background: var(--surface-secondary);
+}
+
+/* IMPORTANTE: Remove a cor azul dos links dos dias */
+.calendar-embed-wrapper .fc .fc-col-header-cell-cushion,
+.calendar-embed-wrapper .fc .fc-col-header-cell-cushion:link,
+.calendar-embed-wrapper .fc .fc-col-header-cell-cushion:visited {
   color: var(--text-primary);
+  text-decoration: none;
   font-weight: 700;
-  font-size: 13px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.calendar-embed-wrapper .fc .fc-daygrid-day-number {
-  padding: 6px 4px;
-  display: inline-block;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-/* Time Grid */
-.calendar-embed-wrapper .fc .fc-timegrid-slot {
-  height: 3em;
-  border-color: var(--border-soft);
-}
-
-.calendar-embed-wrapper .fc .fc-daygrid-day,
-.calendar-embed-wrapper .fc .fc-timegrid-col {
-  border-color: var(--border-soft);
-  background: var(--app-bg);
-}
-
-.calendar-embed-wrapper .fc .fc-daygrid-day:hover,
-.calendar-embed-wrapper .fc .fc-timegrid-col:hover {
+/* Celula vazia do canto superior esquerdo */
+.calendar-embed-wrapper .fc .fc-timegrid-axis {
   background: var(--surface-secondary);
-}
-
-/* Time Labels */
-.calendar-embed-wrapper .fc .fc-timegrid-slot .fc-time {
-  font-size: 11px;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-
-.calendar-embed-wrapper .fc .fc-col-time-cell {
   border-color: var(--border-soft);
-  color: var(--text-muted);
-  font-size: 12px;
 }
 
-/* Events */
+/* ======================================== */
+/* GRID DE TEMPO                           */
+/* ======================================== */
+
+.calendar-embed-wrapper .fc .fc-scrollgrid {
+  border-color: var(--border-soft);
+}
+
+.calendar-embed-wrapper .fc .fc-scrollgrid td,
+.calendar-embed-wrapper .fc .fc-scrollgrid th {
+  border-color: var(--border-soft);
+}
+
+.calendar-embed-wrapper .fc .fc-timegrid-slot {
+  height: 2.2rem;
+  border-color: var(--border-soft);
+}
+
+.calendar-embed-wrapper .fc .fc-timegrid-slot-minor {
+  border-top-style: dashed;
+  border-color: var(--border-soft);
+  opacity: 0.5;
+}
+
+.calendar-embed-wrapper .fc .fc-timegrid-col {
+  background: var(--surface-primary);
+}
+
+.calendar-embed-wrapper .fc .fc-timegrid-col.fc-day-today {
+  background: var(--fc-today-bg-color) !important;
+}
+
+/* Labels de hora */
+.calendar-embed-wrapper .fc .fc-timegrid-axis-cushion,
+.calendar-embed-wrapper .fc .fc-timegrid-slot-label-cushion {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  padding-right: 8px;
+}
+
+/* ======================================== */
+/* EVENTOS                                 */
+/* ======================================== */
+
 .calendar-embed-wrapper .fc .fc-event {
-  padding: 0;
   border-radius: 8px;
   border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
   cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .calendar-embed-wrapper .fc .fc-event:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+}
+
+.calendar-embed-wrapper .fc .fc-event-main {
+  padding: 3px 6px;
 }
 
 .calendar-embed-wrapper .fc .fc-event-title {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  padding: 4px 8px;
-  white-space: normal;
   line-height: 1.3;
+  white-space: normal;
+  overflow: hidden;
 }
 
 .calendar-embed-wrapper .fc .fc-event-time {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
-  padding: 0 4px;
+  opacity: 0.88;
 }
 
-/* Now Indicator */
+/* ======================================== */
+/* INDICADOR ATUAL                         */
+/* ======================================== */
+
 .calendar-embed-wrapper .fc .fc-now-indicator-line {
   border-color: #c95184;
   border-width: 2px;
@@ -160,80 +211,29 @@
   border-color: #c95184;
 }
 
-/* Responsive Adjustments */
+/* ======================================== */
+/* RESPONSIVO                              */
+/* ======================================== */
+
 @media (max-width: 768px) {
-  .calendar-embed-wrapper .fc {
-    font-size: 12px;
+  .calendar-embed-wrapper {
+    padding: 12px;
   }
 
   .calendar-embed-wrapper .fc .fc-toolbar-title {
-    font-size: 16px;
-    margin: 0 8px;
+    font-size: 14px;
   }
 
-  .calendar-embed-wrapper .fc .fc-button-primary {
+  .calendar-embed-wrapper .fc .fc-button {
     padding: 4px 10px;
-    font-size: 12px;
+    font-size: 11px;
   }
 
   .calendar-embed-wrapper .fc .fc-timegrid-slot {
-    height: 2.5em;
+    height: 2.2rem;
   }
 
-  .calendar-embed-wrapper .fc .fc-event-title {
+  .calendar-embed-wrapper .fc .fc-col-header-cell-cushion {
     font-size: 10px;
   }
-
-  .calendar-embed-wrapper .fc .fc-col-header-cell {
-    padding: 8px 2px;
-    font-size: 11px;
-  }
-}
-
-/* Dark Mode */
-:root[data-theme='dark'] .calendar-embed-wrapper .fc {
-  background: transparent;
-  color: var(--text-primary);
-}
-
-:root[data-theme='dark'] .calendar-embed-wrapper .fc .fc-button-primary {
-  background-color: #c95184;
-  border-color: #c95184;
-}
-
-:root[data-theme='dark'] .calendar-embed-wrapper .fc .fc-button-primary:hover,
-:root[data-theme='dark'] .calendar-embed-wrapper .fc .fc-button-primary:focus {
-  background-color: #ad385a;
-  border-color: #ad385a;
-}
-
-:root[data-theme='dark'] .calendar-embed-wrapper .fc .fc-col-header-cell {
-  background: var(--surface-secondary);
-  border-color: var(--border-soft);
-  color: var(--text-primary);
-}
-
-:root[data-theme='dark'] .calendar-embed-wrapper .fc .fc-daygrid-day,
-:root[data-theme='dark'] .calendar-embed-wrapper .fc .fc-timegrid-col {
-  background: var(--app-bg);
-  border-color: var(--border-soft);
-}
-
-:root[data-theme='dark'] .calendar-embed-wrapper .fc .fc-daygrid-day:hover,
-:root[data-theme='dark'] .calendar-embed-wrapper .fc .fc-timegrid-col:hover {
-  background: var(--surface-secondary);
-}
-
-:root[data-theme='dark'] .calendar-embed-wrapper .fc .fc-timegrid-slot,
-:root[data-theme='dark'] .calendar-embed-wrapper .fc .fc-col-time-cell {
-  border-color: var(--border-soft);
-  color: var(--text-muted);
-}
-
-:root[data-theme='dark'] .calendar-embed-wrapper .fc .fc-toolbar-title {
-  color: var(--text-primary);
-}
-
-:root[data-theme='dark'] .calendar-embed-wrapper .fc .fc-daygrid-day-number {
-  color: var(--text-muted);
 }

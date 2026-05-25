@@ -1,69 +1,59 @@
-// ========================================
-// COMPONENTE DE PERFIL PROFISSIONAL
-// ========================================
-
-// ========================================
-// IMPORTACOES E CONSTANTES
-// ========================================
-
 import { useEffect, useMemo, useRef, useState } from 'react'
 import '../../styles/pages/Profissional/Perfil.css'
 import { fetchFormData, fetchJson, getServiceUrl } from '../../services/api'
 
-// Constantes: Opcoes de unidades disponiveis
-const unitOptions = [
+// ── Constantes ────────────────────────────────────────────────
+const UNITS = [
   {
     id: 'cascais',
-    value: 'Cascais',
-    label: 'Loja de Cascais',
-    description: 'R. do Mercado 51 loja 2, 2785-630 Sao Domingos de Rana',
+    label: 'Cascais',
+    address: 'R. do Mercado 51 loja 2, 2785-630 São Domingos de Rana',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+    ),
   },
   {
     id: 'almada',
-    value: 'Almada',
-    label: 'Loja de Almada',
-    description: 'Avenida da Fundacao 08 Loja 7, 2805-180 Almada',
+    label: 'Almada',
+    address: 'Avenida da Fundação 08 Loja 7, 2805-180 Almada',
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+      </svg>
+    ),
   },
 ]
 
-// Constantes: Disponibilidade padrao semanal
-const defaultAvailability = [
-  { day: 'segunda', label: 'Segunda-feira', enabled: true, start: '09:00', end: '18:00' },
-  { day: 'terca', label: 'Terca-feira', enabled: true, start: '09:00', end: '18:00' },
-  { day: 'quarta', label: 'Quarta-feira', enabled: true, start: '09:00', end: '18:00' },
-  { day: 'quinta', label: 'Quinta-feira', enabled: true, start: '09:00', end: '18:00' },
-  { day: 'sexta', label: 'Sexta-feira', enabled: true, start: '09:00', end: '18:00' },
-  { day: 'sabado', label: 'Sabado', enabled: true, start: '09:00', end: '13:00' },
-  { day: 'domingo', label: 'Domingo', enabled: false, start: '', end: '' },
+const DAYS_TEMPLATE = [
+  { day: 'segunda', label: 'Segunda', enabled: true,  start: '09:00', end: '18:00' },
+  { day: 'terca',   label: 'Terça',   enabled: true,  start: '09:00', end: '18:00' },
+  { day: 'quarta',  label: 'Quarta',  enabled: true,  start: '09:00', end: '18:00' },
+  { day: 'quinta',  label: 'Quinta',  enabled: true,  start: '09:00', end: '18:00' },
+  { day: 'sexta',   label: 'Sexta',   enabled: true,  start: '09:00', end: '18:00' },
+  { day: 'sabado',  label: 'Sábado',  enabled: true,  start: '09:00', end: '13:00' },
+  { day: 'domingo', label: 'Domingo', enabled: false, start: '',      end: ''      },
 ]
 
-// ========================================
-// FUNCOES AUXILIARES
-// ========================================
-
-// Funcao: Resolve URL do avatar
+// ── Helpers ───────────────────────────────────────────────────
 function resolveAvatarUrl(value) {
   if (typeof value !== 'string') return ''
-  const trimmed = value.trim()
-  if (!trimmed) return ''
-  if (/^https?:\/\//i.test(trimmed) || trimmed.startsWith('data:')) return trimmed
-  return getServiceUrl(trimmed.startsWith('/') ? trimmed : `/${trimmed}`)
+  const t = value.trim()
+  if (!t) return ''
+  if (/^https?:\/\//i.test(t) || t.startsWith('data:')) return t
+  return getServiceUrl(t.startsWith('/') ? t : `/${t}`)
 }
 
-// Funcao: Divide nome em nome e sobrenome
 function splitName(name = '') {
   const [nome = '', ...rest] = name.trim().split(/\s+/).filter(Boolean)
   return { nome, sobrenome: rest.join(' ') }
 }
 
-// Funcao: Parse da informacao "about" do profissional
 function parseAbout(about = '') {
   const [firstLine = '', ...rest] = String(about).split('\n')
   const match = firstLine.match(/Inicio:\s*([0-9]{4}-[0-9]{2}-[0-9]{2}|N\/A)\s*(.*)$/i)
-  if (!match) {
-    return { dataInicio: '', ano: '', sobreLivre: String(about).trim() }
-  }
-
+  if (!match) return { dataInicio: '', ano: '', sobreLivre: String(about).trim() }
   return {
     dataInicio: match[1] === 'N/A' ? '' : match[1],
     ano: (match[2] || '').trim(),
@@ -71,786 +61,682 @@ function parseAbout(about = '') {
   }
 }
 
-// ========================================
-// FUNCOES DE CONVERSAO DE DADOS
-// ========================================
-
-// Funcao: Converte dados do profissional para formulario
-function formFromProfessional(professional) {
-  const { nome, sobrenome } = splitName(professional?.name)
-  const { dataInicio, ano, sobreLivre } = parseAbout(professional?.about || '')
-  const availabilityMap = new Map(
-    Array.isArray(professional?.availability)
-      ? professional.availability.map((item) => [String(item?.day || '').trim(), item])
-      : []
+function buildUnitAvail(entries, unitId) {
+  const map = new Map(
+    entries.filter(e => e.unit === unitId || (!e.unit && unitId === 'cascais'))
+      .map(e => [e.day, e])
   )
+  return DAYS_TEMPLATE.map(d => {
+    const saved = map.get(d.day)
+    return { ...d, enabled: saved?.enabled ?? d.enabled, start: saved?.start ?? d.start, end: saved?.end ?? d.end }
+  })
+}
+
+function formFromProfessional(p) {
+  const { nome, sobrenome } = splitName(p?.name)
+  const { dataInicio, ano, sobreLivre } = parseAbout(p?.about || '')
+  const rawAvail = Array.isArray(p?.availability) ? p.availability : []
 
   return {
-    nome,
-    sobrenome,
-    email: professional?.email === 'nao informado' ? '' : professional?.email || '',
-    telefone: professional?.phone === 'nao informado' ? '' : professional?.phone || '',
-    contactoPrincipal: professional?.contactName || '',
-    dataInicio,
-    ano,
-    sobreLivre,
-    servicos: Array.isArray(professional?.specialties) ? professional.specialties : [],
-    locais: String(professional?.unit || '')
-      .split(',')
-      .map((item) => item.trim())
-      .filter(Boolean),
-    disponibilidade: defaultAvailability.map((day) => {
-      const saved = availabilityMap.get(day.day)
-      return {
-        ...day,
-        enabled: saved?.enabled ?? day.enabled,
-        start: saved?.start ?? day.start,
-        end: saved?.end ?? day.end,
-      }
-    }),
+    nome, sobrenome,
+    email: p?.email === 'nao informado' ? '' : p?.email || '',
+    telefone: p?.phone === 'nao informado' ? '' : p?.phone || '',
+    contactoPrincipal: p?.contactName || '',
+    instagram: p?.instagram || '',
+    dataInicio, ano, sobreLivre,
+    servicos: Array.isArray(p?.specialties) ? p.specialties : [],
+    locais: String(p?.unit || '').split(',').map(s => s.trim()).filter(Boolean),
+    disponibilidadeCascais: buildUnitAvail(rawAvail, 'cascais'),
+    disponibilidadeAlmada:  buildUnitAvail(rawAvail, 'almada'),
+    ferias: Array.isArray(p?.vacationPeriods) ? p.vacationPeriods.map(v => ({
+      startDate: v.startDate ? new Date(v.startDate).toISOString().slice(0,10) : '',
+      endDate:   v.endDate   ? new Date(v.endDate).toISOString().slice(0,10)   : '',
+      label: v.label || '',
+    })) : [],
   }
 }
 
-// Funcao: Converte dados do formulario para payload da API
-function payloadFromForm(formData) {
-  const workInfo = `Inicio: ${formData.dataInicio || 'N/A'} ${formData.ano || ''}`.trim()
+function payloadFromForm(f) {
+  const workInfo = `Inicio: ${f.dataInicio || 'N/A'} ${f.ano || ''}`.trim()
   return {
-    name: `${formData.nome} ${formData.sobrenome}`.trim(),
-    email: formData.email.trim(),
-    phone: formData.telefone.trim(),
-    contactName: formData.contactoPrincipal.trim(),
-    salonName: formData.locais.join(', '),
-    specialties: formData.servicos,
-    about: formData.sobreLivre.trim() ? `${workInfo}\n${formData.sobreLivre.trim()}` : workInfo,
-    availability: formData.disponibilidade.map(({ day, enabled, start, end }) => ({ day, enabled, start, end })),
+    name: `${f.nome} ${f.sobrenome}`.trim(),
+    email: f.email.trim(),
+    phone: f.telefone.trim(),
+    contactName: f.contactoPrincipal.trim(),
+    instagram: f.instagram.trim(),
+    salonName: f.locais.join(', '),
+    specialties: f.servicos,
+    about: f.sobreLivre.trim() ? `${workInfo}\n${f.sobreLivre.trim()}` : workInfo,
+    availability: [
+      ...f.disponibilidadeCascais.map(({ day, enabled, start, end }) => ({ day, enabled, start, end, unit: 'cascais' })),
+      ...f.disponibilidadeAlmada.map( ({ day, enabled, start, end }) => ({ day, enabled, start, end, unit: 'almada'  })),
+    ],
+    vacationPeriods: f.ferias.filter(v => v.startDate && v.endDate),
   }
 }
 
-// Funcao: Formata data de inicio para exibicao
-function formatSince(dataInicio, ano) {
-  if (!dataInicio && !ano) return 'Sem data definida'
-  if (dataInicio && ano) return `${dataInicio} - ${ano}`
-  return dataInicio || ano
+// ── Custom picker dropdown ────────────────────────────────────
+function ProfPicker({ professionals, selectedId, onSelect }) {
+  const [open, setOpen] = useState(false)
+  const selected = professionals.find(p => String(p.id) === String(selectedId))
+  const initials = selected ? selected.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase() : '?'
+
+  return (
+    <div className="prf-picker-wrap" style={{ position: 'relative' }}>
+      <span className="prf-picker-label">Profissional</span>
+      <button type="button" className="prf-picker-btn" onClick={() => setOpen(o => !o)}>
+        <span className="prf-picker-avatar">{initials}</span>
+        <span className="prf-picker-name">{selected?.name ?? '—'}</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"
+          style={{ transform: open ? 'rotate(180deg)' : 'none', transition: 'transform .2s', flexShrink: 0 }}>
+          <polyline points="6 9 12 15 18 9"/>
+        </svg>
+      </button>
+      {open && (
+        <>
+          <div className="prf-picker-backdrop" onClick={() => setOpen(false)} />
+          <ul className="prf-picker-menu">
+            {professionals.map(p => {
+              const ini = p.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase()
+              return (
+                <li key={p.id}>
+                  <button type="button" className={`prf-picker-item${String(p.id) === String(selectedId) ? ' prf-picker-item--active' : ''}`}
+                    onClick={() => { onSelect(p); setOpen(false) }}>
+                    <span className="prf-picker-avatar prf-picker-avatar--sm">{ini}</span>
+                    <span>{p.name}</span>
+                    {String(p.id) === String(selectedId) && (
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ marginLeft: 'auto' }}>
+                        <polyline points="20 6 9 17 4 12"/>
+                      </svg>
+                    )}
+                  </button>
+                </li>
+              )
+            })}
+          </ul>
+        </>
+      )}
+    </div>
+  )
 }
 
-function truncateText(value, maxLength = 100) {
-  const text = String(value || '').trim()
-  if (!text) return ''
-  if (text.length <= maxLength) return text
-  return `${text.slice(0, maxLength).trimEnd()}...`
-}
-
-// ========================================
-// COMPONENTE PRINCIPAL: PERFIL
-// ========================================
-
-function Perfil() {
-  // ========================================
-  // ESTADO DO COMPONENTE
-  // ========================================
-
+// ── Componente principal ──────────────────────────────────────
+export default function Perfil({ user }) {
+  const isProfessional = user?.role === 'profissional'
   const fileInputRef = useRef(null)
-  const [professionals, setProfessionals] = useState([])
-  const [catalogServices, setCatalogServices] = useState([])
-  const [catalogCategories, setCatalogCategories] = useState([])
+  const [professionals, setProfessionals]               = useState([])
+  const [catalogServices, setCatalogServices]           = useState([])
+  const [catalogCategories, setCatalogCategories]       = useState([])
   const [selectedProfessionalId, setSelectedProfessionalId] = useState('')
   const [profileForm, setProfileForm] = useState({
-    nome: '',
-    sobrenome: '',
-    email: '',
-    telefone: '',
-    contactoPrincipal: '',
-    dataInicio: '',
-    ano: '',
-    sobreLivre: '',
-    servicos: [],
-    locais: [],
-    disponibilidade: defaultAvailability,
+    nome: '', sobrenome: '', email: '', telefone: '', contactoPrincipal: '',
+    instagram: '', dataInicio: '', ano: '', sobreLivre: '', servicos: [], locais: [],
+    disponibilidadeCascais: DAYS_TEMPLATE,
+    disponibilidadeAlmada:  DAYS_TEMPLATE,
+    ferias: [],
   })
-  const [searchTerm, setSearchTerm] = useState('')
+  const [tab,           setTab]           = useState('dados')
+  const [searchTerm,    setSearchTerm]    = useState('')
   const [avatarPreview, setAvatarPreview] = useState('')
-  const [loading, setLoading] = useState(true)
-  const [saving, setSaving] = useState(false)
-  const [uploadingAvatar, setUploadingAvatar] = useState(false)
-  const [error, setError] = useState(null)
-  const [feedback, setFeedback] = useState(null)
+  const [loading,       setLoading]       = useState(true)
+  const [saving,        setSaving]        = useState(false)
+  const [uploading,     setUploading]     = useState(false)
+  const [error,         setError]         = useState(null)
+  const [feedback,      setFeedback]      = useState(null)
 
-  // ========================================
-  // EFEITOS E HOOKS
-  // ========================================
-
-  // Efeito: Carrega dados iniciais (profissionais, servicos, categorias)
   useEffect(() => {
-    async function loadData() {
+    async function load() {
       try {
-        const [professionalsData, servicesData, categoriesData] = await Promise.all([
+        const [profsRes, svcsRes, catsRes] = await Promise.all([
           fetchJson('/auth/professionals'),
           fetchJson('/services'),
           fetchJson('/categories'),
         ])
-
-        const users = Array.isArray(professionalsData) ? professionalsData : professionalsData?.users || []
-        const services = Array.isArray(servicesData) ? servicesData : servicesData?.services || []
-        const categories = Array.isArray(categoriesData) ? categoriesData : categoriesData?.categories || []
-
-        const normalizedProfessionals = users.map((user, index) => ({
-          id: user._id ?? user.id ?? String(index),
-          name: user.name ?? 'Sem nome',
-          role: user.role ?? 'profissional',
-          email: user.email ?? '',
-          phone: user.phone ?? '',
-          contactName: user.contactName ?? '',
-          about: user.about ?? '',
-          unit: user.salonName ?? user.unit ?? '',
-          avatar: resolveAvatarUrl(user.avatar ?? user.avatarUrl ?? user.photo ?? user.photoUrl ?? ''),
-          specialties: Array.isArray(user.specialties) ? user.specialties : [],
-          availability: Array.isArray(user.availability) ? user.availability : [],
+        const profs = (Array.isArray(profsRes) ? profsRes : profsRes?.users || []).map((u, i) => ({
+          id: u._id ?? u.id ?? String(i),
+          name: u.name ?? 'Sem nome',
+          role: u.role ?? 'profissional',
+          email: u.email ?? '',
+          phone: u.phone ?? '',
+          contactName: u.contactName ?? '',
+          instagram: u.instagram ?? '',
+          about: u.about ?? '',
+          unit: u.salonName ?? u.unit ?? '',
+          avatar: resolveAvatarUrl(u.avatar ?? u.avatarUrl ?? ''),
+          specialties: Array.isArray(u.specialties) ? u.specialties : [],
+          availability: Array.isArray(u.availability) ? u.availability : [],
+          vacationPeriods: Array.isArray(u.vacationPeriods) ? u.vacationPeriods : [],
         }))
+        setProfessionals(profs)
+        setCatalogServices(Array.isArray(svcsRes) ? svcsRes : svcsRes?.services || [])
+        setCatalogCategories(Array.isArray(catsRes) ? catsRes : catsRes?.categories || [])
 
-        setProfessionals(normalizedProfessionals)
-        setCatalogServices(services)
-        setCatalogCategories(categories)
-
-        if (normalizedProfessionals[0]) {
-          setSelectedProfessionalId(String(normalizedProfessionals[0].id))
-          setProfileForm(formFromProfessional(normalizedProfessionals[0]))
-          setAvatarPreview(normalizedProfessionals[0].avatar || '')
+        // Profissional vê apenas o seu próprio perfil; admin vê o primeiro da lista
+        const initial = isProfessional
+          ? profs.find(p => p.email === user?.email) ?? profs[0]
+          : profs[0]
+        if (initial) {
+          setSelectedProfessionalId(String(initial.id))
+          setProfileForm(formFromProfessional(initial))
+          setAvatarPreview(initial.avatar)
         }
-
-        setError(null)
-      } catch (loadError) {
-        setError(loadError.message)
-      } finally {
-        setLoading(false)
-      }
+      } catch (e) { setError(e.message) }
+      finally { setLoading(false) }
     }
-
-    loadData()
+    load()
   }, [])
 
-  const selectedProfessional = useMemo(
-    () => professionals.find((professional) => String(professional.id) === String(selectedProfessionalId)) || null,
+  const selectedProf = useMemo(
+    () => professionals.find(p => String(p.id) === String(selectedProfessionalId)) || null,
     [professionals, selectedProfessionalId]
   )
 
-  const groupedCatalogServices = useMemo(() => {
-    const categoryMap = new Map(catalogCategories.map((category) => [String(category._id ?? category.id), category]))
+  const groupedServices = useMemo(() => {
+    const catMap = new Map(catalogCategories.map(c => [String(c._id ?? c.id), c]))
     const groups = {}
-
-    catalogServices.forEach((service) => {
-      const serviceName = service.name ?? service.nome ?? 'Sem nome'
-      const categoryId = String(service.category ?? service.categoryId ?? '')
-      const categoryName = categoryMap.get(categoryId)?.name ?? 'Sem categoria'
-
-      if (!groups[categoryName]) groups[categoryName] = []
-      if (!groups[categoryName].includes(serviceName)) groups[categoryName].push(serviceName)
+    catalogServices.forEach(s => {
+      const name = s.name ?? 'Sem nome'
+      const catId = String(s.category ?? s.categoryId ?? '')
+      const catName = catMap.get(catId)?.name ?? 'Sem categoria'
+      if (!groups[catName]) groups[catName] = []
+      if (!groups[catName].includes(name)) groups[catName].push(name)
     })
-
     return Object.fromEntries(Object.entries(groups).sort(([a], [b]) => a.localeCompare(b, 'pt-PT', { sensitivity: 'base' })))
   }, [catalogCategories, catalogServices])
 
-  const filteredServiceGroups = useMemo(() => {
-    const normalizedSearch = searchTerm.trim().toLowerCase()
-    if (!normalizedSearch) return groupedCatalogServices
-
+  const filteredGroups = useMemo(() => {
+    const q = searchTerm.trim().toLowerCase()
+    if (!q) return groupedServices
     return Object.fromEntries(
-      Object.entries(groupedCatalogServices)
-        .map(([category, services]) => [
-          category,
-          services.filter(
-            (service) =>
-              service.toLowerCase().includes(normalizedSearch) ||
-              category.toLowerCase().includes(normalizedSearch)
-          ),
-        ])
-        .filter(([, services]) => services.length > 0)
+      Object.entries(groupedServices)
+        .map(([cat, svcs]) => [cat, svcs.filter(s => s.toLowerCase().includes(q) || cat.toLowerCase().includes(q))])
+        .filter(([, svcs]) => svcs.length > 0)
     )
-  }, [groupedCatalogServices, searchTerm])
+  }, [groupedServices, searchTerm])
 
-  const selectedCategories = useMemo(
-    () =>
-      Object.entries(groupedCatalogServices)
-        .filter(([, services]) => services.some((service) => profileForm.servicos.includes(service)))
-        .map(([category]) => category),
-    [groupedCatalogServices, profileForm.servicos]
+  const activeCategories = useMemo(
+    () => Object.entries(groupedServices)
+      .filter(([, svcs]) => svcs.some(s => profileForm.servicos.includes(s)))
+      .map(([cat]) => cat),
+    [groupedServices, profileForm.servicos]
   )
 
-  // ========================================
-  // FUNCOES DE MANIPULACAO DE EVENTOS
-  // ========================================
-
-  // Funcao: Sincroniza profissional selecionado
-  const syncSelectedProfessional = (professional) => {
-    setSelectedProfessionalId(String(professional.id))
-    setProfileForm(formFromProfessional(professional))
-    setAvatarPreview(professional.avatar || '')
-    setFeedback(null)
-    setError(null)
-    setSearchTerm('')
+  // Handlers
+  const syncProf = (p) => {
+    setSelectedProfessionalId(String(p.id))
+    setProfileForm(formFromProfessional(p))
+    setAvatarPreview(p.avatar)
+    setFeedback(null); setError(null); setSearchTerm('')
   }
 
-  const updateField = (event) => {
-    const { name, value } = event.target
-    setProfileForm((current) => ({ ...current, [name]: value }))
+  const updateField = e => {
+    const { name, value } = e.target
+    setProfileForm(f => ({ ...f, [name]: value }))
   }
 
-  const toggleServico = (servico) => {
-    setProfileForm((current) => ({
-      ...current,
-      servicos: current.servicos.includes(servico)
-        ? current.servicos.filter((item) => item !== servico)
-        : [...current.servicos, servico],
+  const toggleServico = s => setProfileForm(f => ({
+    ...f,
+    servicos: f.servicos.includes(s) ? f.servicos.filter(x => x !== s) : [...f.servicos, s],
+  }))
+
+  const removeCategory = cat => {
+    const toRemove = groupedServices[cat] || []
+    setProfileForm(f => ({ ...f, servicos: f.servicos.filter(s => !toRemove.includes(s)) }))
+  }
+
+  const toggleLocal = loc => setProfileForm(f => ({
+    ...f,
+    locais: f.locais.includes(loc) ? f.locais.filter(x => x !== loc) : [...f.locais, loc],
+  }))
+
+  const updateUnitAvail = (unitId, day, field, value) => {
+    const key = unitId === 'cascais' ? 'disponibilidadeCascais' : 'disponibilidadeAlmada'
+    setProfileForm(f => ({
+      ...f,
+      [key]: f[key].map(d => d.day === day ? { ...d, [field]: value } : d),
     }))
   }
 
-  const removeCategory = (categoryName) => {
-    const servicesToRemove = groupedCatalogServices[categoryName] || []
-    setProfileForm((current) => ({
-      ...current,
-      servicos: current.servicos.filter((service) => !servicesToRemove.includes(service)),
-    }))
-  }
-
-  const toggleLocal = (local) => {
-    setProfileForm((current) => ({
-      ...current,
-      locais: current.locais.includes(local)
-        ? current.locais.filter((item) => item !== local)
-        : [...current.locais, local],
-    }))
-  }
-
-  const updateAvailability = (day, field, value) => {
-    setProfileForm((current) => ({
-      ...current,
-      disponibilidade: current.disponibilidade.map((item) =>
-        item.day === day ? { ...item, [field]: value } : item
-      ),
-    }))
-  }
-
-  // Funcao: Salva perfil no backend
   const saveProfile = async () => {
-    if (!selectedProfessional) return
-
+    if (!selectedProf) return
     if (!profileForm.nome.trim() || !profileForm.email.trim()) {
-      setError('Nome e e-mail sao obrigatorios.')
-      setFeedback(null)
-      return
+      setError('Nome e e-mail são obrigatórios.'); setFeedback(null); return
     }
-
-    setSaving(true)
-    setError(null)
-    setFeedback(null)
-
+    setSaving(true); setError(null); setFeedback(null)
     try {
-      const payload = payloadFromForm(profileForm)
-      const response = await fetchJson(`/auth/professionals/${selectedProfessional.id}`, {
-        method: 'PATCH',
-        body: JSON.stringify(payload),
+      const res = await fetchJson(`/auth/professionals/${selectedProf.id}`, {
+        method: 'PATCH', body: JSON.stringify(payloadFromForm(profileForm)),
       })
-
-      const user = response?.user ?? response
-      const updatedProfessional = {
-        ...selectedProfessional,
-        id: user._id ?? user.id ?? selectedProfessional.id,
-        name: user.name ?? payload.name,
-        role: user.role ?? selectedProfessional.role,
-        email: user.email ?? payload.email,
-        phone: user.phone ?? payload.phone,
-        contactName: user.contactName ?? payload.contactName,
-        about: user.about ?? payload.about,
-        unit: user.salonName ?? payload.salonName,
-        avatar: resolveAvatarUrl(user.avatar ?? selectedProfessional.avatar),
-        specialties: Array.isArray(user.specialties) ? user.specialties : payload.specialties,
-        availability: Array.isArray(user.availability) ? user.availability : payload.availability,
+      const u = res?.user ?? res
+      const updated = {
+        ...selectedProf,
+        name: u.name ?? profileForm.nome,
+        email: u.email ?? profileForm.email,
+        phone: u.phone ?? profileForm.telefone,
+        contactName: u.contactName,
+        about: u.about,
+        unit: u.salonName ?? u.unit,
+        specialties: Array.isArray(u.specialties) ? u.specialties : profileForm.servicos,
+        availability: Array.isArray(u.availability) ? u.availability : [],
+        avatar: resolveAvatarUrl(u.avatar ?? selectedProf.avatar),
       }
-
-      setProfessionals((current) =>
-        current.map((professional) =>
-          String(professional.id) === String(updatedProfessional.id) ? updatedProfessional : professional
-        )
-      )
-      setProfileForm(formFromProfessional(updatedProfessional))
-      setAvatarPreview(updatedProfessional.avatar || '')
-      setFeedback('Perfil atualizado com sucesso.')
-    } catch (saveError) {
-      setError(saveError.message)
-    } finally {
-      setSaving(false)
-    }
+      setProfessionals(ps => ps.map(p => String(p.id) === String(updated.id) ? updated : p))
+      setProfileForm(formFromProfessional(updated))
+      setAvatarPreview(updated.avatar)
+      setFeedback('Perfil atualizado com sucesso!')
+    } catch (e) { setError(e.message) }
+    finally { setSaving(false) }
   }
 
-  // Funcao: Faz upload de foto do avatar
-  const handleAvatarInput = async (event) => {
-    const file = event.target.files?.[0]
-    if (!file || !selectedProfessional) return
-
-    const localPreview = URL.createObjectURL(file)
-    setAvatarPreview(localPreview)
-    setUploadingAvatar(true)
-    setError(null)
-    setFeedback(null)
-
+  const handleAvatarInput = async e => {
+    const file = e.target.files?.[0]
+    if (!file || !selectedProf) return
+    const preview = URL.createObjectURL(file)
+    setAvatarPreview(preview)
+    setUploading(true); setError(null); setFeedback(null)
     try {
       const body = new FormData()
       body.append('image', file)
-
-      const response = await fetchFormData(`/auth/professionals/${selectedProfessional.id}/avatar`, {
-        method: 'PATCH',
-        body,
-      })
-
-      const user = response?.user ?? response
-      const nextAvatar = resolveAvatarUrl(user.avatar)
-      const updatedProfessional = {
-        ...selectedProfessional,
-        name: user.name ?? selectedProfessional.name,
-        email: user.email ?? selectedProfessional.email,
-        phone: user.phone ?? selectedProfessional.phone,
-        contactName: user.contactName ?? selectedProfessional.contactName,
-        about: user.about ?? selectedProfessional.about,
-        unit: user.salonName ?? selectedProfessional.unit,
-        specialties: Array.isArray(user.specialties) ? user.specialties : selectedProfessional.specialties,
-        availability: Array.isArray(user.availability) ? user.availability : selectedProfessional.availability,
-        avatar: nextAvatar,
-      }
-
-      setProfessionals((current) =>
-        current.map((professional) =>
-          String(professional.id) === String(selectedProfessional.id)
-            ? updatedProfessional
-            : professional
-        )
-      )
-      setAvatarPreview(nextAvatar || localPreview)
-      setFeedback('Foto atualizada com sucesso.')
-      setSelectedProfessionalId(String(updatedProfessional.id))
-    } catch (uploadError) {
-      setAvatarPreview(selectedProfessional.avatar || '')
-      setError(uploadError.message)
+      const res = await fetchFormData(`/auth/professionals/${selectedProf.id}/avatar`, { method: 'PATCH', body })
+      const u = res?.user ?? res
+      const nextAvatar = resolveAvatarUrl(u.avatar)
+      setProfessionals(ps => ps.map(p => String(p.id) === String(selectedProf.id) ? { ...p, avatar: nextAvatar } : p))
+      setAvatarPreview(nextAvatar || preview)
+      setFeedback('Foto atualizada com sucesso!')
+    } catch (err) {
+      setAvatarPreview(selectedProf.avatar || '')
+      setError(err.message)
     } finally {
-      URL.revokeObjectURL(localPreview)
-      event.target.value = ''
-      setUploadingAvatar(false)
+      URL.revokeObjectURL(preview)
+      e.target.value = ''
+      setUploading(false)
     }
   }
 
-  // ========================================
-  // RENDERIZACAO JSX
-  // ========================================
-
-  // Estado: Carregando dados
-  if (loading) {
-    return (
-      <section className="profile-page" aria-label="Perfil">
-        <p>Carregando perfil...</p>
-      </section>
-    )
-  }
-
-  // Estado: Erro sem profissional
-  if (error && !selectedProfessional) {
-    return (
-      <section className="profile-page" aria-label="Perfil">
-        <div className="profile-page-heading">
-          <h1>Perfil</h1>
-          <p>{error}</p>
-        </div>
-      </section>
-    )
-  }
-
-  // Estado: Nenhum profissional encontrado
-  if (!selectedProfessional) {
-    return (
-      <section className="profile-page" aria-label="Perfil">
-        <div className="profile-page-heading">
-          <h1>Perfil</h1>
-          <p>Nenhuma profissional encontrada para editar.</p>
-        </div>
-      </section>
-    )
-  }
-
-  // ========================================
-  // JSX PRINCIPAL
-  // ========================================
-
-  const initials = `${profileForm.nome.charAt(0)}${profileForm.sobrenome.charAt(0)}`.trim() || selectedProfessional.name.charAt(0)
-  const summaryText = truncateText(
-    profileForm.sobreLivre || 'Adicione uma descricao para apresentar experiencia, estilo de atendimento e especialidades.',
-    100
+  // ── Loading / empty states ───────────────────────────────────
+  if (loading) return (
+    <div className="prf-loading">
+      <div className="prf-spinner" />
+      <p>A carregar perfil...</p>
+    </div>
   )
 
-  return (
-    <section className="profile-page" aria-label="Perfil">
-      {/* ======================================== */}
-      {/* CABECALHO DA PAGINA */}
-      {/* ======================================== */}
-      <div className="profile-page-heading">
-        <div>
-          <h1>Perfil profissional</h1>
-          <p>Edite foto, dados principais, bio e as categorias em que esta profissional atende.</p>
-        </div>
-
-        {/* Seletor de profissional */}
-        <div className="profile-picker">
-          <label htmlFor="profile-professional-picker">Profissional</label>
-          <select
-            id="profile-professional-picker"
-            value={selectedProfessionalId}
-            onChange={(event) => {
-              const nextProfessional = professionals.find(
-                (professional) => String(professional.id) === event.target.value
-              )
-              if (nextProfessional) syncSelectedProfessional(nextProfessional)
-            }}
-          >
-            {professionals.map((professional) => (
-              <option key={professional.id} value={professional.id}>
-                {professional.name}
-              </option>
-            ))}
-          </select>
-        </div>
+  if (!selectedProf) return (
+    <section className="prf-page">
+      <div className="prf-empty">
+        <p>Nenhuma profissional encontrada.</p>
       </div>
+    </section>
+  )
 
-      {/* ======================================== */}
-      {/* CARTAO HERO - Avatar e estatisticas */}
-      {/* ======================================== */}
-      <div className="profile-hero-card">
-        <div className="profile-avatar-stack">
-          <div className="profile-avatar-shell">
-            {avatarPreview ? <img src={avatarPreview} alt={selectedProfessional.name} /> : null}
-            <div className="profile-avatar-fallback">{initials.slice(0, 2).toUpperCase()}</div>
+  const initials = (`${profileForm.nome[0] ?? ''}${profileForm.sobrenome[0] ?? ''}`).toUpperCase() || selectedProf.name[0]?.toUpperCase()
+  const unitCount = profileForm.locais.length
+
+  // ── Render principal ─────────────────────────────────────────
+  return (
+    <section className="prf-page">
+
+      {/* ─── Hero ─────────────────────────────────────────── */}
+      <div className="prf-hero">
+        <div className="prf-hero-bg" />
+
+        <div className="prf-hero-inner">
+          {/* Avatar */}
+          <div className="prf-avatar-wrap" onClick={() => fileInputRef.current?.click()}>
+            {avatarPreview
+              ? <img src={avatarPreview} alt={selectedProf.name} className="prf-avatar-img" />
+              : <span className="prf-avatar-fallback">{initials}</span>}
+            <div className="prf-avatar-overlay">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                <circle cx="12" cy="13" r="4"/>
+              </svg>
+            </div>
+            {uploading && <div className="prf-avatar-uploading" />}
+            <input ref={fileInputRef} type="file" accept="image/png,image/jpeg,image/webp" className="prf-avatar-input" onChange={handleAvatarInput} />
           </div>
-          <button
-            type="button"
-            className="profile-avatar-edit-fab"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={uploadingAvatar}
-            aria-label="Editar foto"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-              <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
-            </svg>
-          </button>
 
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/png,image/jpeg,image/webp"
-            className="profile-avatar-input"
-            onChange={handleAvatarInput}
-          />
-        </div>
-
-        <div className="profile-hero-content">
-          <span className="profile-eyebrow">Resumo</span>
-          <h2>{selectedProfessional.name}</h2>
-          <div className="profile-hero-summary-row">
-            <p>{summaryText}</p>
-
-            <div className="profile-highlight-grid">
-              <article className="profile-highlight-card">
+          {/* Info */}
+          <div className="prf-hero-info">
+            <h1 className="prf-hero-name">{selectedProf.name}</h1>
+            <p className="prf-hero-sub">Profissional · {unitCount === 0 ? 'Sem unidade' : unitCount === 1 ? profileForm.locais[0] : `${unitCount} unidades`}</p>
+            <div className="prf-hero-stats">
+              <div className="prf-stat">
                 <strong>{profileForm.servicos.length}</strong>
-                <span>Servicos ativos</span>
-              </article>
-              <article className="profile-highlight-card">
-                <strong>{selectedCategories.length}</strong>
+                <span>Serviços</span>
+              </div>
+              <div className="prf-stat">
+                <strong>{activeCategories.length}</strong>
                 <span>Categorias</span>
-              </article>
-              <article className="profile-highlight-card">
-                <strong>{profileForm.locais.length || 0}</strong>
+              </div>
+              <div className="prf-stat">
+                <strong>{unitCount}</strong>
                 <span>Unidades</span>
-              </article>
-              <article className="profile-highlight-card">
-                <strong>{formatSince(profileForm.dataInicio, profileForm.ano)}</strong>
-                <span>Inicio</span>
-              </article>
+              </div>
             </div>
           </div>
+
+          {/* Profissional picker — apenas admin com múltiplas profissionais */}
+          {!isProfessional && professionals.length > 1 && (
+            <ProfPicker
+              professionals={professionals}
+              selectedId={selectedProfessionalId}
+              onSelect={syncProf}
+            />
+          )}
         </div>
       </div>
 
+      {/* ─── Feedback ─────────────────────────────────────── */}
       {(feedback || error) && (
-        <p className={`profile-feedback ${error ? 'is-error' : 'is-success'}`}>
+        <div className={`prf-feedback ${error ? 'prf-feedback--error' : 'prf-feedback--success'}`}>
+          {error
+            ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="20 6 9 17 4 12"/></svg>
+          }
           {error || feedback}
-        </p>
+        </div>
       )}
 
-      {/* ======================================== */}
-      {/* LAYOUT PRINCIPAL - Colunas e secoes */}
-      {/* ======================================== */}
-      <div className="profile-layout">
-        {/* Coluna principal - Dados pessoais e disponibilidade */}
-        <div className="profile-main-column">
-          {/* Secao: Dados principais */}
-          <section className="profile-section">
-            <div className="profile-section-header">
-              <div>
-                <span className="profile-eyebrow">Dados principais</span>
-                <h3>Informacoes da profissional</h3>
-              </div>
-            </div>
+      {/* ─── Tabs ─────────────────────────────────────────── */}
+      <div className="prf-tabs">
+        {[
+          { id: 'dados',    label: 'Dados pessoais' },
+          { id: 'unidades', label: 'Unidades & Disponibilidade' },
+          { id: 'servicos', label: 'Serviços' },
+        ].map(t => (
+          <button
+            key={t.id}
+            className={`prf-tab${tab === t.id ? ' prf-tab--active' : ''}`}
+            onClick={() => setTab(t.id)}
+            type="button"
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
 
-            <div className="profile-form-grid two-columns">
-              <label className="profile-field">
+      {/* ─── Tab: Dados pessoais ──────────────────────────── */}
+      {tab === 'dados' && (
+        <div className="prf-tab-content">
+          <div className="prf-card">
+            <p className="prf-card-eyebrow">Identificação</p>
+            <h2 className="prf-card-title">Informações pessoais</h2>
+            <div className="prf-form-grid prf-form-grid--2">
+              <label className="prf-field">
                 <span>Nome</span>
-                <input type="text" name="nome" value={profileForm.nome} onChange={updateField} />
+                <input type="text" name="nome" value={profileForm.nome} onChange={updateField} placeholder="Nome" />
               </label>
-              <label className="profile-field">
+              <label className="prf-field">
                 <span>Sobrenome</span>
-                <input type="text" name="sobrenome" value={profileForm.sobrenome} onChange={updateField} />
+                <input type="text" name="sobrenome" value={profileForm.sobrenome} onChange={updateField} placeholder="Sobrenome" />
               </label>
-            </div>
-
-            <div className="profile-form-grid two-columns">
-              <label className="profile-field">
+              <label className="prf-field">
                 <span>E-mail</span>
-                <input type="email" name="email" value={profileForm.email} onChange={updateField} />
+                <input type="email" name="email" value={profileForm.email} onChange={updateField} placeholder="email@exemplo.com" />
               </label>
-              <label className="profile-field">
+              <label className="prf-field">
                 <span>Telefone</span>
-                <input type="tel" name="telefone" value={profileForm.telefone} onChange={updateField} />
+                <input type="tel" name="telefone" value={profileForm.telefone} onChange={updateField} placeholder="+351 900 000 000" />
               </label>
-            </div>
-
-            <div className="profile-form-grid two-columns">
-              <label className="profile-field">
-                <span>Contato principal</span>
-                <input type="text" name="contactoPrincipal" value={profileForm.contactoPrincipal} onChange={updateField} />
+              <label className="prf-field">
+                <span>Contacto principal</span>
+                <input type="text" name="contactoPrincipal" value={profileForm.contactoPrincipal} onChange={updateField} placeholder="Nome de contacto" />
               </label>
-              <label className="profile-field">
-                <span>Ano de referencia</span>
-                <input type="number" min="2000" max="2035" name="ano" value={profileForm.ano} onChange={updateField} />
+              <label className="prf-field">
+                <span>Ano de referência</span>
+                <input type="number" min="2000" max="2035" name="ano" value={profileForm.ano} onChange={updateField} placeholder="2020" />
               </label>
-            </div>
-
-            <div className="profile-form-grid">
-              <label className="profile-field">
-                <span>Data de inicio</span>
+              <label className="prf-field">
+                <span>Data de início</span>
                 <input type="date" name="dataInicio" value={profileForm.dataInicio} onChange={updateField} />
               </label>
+              <label className="prf-field">
+                <span>Instagram</span>
+                <div className="prf-instagram-wrap">
+                  <span className="prf-instagram-at">@</span>
+                  <input
+                    type="text"
+                    name="instagram"
+                    value={profileForm.instagram.replace(/^@/, '')}
+                    onChange={e => setProfileForm(f => ({ ...f, instagram: e.target.value.replace(/^@/, '') }))}
+                    placeholder="username"
+                    className="prf-instagram-input"
+                  />
+                </div>
+              </label>
             </div>
-          </section>
+          </div>
 
-          {/* Secao: Apresentacao/Bio */}
-          <section className="profile-section">
-            <div className="profile-section-header">
-              <div>
-                <span className="profile-eyebrow">Apresentacao</span>
-                <h3>Bio e posicionamento</h3>
-              </div>
-            </div>
-
-            <label className="profile-field">
+          <div className="prf-card">
+            <p className="prf-card-eyebrow">Apresentação</p>
+            <h2 className="prf-card-title">Bio e posicionamento</h2>
+            <label className="prf-field">
               <span>Sobre a profissional</span>
               <textarea
                 name="sobreLivre"
-                rows="6"
+                rows="7"
                 value={profileForm.sobreLivre}
                 onChange={updateField}
-                placeholder="Descreva experiencia, estilo, atendimento e o que diferencia esta profissional."
+                placeholder="Descreva a experiência, estilo de atendimento e o que diferencia esta profissional..."
               />
             </label>
-          </section>
-
+          </div>
         </div>
+      )}
 
-        {/* Coluna lateral - Unidades e categorias */}
-        <aside className="profile-side-column">
-          {/* Secao: Unidades de atendimento */}
-          <section className="profile-section">
-            <div className="profile-section-header">
-              <div>
-                <span className="profile-eyebrow">Atendimento</span>
-                <h3>Unidades</h3>
-              </div>
-            </div>
+      {/* ─── Tab: Unidades & Disponibilidade ──────────────── */}
+      {tab === 'unidades' && (
+        <div className="prf-tab-content">
+          <div className="prf-units-grid">
+            {UNITS.map(unit => {
+              const isActive = profileForm.locais.includes(unit.label)
+              const availKey = unit.id === 'cascais' ? 'disponibilidadeCascais' : 'disponibilidadeAlmada'
+              const avail = profileForm[availKey]
 
-            <div className="profile-location-list">
-              {unitOptions.map((location) => (
-                <div
-                  key={location.id}
-                  className={`profile-location-card ${profileForm.locais.includes(location.value) ? 'is-selected' : ''}`}
-                >
-                  <label className="profile-location-toggle">
-                    <input
-                      type="checkbox"
-                      checked={profileForm.locais.includes(location.value)}
-                      onChange={() => toggleLocal(location.value)}
-                    />
-                    <div>
-                      <strong>{location.label}</strong>
-                      <span>{location.description}</span>
+              return (
+                <div key={unit.id} className={`prf-unit-card${isActive ? ' prf-unit-card--active' : ''}`}>
+                  {/* Unit header */}
+                  <div className="prf-unit-header">
+                    <div className="prf-unit-icon">{unit.icon}</div>
+                    <div className="prf-unit-info">
+                      <h3 className="prf-unit-name">Unidade de {unit.label}</h3>
+                      <p className="prf-unit-address">{unit.address}</p>
                     </div>
-                  </label>
+                    {/* Toggle */}
+                    <button
+                      type="button"
+                      className={`prf-unit-toggle${isActive ? ' prf-unit-toggle--on' : ''}`}
+                      onClick={() => toggleLocal(unit.label)}
+                      aria-label={isActive ? `Desativar ${unit.label}` : `Ativar ${unit.label}`}
+                    >
+                      <span className="prf-unit-toggle-knob" />
+                    </button>
+                  </div>
 
-                  <details className="profile-availability-dropdown">
-                    <summary>
-                      <div className="profile-availability-summary-copy">
-                        <span className="profile-eyebrow">Disponibilidade</span>
-                        <strong>Editar agenda semanal</strong>
-                      </div>
-                      <span className="profile-availability-summary-icon" aria-hidden="true">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                          <path d="M3.204 5h9.592L8 10.481zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659" />
-                        </svg>
-                      </span>
-                    </summary>
+                  {/* Status badge */}
+                  <div className={`prf-unit-status ${isActive ? 'prf-unit-status--on' : 'prf-unit-status--off'}`}>
+                    {isActive ? 'Ativa' : 'Inativa'}
+                  </div>
 
-                    <p className="profile-section-copy">
-                      Base inicial do salao: segunda a sexta das 09:00 as 18:00 e sabado ate as 13:00.
-                    </p>
-
-                    <div className="profile-availability-list">
-                      {profileForm.disponibilidade.map((day) => (
-                        <div key={`${location.id}-${day.day}`} className="profile-availability-row">
-                          <label className="profile-availability-day">
-                            <input
-                              type="checkbox"
-                              checked={day.enabled}
-                              onChange={(event) => updateAvailability(day.day, 'enabled', event.target.checked)}
-                            />
-                            <span>{day.label}</span>
-                          </label>
-
-                          <div className="profile-availability-times">
-                            <label className="profile-field">
-                              <span>Inicio</span>
+                  {/* Schedule */}
+                  {isActive && (
+                    <div className="prf-unit-schedule">
+                      <p className="prf-schedule-title">Agenda semanal</p>
+                      <div className="prf-schedule-list">
+                        {avail.map(day => (
+                          <div key={day.day} className={`prf-schedule-row${day.enabled ? '' : ' prf-schedule-row--off'}`}>
+                            <label className="prf-schedule-day">
                               <input
-                                type="time"
-                                value={day.start}
-                                disabled={!day.enabled}
-                                onChange={(event) => updateAvailability(day.day, 'start', event.target.value)}
+                                type="checkbox"
+                                checked={day.enabled}
+                                onChange={e => updateUnitAvail(unit.id, day.day, 'enabled', e.target.checked)}
                               />
+                              <span>{day.label}</span>
                             </label>
-                            <label className="profile-field">
-                              <span>Fim</span>
-                              <input
-                                type="time"
-                                value={day.end}
-                                disabled={!day.enabled}
-                                onChange={(event) => updateAvailability(day.day, 'end', event.target.value)}
-                              />
-                            </label>
+                            <div className="prf-schedule-times">
+                              <label className="prf-time-field">
+                                <span>Início</span>
+                                <input
+                                  type="time"
+                                  value={day.start}
+                                  disabled={!day.enabled}
+                                  onChange={e => updateUnitAvail(unit.id, day.day, 'start', e.target.value)}
+                                />
+                              </label>
+                              <span className="prf-time-sep">—</span>
+                              <label className="prf-time-field">
+                                <span>Fim</span>
+                                <input
+                                  type="time"
+                                  value={day.end}
+                                  disabled={!day.enabled}
+                                  onChange={e => updateUnitAvail(unit.id, day.day, 'end', e.target.value)}
+                                />
+                              </label>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </details>
+                  )}
+
+                  {!isActive && (
+                    <p className="prf-unit-inactive-msg">
+                      Ative esta unidade para configurar a disponibilidade semanal.
+                    </p>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+
+          {/* ─── Plano de férias ──────────────────────────── */}
+          <div className="prf-card">
+            <p className="prf-card-eyebrow">Ausências</p>
+            <h2 className="prf-card-title">Plano de férias</h2>
+            <p className="prf-card-hint">Defina períodos em que a profissional não irá atender. Os horários bloqueados não aparecem na agenda de agendamentos.</p>
+
+            <div className="prf-vacation-list">
+              {profileForm.ferias.length === 0 && (
+                <p className="prf-empty-msg">Sem períodos de ausência definidos.</p>
+              )}
+              {profileForm.ferias.map((v, i) => (
+                <div key={i} className="prf-vacation-row">
+                  <label className="prf-field">
+                    <span>Início</span>
+                    <input type="date" value={v.startDate}
+                      onChange={e => setProfileForm(f => ({ ...f, ferias: f.ferias.map((x, j) => j === i ? { ...x, startDate: e.target.value } : x) }))} />
+                  </label>
+                  <label className="prf-field">
+                    <span>Fim</span>
+                    <input type="date" value={v.endDate}
+                      onChange={e => setProfileForm(f => ({ ...f, ferias: f.ferias.map((x, j) => j === i ? { ...x, endDate: e.target.value } : x) }))} />
+                  </label>
+                  <label className="prf-field">
+                    <span>Descrição</span>
+                    <input type="text" value={v.label} placeholder="Ex: Férias de verão"
+                      onChange={e => setProfileForm(f => ({ ...f, ferias: f.ferias.map((x, j) => j === i ? { ...x, label: e.target.value } : x) }))} />
+                  </label>
+                  <button type="button" className="prf-vacation-remove"
+                    onClick={() => setProfileForm(f => ({ ...f, ferias: f.ferias.filter((_, j) => j !== i) }))}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+                  </button>
                 </div>
               ))}
             </div>
-          </section>
 
-          {/* Secao: Categorias ativas */}
-          <section className="profile-section">
-            <div className="profile-section-header">
-              <div>
-                <span className="profile-eyebrow">Categorias</span>
-                <h3>Categorias ativas</h3>
+            <button type="button" className="prf-vacation-add"
+              onClick={() => setProfileForm(f => ({ ...f, ferias: [...f.ferias, { startDate: '', endDate: '', label: '' }] }))}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Adicionar período
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Tab: Serviços ────────────────────────────────── */}
+      {tab === 'servicos' && (
+        <div className="prf-tab-content">
+          {/* Active categories chips */}
+          {activeCategories.length > 0 && (
+            <div className="prf-card prf-card--compact">
+              <p className="prf-card-eyebrow">Categorias ativas</p>
+              <div className="prf-cat-chips">
+                {activeCategories.map(cat => (
+                  <button key={cat} type="button" className="prf-cat-chip" onClick={() => removeCategory(cat)}>
+                    {cat}
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  </button>
+                ))}
               </div>
             </div>
-
-            <div className="profile-selected-tags">
-              {selectedCategories.length > 0 ? (
-                selectedCategories.map((category) => (
-                  <button key={category} type="button" className="profile-tag" onClick={() => removeCategory(category)}>
-                    <span>{category}</span>
-                    <small>Remover</small>
-                  </button>
-                ))
-              ) : (
-                <p className="profile-empty-copy">Ainda nao ha categorias selecionadas.</p>
-              )}
-            </div>
-          </section>
-        </aside>
-      </div>
-
-      {/* Secao: Gerenciamento de servicos */}
-      <section className="profile-section profile-services-section">
-        <div className="profile-section-header profile-card-header-split">
-          <div>
-            <span className="profile-eyebrow">Servicos</span>
-            <h3>Adicionar ou retirar categorias e servicos</h3>
-          </div>
-
-          <label className="profile-service-search">
-            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19zM9.5 14A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14" />
-            </svg>
-            <input
-              type="search"
-              value={searchTerm}
-              onChange={(event) => setSearchTerm(event.target.value)}
-              placeholder="Pesquisar categoria ou servico"
-            />
-          </label>
-        </div>
-
-        <div className="profile-service-groups">
-          {Object.keys(filteredServiceGroups).length > 0 ? (
-            Object.entries(filteredServiceGroups).map(([category, services]) => (
-              <article key={category} className="profile-service-group">
-                <div className="profile-service-group-header">
-                  <div>
-                    <h4>{category}</h4>
-                    <p>{services.length} opcoes disponiveis</p>
-                  </div>
-                  {selectedCategories.includes(category) && (
-                    <button type="button" className="profile-inline-action" onClick={() => removeCategory(category)}>
-                      Retirar categoria
-                    </button>
-                  )}
-                </div>
-
-                <div className="profile-service-options">
-                  {services.map((service) => (
-                    <label
-                      key={service}
-                      className={`profile-service-option ${profileForm.servicos.includes(service) ? 'is-selected' : ''}`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={profileForm.servicos.includes(service)}
-                        onChange={() => toggleServico(service)}
-                      />
-                      <span>{service}</span>
-                    </label>
-                  ))}
-                </div>
-              </article>
-            ))
-          ) : (
-            <div className="profile-empty-state">
-              <p>Nenhum servico encontrado com esse termo.</p>
-            </div>
           )}
-        </div>
-      </section>
 
-      {/* Acoes finais - Botao de salvar */}
-      <div className="profile-actions">
-        <button type="button" className="profile-primary-action" onClick={saveProfile} disabled={saving}>
-          {saving ? 'Salvando...' : 'Salvar alteracoes'}
+          {/* Service groups */}
+          <div className="prf-card">
+            <div className="prf-services-header">
+              <div>
+                <p className="prf-card-eyebrow">Catálogo</p>
+                <h2 className="prf-card-title">Serviços disponíveis</h2>
+              </div>
+              <label className="prf-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="18" height="18">
+                  <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input
+                  type="search"
+                  value={searchTerm}
+                  onChange={e => setSearchTerm(e.target.value)}
+                  placeholder="Pesquisar serviço..."
+                />
+              </label>
+            </div>
+
+            <div className="prf-service-groups">
+              {Object.keys(filteredGroups).length === 0 && (
+                <p className="prf-empty-msg">Nenhum serviço encontrado.</p>
+              )}
+              {Object.entries(filteredGroups).map(([cat, svcs]) => (
+                <div key={cat} className="prf-service-group">
+                  <div className="prf-service-group-head">
+                    <div>
+                      <h4 className="prf-service-group-title">{cat}</h4>
+                      <p className="prf-service-group-sub">{svcs.length} opções</p>
+                    </div>
+                    {activeCategories.includes(cat) && (
+                      <button type="button" className="prf-remove-cat" onClick={() => removeCategory(cat)}>
+                        Retirar categoria
+                      </button>
+                    )}
+                  </div>
+                  <div className="prf-service-options">
+                    {svcs.map(svc => (
+                      <label key={svc} className={`prf-service-option${profileForm.servicos.includes(svc) ? ' prf-service-option--on' : ''}`}>
+                        <input type="checkbox" checked={profileForm.servicos.includes(svc)} onChange={() => toggleServico(svc)} />
+                        <span>{svc}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── Save bar ─────────────────────────────────────── */}
+      <div className="prf-save-bar">
+        <button type="button" className="prf-save-btn" onClick={saveProfile} disabled={saving}>
+          {saving
+            ? <><div className="prf-btn-spinner" /> A guardar...</>
+            : <>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Guardar alterações
+              </>
+          }
         </button>
       </div>
     </section>
   )
 }
-
-export default Perfil
-
-// ========================================
-// ESTRUTURA GERAL DO COMPONENTE:
-// 1. Constantes e utilitários (unidades, disponibilidade padrão, funções auxiliares)
-// 2. Funções de conversão (form ↔ API payload)
-// 3. Estado do componente (dados, loading, error)
-// 4. Efeitos e hooks (useEffect para carregamento, useMemo para cálculos)
-// 5. Funções de manipulação (eventos, salvar, upload)
-// 6. Renderização JSX (estados de loading/error, layout principal)
-// ========================================

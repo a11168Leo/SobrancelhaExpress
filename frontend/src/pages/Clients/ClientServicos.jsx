@@ -38,11 +38,11 @@ const almadaMapsLink =
   'https://www.google.com/maps/search/?api=1&query=Avenida%20da%20Fundacao%2008%20Loja7%2C%202805-180%20Almada'
 const weeklyHours = [
   ['Segunda-feira', '09h - 18h'],
-  ['Terca-feira', '09h - 18h'],
+  ['Terça-feira', '09h - 18h'],
   ['Quarta-feira', '09h - 18h'],
   ['Quinta-feira', '09h - 18h'],
   ['Sexta-feira', '09h - 18h'],
-  ['Sabado', '09h - 18h'],
+  ['Sábado', '09h - 18h'],
   ['Domingo', 'Fechado'],
 ]
 
@@ -51,7 +51,9 @@ const unitOptions = [
   { id: 'almada', label: 'Almada', matcher: 'almada' },
 ]
 
-function ClientServicos({ onNavigate, isGuest = false }) {
+const ITEMS_PER_PAGE = 10
+
+function ClientServicos({ onNavigate, onBookService, isGuest = false }) {
   const [services, setServices] = useState([])
   const [professionals, setProfessionals] = useState([])
   const [selectedUnit, setSelectedUnit] = useState('cascais')
@@ -65,6 +67,7 @@ function ClientServicos({ onNavigate, isGuest = false }) {
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [expandedCatId, setExpandedCatId] = useState(null)
   const [allCategories, setAllCategories] = useState([])
+  const [catalogPage, setCatalogPage] = useState(1)
   const filterRef = useRef(null)
 
   useEffect(() => {
@@ -103,7 +106,12 @@ function ClientServicos({ onNavigate, isGuest = false }) {
 
   useEffect(() => {
     setCategoryFilter('all')
+    setCatalogPage(1)
   }, [selectedUnit])
+
+  useEffect(() => {
+    setCatalogPage(1)
+  }, [search, categoryFilter])
 
   useEffect(() => {
     if (!selectedService) return undefined
@@ -258,7 +266,7 @@ function ClientServicos({ onNavigate, isGuest = false }) {
         (categoryId && categoryNameById[categoryId]) ||
         (typeof item.category === 'object' ? item.category?.name : '') ||
         ''
-      labels.add(categoryName || item.name || 'Servico')
+      labels.add(categoryName || item.name || 'Serviço')
     }
     return Array.from(labels)
   }, [professionalServices, categoryNameById])
@@ -307,31 +315,52 @@ function ClientServicos({ onNavigate, isGuest = false }) {
           aria-modal="false"
           aria-labelledby="client-service-spotlight-title"
         >
-          <button
-            type="button"
-            className="client-service-spotlight-close"
-            onClick={closeServiceSpotlight}
-            aria-label="Fechar destaque do servico"
-          >
-            ×
-          </button>
-
           <div className="client-service-spotlight-lava" aria-hidden="true">
-            <span />
-            <span />
-            <span />
+            <span /><span /><span />
           </div>
 
           <div className="client-service-spotlight-content">
-            <div className="client-service-spotlight-summary">
-              <h2 id="client-service-spotlight-title">{selectedService.name || 'Servico'}</h2>
-              <p>{categoryNameById[selectedService.category] || selectedService.category || 'Categoria livre'}</p>
+            {/* Fechar */}
+            <button
+              type="button"
+              className="client-service-spotlight-close"
+              onClick={closeServiceSpotlight}
+              aria-label="Fechar"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" aria-hidden="true">
+                <line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            {/* Info */}
+            <div className="client-service-spotlight-info">
+              <div className="client-service-spotlight-toprow">
+                <span id="client-service-spotlight-title">1 serviço</span>
+                <strong>€ {Number(selectedService.price || 0).toFixed(2)}</strong>
+              </div>
+              <p>
+                {selectedService.name || 'Serviço'}
+                {' · '}
+                {selectedService.durationMinutes || 0} min
+                {' · '}
+                {categoryNameById[selectedService.category] || 'Sem categoria'}
+              </p>
             </div>
 
-            <div className="client-service-spotlight-meta">
-              <span>{selectedService.maxDurationMinutes || selectedService.durationMinutes || 0} min</span>
-              <span>EUR {Number(selectedService.price || 0).toFixed(2)}</span>
-            </div>
+            {/* Botão principal */}
+            <button
+              type="button"
+              className="client-spotlight-book-btn"
+              onClick={() => {
+                if (isGuest) {
+                  onNavigate('login')
+                } else if (onBookService) {
+                  onBookService(selectedService)
+                }
+              }}
+            >
+              {isGuest ? 'Entrar para agendar' : 'Escolher horário'}
+            </button>
           </div>
         </div>
       )}
@@ -339,7 +368,7 @@ function ClientServicos({ onNavigate, isGuest = false }) {
       <div className="client-services-hero">
         <div>
           <h1>Serviços</h1>
-          <p className="page-subtitle">Escolha a unidade e veja os servicos disponiveis em cada salao.</p>
+          <p className="page-subtitle">Escolha a unidade e veja os serviços disponíveis em cada salão.</p>
         </div>
       </div>
 
@@ -433,7 +462,7 @@ function ClientServicos({ onNavigate, isGuest = false }) {
             )}
           </div>
 
-          <div className="client-unit-tabs" role="tablist" aria-label="Selecionar unidade do salao">
+          <div className="client-unit-tabs" role="tablist" aria-label="Selecionar unidade do salão">
             {unitOptions.map((unit) => (
               <button
                 key={unit.id}
@@ -457,14 +486,14 @@ function ClientServicos({ onNavigate, isGuest = false }) {
           <input
             className="search client-services-search"
             type="search"
-            placeholder="Buscar servico"
+            placeholder="Buscar serviço"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
         </div>
 
         <div className="client-catalog-grid">
-          {filtered.map((item) => (
+          {filtered.slice((catalogPage - 1) * ITEMS_PER_PAGE, catalogPage * ITEMS_PER_PAGE).map((item) => (
             <article key={item._id} className="client-service-card">
               <h3 className="client-service-name">{item.name}</h3>
               <div className="client-service-info">
@@ -476,7 +505,7 @@ function ClientServicos({ onNavigate, isGuest = false }) {
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
                   </svg>
-                  {item.maxDurationMinutes || item.durationMinutes || 0} min
+                  {item.durationMinutes || 0} min
                 </span>
               </div>
               <button
@@ -484,141 +513,191 @@ function ClientServicos({ onNavigate, isGuest = false }) {
                 type="button"
                 onClick={() => openServiceSpotlight(item)}
               >
-                {isGuest ? 'Entrar para agendar' : 'Agendar'}
+                Selecionar
               </button>
             </article>
           ))}
-          {filtered.length === 0 && <p style={{ margin: 0 }}>Nenhum servico encontrado para esta unidade.</p>}
+          {filtered.length === 0 && <p style={{ margin: 0 }}>Nenhum serviço encontrado para esta unidade.</p>}
         </div>
+
+        {/* Paginação */}
+        {filtered.length > ITEMS_PER_PAGE && (
+          <div className="client-catalog-pagination">
+            <button
+              type="button"
+              className="client-pag-arrow"
+              onClick={() => setCatalogPage(p => Math.max(1, p - 1))}
+              disabled={catalogPage === 1}
+              aria-label="Página anterior"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+            </button>
+
+            <div className="client-pag-pages">
+              {Array.from({ length: Math.ceil(filtered.length / ITEMS_PER_PAGE) }, (_, i) => i + 1).map(page => (
+                <button
+                  key={page}
+                  type="button"
+                  className={`client-pag-btn${page === catalogPage ? ' active' : ''}`}
+                  onClick={() => setCatalogPage(page)}
+                  aria-label={`Página ${page}`}
+                  aria-current={page === catalogPage ? 'page' : undefined}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
+            <button
+              type="button"
+              className="client-pag-arrow"
+              onClick={() => setCatalogPage(p => Math.min(Math.ceil(filtered.length / ITEMS_PER_PAGE), p + 1))}
+              disabled={catalogPage === Math.ceil(filtered.length / ITEMS_PER_PAGE)}
+              aria-label="Próxima página"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="9 18 15 12 9 6"/>
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
 
-      <div className="card client-section client-team-card" id="sobre">
-        <h3>Nossa equipa - {unitOptions.find((unit) => unit.id === selectedUnit)?.label}</h3>
-        <div className="client-team-layout">
-          <aside className="client-team-aside">
-            {professionalsByUnit.map((item) => {
-              const id = item._id || item.id
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  className={`client-team-prof-btn${id === selectedProfessionalId ? ' active' : ''}`}
-                  onClick={() => setSelectedProfessionalId(id)}
-                >
-                  {item.avatar ? (
-                    <img
-                      src={item.avatar.startsWith('http') ? item.avatar : getServiceUrl(item.avatar)}
-                      alt={item.name}
-                      className="client-team-prof-avatar"
-                    />
-                  ) : (
-                    <div className="client-team-prof-avatar fallback">
-                      {item.name?.[0]?.toUpperCase() || 'P'}
-                    </div>
-                  )}
-                  <span>{item.name}</span>
-                </button>
-              )
-            })}
-            {professionalsByUnit.length === 0 && (
-              <p style={{ margin: 0, color: 'var(--client-muted)' }}>Sem profissionais listadas nesta unidade.</p>
-            )}
-          </aside>
+      {/* ── NOSSA EQUIPA ── */}
+      <div className="card client-section client-team-card" id="sobre" style={{ padding: '1.25rem' }}>
+        <h3>Nossa equipa — {unitOptions.find((u) => u.id === selectedUnit)?.label}</h3>
 
-          <div className="client-team-content">
-            {selectedProfessional ? (
-              <>
+        {professionalsByUnit.length === 0 ? (
+          <p style={{ margin: 0, color: 'var(--client-muted)', fontSize: '14px' }}>
+            Sem profissionais listadas nesta unidade.
+          </p>
+        ) : (
+          <div className="client-team-layout">
+            <aside className="client-team-aside">
+              {professionalsByUnit.map((item) => {
+                const id = item._id || item.id
+                const isActive = id === selectedProfessionalId
+                return (
+                  <button
+                    key={id}
+                    type="button"
+                    className={`client-team-prof-btn${isActive ? ' active' : ''}`}
+                    onClick={() => setSelectedProfessionalId(id)}
+                  >
+                    {item.avatar ? (
+                      <img
+                        className="client-team-prof-avatar"
+                        src={item.avatar.startsWith('http') ? item.avatar : getServiceUrl(item.avatar)}
+                        alt={item.name}
+                      />
+                    ) : (
+                      <div className="client-team-prof-avatar fallback">
+                        {(item.name || 'P')[0].toUpperCase()}
+                      </div>
+                    )}
+                    {item.name}
+                  </button>
+                )
+              })}
+            </aside>
+
+            {selectedProfessional && (
+              <div className="client-team-content">
                 <div className="client-team-about">
-                  <h4>Sobre</h4>
-                  <p>{selectedProfessional.about || 'Profissional especializada em beleza e bem-estar.'}</p>
-                  <p style={{ marginTop: '0.45rem' }}>
-                    <strong>Salao:</strong> {selectedProfessional.salonName || 'Sobrancelhas Express'}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.5rem' }}>
+                    {selectedProfessional.avatar ? (
+                      <img
+                        className="client-team-avatar"
+                        src={selectedProfessional.avatar.startsWith('http') ? selectedProfessional.avatar : getServiceUrl(selectedProfessional.avatar)}
+                        alt={selectedProfessional.name}
+                      />
+                    ) : (
+                      <div className="client-team-avatar fallback">
+                        {(selectedProfessional.name || 'P')[0].toUpperCase()}
+                      </div>
+                    )}
+                    <h4 style={{ margin: 0 }}>{selectedProfessional.name}</h4>
+                  </div>
+                  <p>
+                    {selectedProfessional.about || 'Profissional especializada em design e beleza das sobrancelhas com dedicação e precisão em cada atendimento.'}
                   </p>
                 </div>
 
-                <div className="client-team-services">
-                  <h4>Especialidades</h4>
-                  <div className="client-team-service-list">
-                    {professionalSpecialties.map((label) => (
-                      <span key={label} className="client-team-service-chip">{label}</span>
-                    ))}
-                    {professionalSpecialties.length === 0 && (
-                      <>
-                        <span className="client-team-service-chip">Tratamento Facial</span>
-                        <span className="client-team-service-chip">Tratamento corporal</span>
-                      </>
-                    )}
+                {professionalSpecialties.length > 0 && (
+                  <div className="client-team-services">
+                    <h4>Especialidades</h4>
+                    <div className="client-team-service-list">
+                      {professionalSpecialties.map((s) => (
+                        <span key={s} className="client-team-service-chip">{s}</span>
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 <div className="client-team-portfolio">
                   <div className="client-team-portfolio-head">
-                    <h4>Portfolio</h4>
+                    <h4>Portfólio</h4>
                     {portfolioImages.length > 1 && (
                       <div className="client-team-portfolio-actions">
                         <button
                           type="button"
-                          onClick={() =>
-                            setPortfolioIndex((prev) => (prev - 1 + portfolioImages.length) % portfolioImages.length)
-                          }
+                          onClick={() => setPortfolioIndex((p) => (p - 1 + portfolioImages.length) % portfolioImages.length)}
                           aria-label="Foto anterior"
-                        >
-                          ‹
-                        </button>
+                        >←</button>
                         <button
                           type="button"
-                          onClick={() => setPortfolioIndex((prev) => (prev + 1) % portfolioImages.length)}
-                          aria-label="Proxima foto"
-                        >
-                          ›
-                        </button>
+                          onClick={() => setPortfolioIndex((p) => (p + 1) % portfolioImages.length)}
+                          aria-label="Próxima foto"
+                        >→</button>
                       </div>
                     )}
                   </div>
 
                   {portfolioImages.length > 0 ? (
-                    <div className="client-portfolio-carousel">
-                      <div
-                        className="client-portfolio-track"
-                        style={{ transform: `translateX(-${portfolioIndex * 100}%)` }}
-                      >
-                        {portfolioImages.map((item) => (
-                          <figure key={`${item.name}-${item.imageUrl}`} className="client-portfolio-slide">
-                            <img src={item.imageUrl} alt={item.name} />
-                            <figcaption>{item.name}</figcaption>
-                          </figure>
-                        ))}
+                    <>
+                      <div className="client-portfolio-carousel">
+                        <div
+                          className="client-portfolio-track"
+                          style={{ transform: `translateX(-${portfolioIndex * 100}%)` }}
+                        >
+                          {portfolioImages.map((img) => (
+                            <figure key={`${img.name}-${img.imageUrl}`} className="client-portfolio-slide">
+                              <img src={img.imageUrl} alt={img.name} />
+                              <figcaption>{img.name}</figcaption>
+                            </figure>
+                          ))}
+                        </div>
                       </div>
-                      <div className="client-portfolio-dots">
-                        {portfolioImages.map((item, index) => (
-                          <button
-                            key={`${item.imageUrl}-${index}`}
-                            type="button"
-                            className={index === portfolioIndex ? 'active' : ''}
-                            onClick={() => setPortfolioIndex(index)}
-                            aria-label={`Ir para foto ${index + 1}`}
-                          />
-                        ))}
-                      </div>
-                    </div>
+                      {portfolioImages.length > 1 && (
+                        <div className="client-portfolio-dots">
+                          {portfolioImages.map((_, i) => (
+                            <button
+                              key={i}
+                              type="button"
+                              className={i === portfolioIndex ? 'active' : ''}
+                              onClick={() => setPortfolioIndex(i)}
+                              aria-label={`Foto ${i + 1}`}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </>
                   ) : (
-                    <p style={{ margin: 0, color: 'var(--client-muted)' }}>
-                      Portfolio em atualizacao. As fotos dos servicos da profissional aparecerao aqui.
+                    <p style={{ margin: 0, color: 'var(--client-muted)', fontSize: '0.9rem' }}>
+                      Portfólio em atualização — as fotos aparecerão aqui em breve.
                     </p>
                   )}
                 </div>
-              </>
-            ) : (
-              <p style={{ margin: 0, color: 'var(--client-muted)' }}>
-                Selecione uma profissional para ver o perfil.
-              </p>
+              </div>
             )}
           </div>
-        </div>
+        )}
       </div>
 
       <div className="client-section" id="localizacao">
-        <h3>Localizacao</h3>
+        <h3>Localização</h3>
         <div className="client-location-units">
           <article id="localizacao-almada" className="client-location-unit client-location-unit-card">
             <h4>Sobrancelhas Express Almada</h4>
@@ -630,7 +709,7 @@ function ClientServicos({ onNavigate, isGuest = false }) {
                 rel="noopener noreferrer"
                 className="client-location-link"
               >
-                Avenida da Fundacao 08 Loja7, 2805-180 Almada
+                Avenida da Fundação 08 Loja7, 2805-180 Almada
               </a>
             </p>
             <p className="client-location-address-line">
@@ -641,8 +720,8 @@ function ClientServicos({ onNavigate, isGuest = false }) {
             </p>
             <div className="client-location-split">
               <div className="client-location-info">
-                <h5>Horarios</h5>
-                <div className="client-hours-list" aria-label="Horarios de funcionamento de Almada">
+                <h5>Horários</h5>
+                <div className="client-hours-list" aria-label="Horários de funcionamento de Almada">
                   {weeklyHours.map(([day, hours]) => (
                     <div key={`almada-${day}`} className="client-hours-row">
                       <span>{day}</span>
@@ -673,7 +752,7 @@ function ClientServicos({ onNavigate, isGuest = false }) {
                 rel="noopener noreferrer"
                 className="client-location-link"
               >
-                R. do Mercado 51 loja 2, 2785-630 Sao Domingos de Rana
+                R. do Mercado 51 loja 2, 2785-630 São Domingos de Rana
               </a>
             </p>
             <p className="client-location-address-line">
@@ -694,8 +773,8 @@ function ClientServicos({ onNavigate, isGuest = false }) {
               </div>
 
               <div className="client-location-info">
-                <h5>Horarios</h5>
-                <div className="client-hours-list" aria-label="Horarios de funcionamento de Cascais">
+                <h5>Horários</h5>
+                <div className="client-hours-list" aria-label="Horários de funcionamento de Cascais">
                   {weeklyHours.map(([day, hours]) => (
                     <div key={`cascais-${day}`} className="client-hours-row">
                       <span>{day}</span>

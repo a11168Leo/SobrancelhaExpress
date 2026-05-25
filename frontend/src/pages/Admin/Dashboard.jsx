@@ -219,6 +219,18 @@ function Dashboard({ onNavigate }) {
                   <div className="dashboard-list-content">
                     <strong>{appointment.client?.name || 'Cliente não informado'}</strong>
                     <p>{appointment.service?.name || 'Serviço não informado'} • {appointment.professional?.name || 'Profissional não informado'}</p>
+                    {appointment.notes && (() => {
+                      const match = appointment.notes.match(/Aviso do cliente:\s*(.+?)(\s*·|$)/i)
+                      const msg = match?.[1]?.trim()
+                      return msg ? (
+                        <span className="dashboard-client-note">
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                          </svg>
+                          {msg}
+                        </span>
+                      ) : null
+                    })()}
                   </div>
                   <span className={`dashboard-status dashboard-status-${appointment.status}`}>
                     {formatStatusLabel(appointment.status)}
@@ -249,6 +261,18 @@ function Dashboard({ onNavigate }) {
                     <span className="dashboard-timeline-time">{formatTime(appointment.startTime)}</span>
                     <strong>{appointment.client?.name || 'Cliente'}</strong>
                     <p>{appointment.service?.name || 'Serviço'} • {prettyUnit(appointment.unit)}</p>
+                    {appointment.notes && (() => {
+                      const match = appointment.notes.match(/Aviso do cliente:\s*(.+?)(\s*·|$)/i)
+                      const msg = match?.[1]?.trim()
+                      return msg ? (
+                        <span className="dashboard-client-note">
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                          </svg>
+                          {msg}
+                        </span>
+                      ) : null
+                    })()}
                   </div>
                   <span className={`dashboard-status dashboard-status-${appointment.status}`}>
                     {formatStatusLabel(appointment.status)}

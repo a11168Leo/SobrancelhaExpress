@@ -4,7 +4,7 @@
 
 // Importacoes
 import { Router } from 'express';
-import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { authMiddleware, optionalAuthMiddleware } from '../middlewares/auth.middleware.js';
 import { allowRoles } from '../middlewares/role.middleware.js';
 import {
   create,
@@ -20,7 +20,7 @@ import {
 const router = Router();
 
 router.get('/calendar', listCalendarPublic);
-router.post('/public', create);
+router.post('/public', optionalAuthMiddleware, create);
 router.patch('/public/:id', update);
 router.post('/', authMiddleware, allowRoles('admin', 'cliente', 'profissional'), create);
 // ====================

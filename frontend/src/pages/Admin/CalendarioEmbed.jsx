@@ -51,11 +51,11 @@ function CalendarioEmbed() {
   }, [])
 
   if (loading) {
-    return <div className="calendar-embed-loading">Carregando calendário...</div>
+    return <div className="calendar-embed-loading">A carregar o calendário...</div>
   }
 
   if (error) {
-    return <div className="calendar-embed-error">Erro ao carregar calendário: {error}</div>
+    return <div className="calendar-embed-error">Erro ao carregar o calendário: {error}</div>
   }
 
   return (
@@ -79,12 +79,13 @@ function CalendarioEmbed() {
           hour12: false,
         }}
         slotDuration="00:30:00"
-        slotLabelInterval="00:30:00"
-        weekends={true}
+        slotLabelInterval="01:00:00"
+        dayHeaderFormat={{ weekday: 'short', day: '2-digit', month: '2-digit', omitCommas: true }}
+        hiddenDays={[0]}
         nowIndicator={true}
         allDaySlot={false}
-        slotMinTime="08:00:00"
-        slotMaxTime="20:00:00"
+        slotMinTime="09:00:00"
+        slotMaxTime="19:00:00"
         eventDisplay="block"
         eventClick={() => {
           // Click handler vazio - apenas para evitar comportamentos padrão

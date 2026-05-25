@@ -16,6 +16,9 @@ import {
 } from './appointment.service.js'
 import { findServiceById } from '../services/service.service.js'
 import { createFinancial, findFinancialByAppointment } from '../financial/financial.service.js'
+import { createNotification } from '../notifications/notification.service.js'
+import { listUsers, findUserById } from '../users/user.service.js'
+import nodemailer from 'nodemailer'
 
 // Bloco: parseDate
 const parseDate = (value) => {
@@ -25,6 +28,79 @@ const parseDate = (value) => {
 
 // Bloco: VALID_UNITS
 const VALID_UNITS = ['cascais', 'almada']
+
+const pad = (n) => String(n).padStart(2, '0')
+
+async function sendAppointmentEmails({ professional, client, service, start, unit }) {
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) return
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+  })
+
+  const from = process.env.SMTP_FROM || `"Sobrancelhas Express" <${process.env.SMTP_USER}>`
+  const dateStr = start.toLocaleDateString('pt-PT', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })
+  const timeStr = `${pad(start.getHours())}:${pad(start.getMinutes())}`
+  const unitLabel = unit === 'almada' ? 'Almada' : 'Cascais'
+  const serviceName = service?.name || 'Serviço'
+
+  const sharedStyle = `font-family:Arial,sans-serif;max-width:560px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;`
+  const headerStyle = `background:linear-gradient(135deg,#ffa3b0,#c95184);padding:32px 28px;text-align:center;color:#fff;`
+  const bodyStyle = `padding:28px;color:#2b1b2a;`
+  const rowStyle = `display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0e0e8;font-size:14px;`
+
+  if (professional?.email) {
+    await transporter.sendMail({
+      from,
+      to: professional.email,
+      subject: `Novo agendamento — ${serviceName} — ${dateStr}`,
+      html: `<div style="${sharedStyle}">
+        <div style="${headerStyle}">
+          <h2 style="margin:0;font-size:22px;">Novo agendamento 📅</h2>
+          <p style="margin:8px 0 0;opacity:.85">Sobrancelhas Express · ${unitLabel}</p>
+        </div>
+        <div style="${bodyStyle}">
+          <p>Olá <strong>${professional.name}</strong>,</p>
+          <p>Tem um novo agendamento marcado:</p>
+          <div style="${rowStyle}"><span><strong>Serviço</strong></span><span>${serviceName}</span></div>
+          <div style="${rowStyle}"><span><strong>Cliente</strong></span><span>${client?.name || 'Não identificado'}</span></div>
+          <div style="${rowStyle}"><span><strong>Data</strong></span><span>${dateStr}</span></div>
+          <div style="${rowStyle}"><span><strong>Hora</strong></span><span>${timeStr}</span></div>
+          <div style="${rowStyle}border:none;"><span><strong>Unidade</strong></span><span>${unitLabel}</span></div>
+          <p style="margin-top:24px;font-size:13px;color:#8f6e7d;">Este email foi gerado automaticamente pelo sistema Sobrancelhas Express.</p>
+        </div>
+      </div>`,
+    }).catch(() => {})
+  }
+
+  if (client?.email) {
+    await transporter.sendMail({
+      from,
+      to: client.email,
+      subject: `Agendamento confirmado — ${serviceName}`,
+      html: `<div style="${sharedStyle}">
+        <div style="${headerStyle}">
+          <h2 style="margin:0;font-size:22px;">Agendamento confirmado ✅</h2>
+          <p style="margin:8px 0 0;opacity:.85">Sobrancelhas Express · ${unitLabel}</p>
+        </div>
+        <div style="${bodyStyle}">
+          <p>Olá <strong>${client.name}</strong>,</p>
+          <p>O seu agendamento foi confirmado com sucesso!</p>
+          <div style="${rowStyle}"><span><strong>Serviço</strong></span><span>${serviceName}</span></div>
+          <div style="${rowStyle}"><span><strong>Profissional</strong></span><span>${professional?.name || 'A definir'}</span></div>
+          <div style="${rowStyle}"><span><strong>Data</strong></span><span>${dateStr}</span></div>
+          <div style="${rowStyle}"><span><strong>Hora</strong></span><span>${timeStr}</span></div>
+          <div style="${rowStyle}border:none;"><span><strong>Unidade</strong></span><span>${unitLabel}</span></div>
+          <p style="margin-top:20px;font-size:13px;color:#8f6e7d;">
+            Se precisar de alterar ou cancelar, entre em contacto connosco.<br>
+            Até breve! 💕
+          </p>
+        </div>
+      </div>`,
+    }).catch(() => {})
+  }
+}
 
 // Funcao exportada: create
 export const create = async (req, res) => {
@@ -109,6 +185,37 @@ export const create = async (req, res) => {
       endTime: end,
       notes,
       unit: unit || 'cascais'
+    })
+
+    // Notificar profissional e admins sobre novo agendamento
+    const unitLabel = (unit || 'cascais') === 'cascais' ? 'Cascais' : 'Almada'
+    const dateLabel = start.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit', year: 'numeric' })
+    const timeLabel = `${pad(start.getHours())}:${pad(start.getMinutes())}`
+
+    const notifTitle = 'Novo agendamento'
+    const notifMessage = `Novo agendamento marcado para ${dateLabel} às ${timeLabel} na unidade de ${unitLabel}.`
+
+    const admins = await listUsers({ role: 'admin' })
+    const recipients = new Set([professionalId, ...admins.map(a => String(a._id))])
+
+    await Promise.allSettled(
+      [...recipients].map(userId =>
+        createNotification({ user: userId, title: notifTitle, message: notifMessage })
+      )
+    )
+
+    // Enviar emails ao profissional e ao cliente
+    const [professionalUser, clientUser, serviceDoc] = await Promise.all([
+      findUserById(professionalId).catch(() => null),
+      findUserById(resolvedClientId).catch(() => null),
+      serviceId ? findServiceById(serviceId).catch(() => null) : Promise.resolve(null),
+    ])
+    sendAppointmentEmails({
+      professional: professionalUser,
+      client: clientUser,
+      service: serviceDoc,
+      start,
+      unit: unit || 'cascais',
     })
 
     res.status(201).json({ appointment })

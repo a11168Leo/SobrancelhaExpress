@@ -15,6 +15,8 @@ import AdicionarProfissional from './pages/Admin/AdicionarProfissional'
 import CatalogoServicos from './pages/Admin/CatalogoServicos'
 import Configuracoes from './pages/Admin/Configuracoes'
 import Perfil from './pages/Admin/Perfil'
+import Relatorio from './pages/Admin/Relatorio'
+import Financeiro from './pages/Admin/Financeiro'
 import Login from './pages/Login/Login'
 import ClientLayout from './layout/ClientLayout'
 
@@ -101,19 +103,23 @@ function App() {
       case 'dashboard':
         return <Dashboard onNavigate={navigate} />
       case 'agenda':
-        return <Calendario onNavigate={navigate} />
+        return <Calendario onNavigate={navigate} user={user} />
       case 'cliente':
-        return <Clientes onNavigate={navigate} />
+        return user?.role === 'admin' ? <Clientes onNavigate={navigate} /> : null
       case 'gerir-equipe':
-        return <GerirEquipe onNavigate={navigate} reloadKey={reloadProfessionals} />
+        return user?.role === 'admin' ? <GerirEquipe onNavigate={navigate} reloadKey={reloadProfessionals} /> : null
       case 'adicionar-profissional':
-        return <AdicionarProfissional onNavigate={navigate} />
+        return user?.role === 'admin' ? <AdicionarProfissional onNavigate={navigate} /> : null
       case 'catalogo-servicos':
-        return <CatalogoServicos onNavigate={navigate} />
+        return <CatalogoServicos onNavigate={navigate} user={user} />
       case 'config':
         return <Configuracoes darkMode={darkMode} setDarkMode={setDarkMode} />
       case 'perfil':
-        return <Perfil />
+        return <Perfil user={user} />
+      case 'financeiro':
+        return user?.role === 'admin' ? <Financeiro user={user} /> : null
+      case 'relatorio':
+        return <Relatorio onNavigate={navigate} user={user} />
       default:
         return <Dashboard onNavigate={navigate} />
     }

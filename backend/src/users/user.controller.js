@@ -41,9 +41,10 @@ function normalizeAvailability(input) {
       enabled: Boolean(item?.enabled),
       start: String(item?.start || '').trim(),
       end: String(item?.end || '').trim(),
+      unit: String(item?.unit || '').trim(),
     }))
     .filter((item) => item.day)
-    .slice(0, 7)
+    .slice(0, 14)
 }
 
 // Funcao: generateTemporaryPassword
@@ -501,6 +502,8 @@ export const updateProfessional = async (req, res) => {
       salonName,
       specialties,
       availability,
+      instagram,
+      vacationPeriods,
     } = req.body
 
     const existing = await findUserById(id)
@@ -519,6 +522,17 @@ export const updateProfessional = async (req, res) => {
       ...(contactName !== undefined ? { contactName } : {}),
       ...(salonName !== undefined ? { salonName } : {}),
       ...(about !== undefined ? { about } : {}),
+      ...(instagram !== undefined ? { instagram: String(instagram).trim() } : {}),
+    }
+
+    if (Array.isArray(vacationPeriods)) {
+      updates.vacationPeriods = vacationPeriods
+        .map(v => ({
+          startDate: new Date(v.startDate),
+          endDate: new Date(v.endDate),
+          label: String(v.label || '').trim(),
+        }))
+        .filter(v => !isNaN(v.startDate) && !isNaN(v.endDate))
     }
 
     if (specialties !== undefined) {

@@ -5,6 +5,23 @@
 // Importacoes
 import jwt from 'jsonwebtoken';
 
+// Funcao exportada: optionalAuthMiddleware
+export const optionalAuthMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return next();
+  const token = authHeader.slice(7);
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = {
+      id: decoded.id,
+      role: decoded.role,
+      email: decoded.email,
+      mustChangePassword: Boolean(decoded.mustChangePassword)
+    };
+  } catch { /* token inválido — continua sem req.user */ }
+  next();
+};
+
 // Funcao exportada: authMiddleware
 export const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
